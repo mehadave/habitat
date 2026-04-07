@@ -5,6 +5,7 @@ import { useAuthStore } from './store/authStore'
 import { useUIStore } from './store/uiStore'
 import { useHabits } from './hooks/useHabits'
 import { NavBar } from './components/NavBar'
+import { Footer } from './components/Footer'
 import { XPToastContainer } from './components/XPToast'
 import { StreakCelebration } from './components/StreakCelebration'
 import { ProtectedRoute } from './components/ProtectedRoute'
@@ -75,6 +76,7 @@ function AppShell() {
         <Route path="/journal" element={<Journal />} />
         <Route path="/profile" element={<Profile />} />
       </Routes>
+      <Footer />
       <XPToastContainer />
       <StreakCelebration />
     </>

@@ -3,9 +3,13 @@
   "configurations": [
     {
       "name": "Habitat Web",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
-      "port": 5173
+      "runtimeExecutable": "/opt/homebrew/Cellar/node/24.7.0/bin/node",
+      "runtimeArgs": [
+        "/Users/mehadave/Desktop/myapps/habitat/web/node_modules/.bin/vite",
+        "/Users/mehadave/Desktop/myapps/habitat/web",
+        "--host"
+      ],
+      "port": 3000
     }
   ]
 }
