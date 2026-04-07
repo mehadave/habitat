@@ -1,0 +1,25 @@
+{
+  "name": "Habit·at",
+  "short_name": "Habitat",
+  "description": "Small waves. Big changes.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B1437",
+  "theme_color": "#0B1437",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "health", "lifestyle"]
+}
