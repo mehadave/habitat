@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { supabase } from '../../lib/supabase'
 import { DolphinLogo } from '../../components/DolphinLogo'
+import { Footer } from '../../components/Footer'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -201,6 +202,8 @@ export default function Login() {
           <span>·</span>
           <Link to="/forgot-password" className="hover:text-white transition-colors">Forgot password</Link>
         </div>
+
+        <Footer />
       </motion.div>
     </div>
   )
