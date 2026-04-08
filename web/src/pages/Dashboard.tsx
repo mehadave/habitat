@@ -1,5 +1,4 @@
 import { useHabits, useToggleCompletion, localDateStr } from '../hooks/useHabits'
-import { useAuthStore } from '../store/authStore'
 import { useUIStore } from '../store/uiStore'
 import { DolphinLogo } from '../components/DolphinLogo'
 import { QuoteRotator } from '../components/QuoteRotator'
@@ -26,7 +25,7 @@ function CSSWave() {
 }
 
 export default function Dashboard() {
-  const { profile } = useAuthStore()
+
   const { darkMode } = useUIStore()
   const { data: habits = [], isLoading } = useHabits()
   const toggleMutation = useToggleCompletion()

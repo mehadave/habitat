@@ -6,7 +6,7 @@ interface Props {
   onToggle: (habitId: string, date: string) => void
 }
 
-function MiniDotGrid({ completions, darkMode }: { completions: string[]; darkMode: boolean }) {
+function MiniDotGrid({ completions }: { completions: string[] }) {
   const today = new Date()
   const dates: string[] = []
   for (let i = 13; i >= 0; i--) {
@@ -99,7 +99,7 @@ export function LosingSection({ habits, onToggle }: Props) {
                   slipping · only {streak} day{streak !== 1 ? 's' : ''}
                 </span>
               </div>
-              <MiniDotGrid completions={habit.completions ?? []} darkMode={darkMode} />
+              <MiniDotGrid completions={habit.completions ?? []} />
               <p className="text-xs mt-2" style={{ color: needsYouColor }}>
                 This one needs you today.
               </p>

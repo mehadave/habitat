@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuthStore } from '../store/authStore'
 import { useUIStore } from '../store/uiStore'
-import { LevelBadge } from '../components/LevelBadge'
-import { getLevelFromXP, getLevelName } from '../lib/gamification'
 import { motion, AnimatePresence } from 'framer-motion'
 
 export default function Profile() {
@@ -55,8 +53,6 @@ export default function Profile() {
   const [error, setError] = useState('')
   const fileRef = useRef<HTMLInputElement>(null)
 
-  const level = getLevelFromXP(profile?.total_xp ?? 0)
-  const levelName = getLevelName(level)
 
   const initials = (profile?.display_name ?? profile?.email ?? 'U')
     .split(' ')

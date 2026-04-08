@@ -35,9 +35,6 @@ function ProfileDropdown({ onClose, darkMode }: { onClose: () => void; darkMode:
     borderColor: 'rgba(11,20,55,0.1)',
   }
 
-  const initials = (profile?.display_name ?? profile?.email ?? 'U')
-    .split(' ').map((w: string) => w[0]).join('').toUpperCase().slice(0, 2)
-
   async function handleLogout() {
     await supabase.auth.signOut()
     logout()
