@@ -1,3 +1,4 @@
+import { useUIStore } from '../store/uiStore'
 import type { HabitWithStreak } from '../lib/types'
 
 interface Props {
@@ -5,7 +6,7 @@ interface Props {
   onToggle: (habitId: string, date: string) => void
 }
 
-function MiniDotGrid({ completions }: { completions: string[] }) {
+function MiniDotGrid({ completions, darkMode }: { completions: string[]; darkMode: boolean }) {
   const today = new Date()
   const dates: string[] = []
   for (let i = 13; i >= 0; i--) {
@@ -36,6 +37,7 @@ function MiniDotGrid({ completions }: { completions: string[] }) {
 }
 
 export function LosingSection({ habits, onToggle }: Props) {
+  const { darkMode } = useUIStore()
   const todayStr = new Date().toISOString().split('T')[0]
   const losing = habits
     .filter((h) => (h.streak?.current_streak ?? 0) < 3)
@@ -44,15 +46,22 @@ export function LosingSection({ habits, onToggle }: Props) {
 
   if (losing.length === 0) return null
 
+  const habitNameColor = darkMode ? 'white' : '#0B1437'
+  const starEmptyColor = darkMode ? 'rgba(255,255,255,0.25)' : 'rgba(11,20,55,0.25)'
+  const headingColor = darkMode ? 'rgba(255,255,255,0.85)' : 'rgba(11,20,55,0.85)'
+  const badgeBg = darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(11,20,55,0.07)'
+  const badgeText = darkMode ? 'rgba(255,255,255,0.5)' : 'rgba(11,20,55,0.5)'
+  const needsYouColor = darkMode ? 'rgba(255,255,255,0.35)' : 'rgba(11,20,55,0.35)'
+
   return (
     <div className="mb-6">
       <div className="flex items-center gap-2 mb-3">
-        <h2 className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.85)' }}>
+        <h2 className="text-sm font-medium" style={{ color: headingColor }}>
           Needs attention
         </h2>
         <span
           className="px-2 py-0.5 rounded-full text-xs"
-          style={{ background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)' }}
+          style={{ background: badgeBg, color: badgeText }}
         >
           {losing.length}
         </span>
@@ -75,10 +84,10 @@ export function LosingSection({ habits, onToggle }: Props) {
                 <div className="flex items-center gap-2">
                   <span className="text-xl">{habit.emoji || '⭐'}</span>
                   <div>
-                    <p className="text-sm font-medium text-white">{habit.name}</p>
+                    <p className="text-sm font-medium" style={{ color: habitNameColor }}>{habit.name}</p>
                     <div className="flex items-center gap-1.5 mt-0.5">
                       {[1,2,3,4,5].map(n => (
-                        <span key={n} style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)' }}>★</span>
+                        <span key={n} style={{ fontSize: 10, color: starEmptyColor }}>★</span>
                       ))}
                     </div>
                   </div>
@@ -90,8 +99,8 @@ export function LosingSection({ habits, onToggle }: Props) {
                   slipping · only {streak} day{streak !== 1 ? 's' : ''}
                 </span>
               </div>
-              <MiniDotGrid completions={habit.completions ?? []} />
-              <p className="text-xs mt-2" style={{ color: 'rgba(255,255,255,0.35)' }}>
+              <MiniDotGrid completions={habit.completions ?? []} darkMode={darkMode} />
+              <p className="text-xs mt-2" style={{ color: needsYouColor }}>
                 This one needs you today.
               </p>
 

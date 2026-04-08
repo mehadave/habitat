@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useUIStore } from '../store/uiStore'
 
 interface CommitGridProps {
   habitId?: string
@@ -24,10 +25,21 @@ function formatDate(dateStr: string): string {
 }
 
 export function CommitGrid({ habitName, completions, onToggle, isLoading }: CommitGridProps) {
+  const { darkMode } = useUIStore()
   const [confirmDate, setConfirmDate] = useState<string | null>(null)
   const [burstCell, setBurstCell] = useState<string | null>(null)
 
   const todayStr = getDateString(0)
+
+  const emptyBg = darkMode ? 'rgba(255,255,255,0.07)' : 'rgba(11,20,55,0.07)'
+  const emptyBorder = darkMode ? '1px solid rgba(255,255,255,0.12)' : '1px solid rgba(11,20,55,0.12)'
+  const sheetBg = darkMode ? '#0F1B45' : '#E8EFFF'
+  const sheetBorder = darkMode ? '1px solid rgba(255,255,255,0.12)' : '1px solid rgba(11,20,55,0.12)'
+  const textColor = darkMode ? 'white' : '#0B1437'
+  const textMuted = darkMode ? 'rgba(255,255,255,0.55)' : 'rgba(11,20,55,0.55)'
+  const statsMuted = darkMode ? 'rgba(255,255,255,0.4)' : 'rgba(11,20,55,0.4)'
+  const cancelBg = darkMode ? 'rgba(255,255,255,0.07)' : 'rgba(11,20,55,0.07)'
+  const cancelColor = darkMode ? 'rgba(255,255,255,0.55)' : 'rgba(11,20,55,0.55)'
 
   // Build 91-day grid (13 columns × 7 rows), newest right
   const cells: string[] = []
@@ -39,13 +51,13 @@ export function CommitGrid({ habitName, completions, onToggle, isLoading }: Comm
     const done = completions.includes(dateStr)
     if (done && isOnARoll) return '#93C5FD'
     if (done) return '#2563EB'
-    return 'rgba(255,255,255,0.07)'
+    return emptyBg
   }
 
   function getCellBorder(dateStr: string, isOnARoll: boolean): string {
     if (dateStr === todayStr) return '1px solid #60A5FA'
     const done = completions.includes(dateStr)
-    if (!done) return '1px solid rgba(255,255,255,0.12)'
+    if (!done) return emptyBorder
     if (isOnARoll) return '1px solid #93C5FD'
     return '1px solid #2563EB'
   }
@@ -128,7 +140,7 @@ export function CommitGrid({ habitName, completions, onToggle, isLoading }: Comm
       </div>
 
       {/* Stats */}
-      <p className="text-xs mt-2" style={{ color: 'rgba(255,255,255,0.4)' }}>
+      <p className="text-xs mt-2" style={{ color: statsMuted }}>
         {totalCompletions} completion{totalCompletions !== 1 ? 's' : ''} · best streak: {bestStreak} day{bestStreak !== 1 ? 's' : ''}
       </p>
 
@@ -148,18 +160,18 @@ export function CommitGrid({ habitName, completions, onToggle, isLoading }: Comm
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 10 }}
               className="rounded-2xl p-6 w-full max-w-xs"
-              style={{ background: '#0F1B45', border: '1px solid rgba(255,255,255,0.12)' }}
+              style={{ background: sheetBg, border: sheetBorder }}
               onClick={(e) => e.stopPropagation()}
             >
-              <h3 className="text-sm font-medium text-white mb-1">Log past completion?</h3>
-              <p className="text-xs mb-4" style={{ color: 'rgba(255,255,255,0.55)' }}>
+              <h3 className="text-sm font-medium mb-1" style={{ color: textColor }}>Log past completion?</h3>
+              <p className="text-xs mb-4" style={{ color: textMuted }}>
                 Log <strong>{habitName}</strong> for {formatDate(confirmDate)}?
               </p>
               <div className="flex gap-2">
                 <button
                   onClick={() => setConfirmDate(null)}
                   className="flex-1 py-2 rounded-xl text-xs"
-                  style={{ background: 'rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.55)' }}
+                  style={{ background: cancelBg, color: cancelColor }}
                 >
                   Cancel
                 </button>

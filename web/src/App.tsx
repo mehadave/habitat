@@ -5,8 +5,6 @@ import { useAuthStore } from './store/authStore'
 import { useUIStore } from './store/uiStore'
 import { useHabits } from './hooks/useHabits'
 import { NavBar } from './components/NavBar'
-import { Footer } from './components/Footer'
-import { XPToastContainer } from './components/XPToast'
 import { StreakCelebration } from './components/StreakCelebration'
 import { ProtectedRoute } from './components/ProtectedRoute'
 
@@ -36,13 +34,13 @@ function AppShell() {
       if (now > nudge) nudge.setDate(nudge.getDate() + 1)
       const ms = nudge.getTime() - now.getTime()
       return setTimeout(() => {
-        const todayStr = new Date().toISOString().split('T')[0]
+        const todayStr = new Date().toLocaleDateString('en-CA')
         const incomplete = habits.filter(h => !h.completions?.includes(todayStr))
         if (incomplete.length > 0 && 'Notification' in window) {
           Notification.requestPermission().then(p => {
             if (p === 'granted') {
               new Notification('Habit·at', {
-                body: `Your ${incomplete[0]?.streak?.current_streak ?? 0}-day streak needs you.`,
+                body: `${incomplete.length} habit${incomplete.length > 1 ? 's' : ''} left today — keep your streak alive.`,
                 icon: '/icon-192.svg',
               })
             }
@@ -58,9 +56,7 @@ function AppShell() {
   useEffect(() => {
     habits.forEach(h => {
       const s = h.streak?.current_streak ?? 0
-      if (s > 0 && s % 30 === 0 && streakShields < 3) {
-        addShield()
-      }
+      if (s > 0 && s % 30 === 0 && streakShields < 3) addShield()
     })
   }, [habits])
 
@@ -76,8 +72,6 @@ function AppShell() {
         <Route path="/journal" element={<Journal />} />
         <Route path="/profile" element={<Profile />} />
       </Routes>
-      <Footer />
-      <XPToastContainer />
       <StreakCelebration />
     </>
   )
@@ -86,12 +80,28 @@ function AppShell() {
 export default function App() {
   useAuthInit()
   const { session } = useAuthStore()
-  const { darkMode } = useUIStore()
+  const { darkMode, setDarkMode } = useUIStore()
 
   // Apply dark/light mode class
   useEffect(() => {
     document.body.classList.toggle('light-mode', !darkMode)
   }, [darkMode])
+
+  // Sync with OS preference on first load
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)')
+    // Only auto-set if user hasn't manually picked a preference (check localStorage)
+    const stored = localStorage.getItem('habitat-ui')
+    if (!stored) {
+      setDarkMode(mq.matches)
+    }
+    // Listen for OS theme changes and follow them
+    function handleChange(e: MediaQueryListEvent) {
+      setDarkMode(e.matches)
+    }
+    mq.addEventListener('change', handleChange)
+    return () => mq.removeEventListener('change', handleChange)
+  }, [])
 
   return (
     <Routes>

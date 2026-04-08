@@ -12,6 +12,40 @@ export default function Profile() {
   const { profile, logout, setProfile } = useAuthStore()
   const { darkMode, toggleDarkMode, streakShields } = useUIStore()
 
+  const t = darkMode ? {
+    bg: '#0B1437',
+    text: '#ffffff',
+    textMuted: 'rgba(255,255,255,0.45)',
+    textSub: 'rgba(255,255,255,0.3)',
+    cardBg: 'rgba(255,255,255,0.04)',
+    cardBorder: 'rgba(255,255,255,0.09)',
+    inputBg: 'rgba(255,255,255,0.07)',
+    inputBorder: '1px solid rgba(255,255,255,0.12)',
+    inputColor: '#fff',
+    divider: 'rgba(255,255,255,0.1)',
+    navBg: 'rgba(11,20,55,0.85)',
+    navBorder: 'rgba(255,255,255,0.06)',
+    sheetBg: '#0F1B45',
+    badgeBg: 'rgba(255,255,255,0.08)',
+    badgeText: 'rgba(255,255,255,0.5)',
+  } : {
+    bg: '#EFF4FF',
+    text: '#0B1437',
+    textMuted: 'rgba(11,20,55,0.55)',
+    textSub: 'rgba(11,20,55,0.35)',
+    cardBg: 'rgba(255,255,255,0.75)',
+    cardBorder: 'rgba(11,20,55,0.09)',
+    inputBg: 'rgba(11,20,55,0.05)',
+    inputBorder: '1px solid rgba(11,20,55,0.15)',
+    inputColor: '#0B1437',
+    divider: 'rgba(11,20,55,0.12)',
+    navBg: 'rgba(239,244,255,0.92)',
+    navBorder: 'rgba(11,20,55,0.1)',
+    sheetBg: '#E8EFFF',
+    badgeBg: 'rgba(11,20,55,0.07)',
+    badgeText: 'rgba(11,20,55,0.5)',
+  }
+
   const [name, setName] = useState(profile?.display_name ?? '')
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -88,7 +122,7 @@ export default function Profile() {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: '#0B1437', paddingTop: 60, paddingBottom: 80 }}>
+    <div className="app-bg min-h-screen" style={{ paddingTop: 60, paddingBottom: 80 }}>
       <div className="px-4 pt-4 max-w-lg mx-auto">
 
         {/* Avatar */}
@@ -113,18 +147,14 @@ export default function Profile() {
               )}
             </button>
             <div className="absolute bottom-0 right-0 w-6 h-6 rounded-full flex items-center justify-center"
-              style={{ background: '#2563EB', border: '2px solid #0B1437' }}>
+              style={{ background: '#2563EB', border: `2px solid ${t.bg}` }}>
               <span style={{ fontSize: 10 }}>📷</span>
             </div>
           </div>
           <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
 
-          <p className="text-base font-medium text-white mt-3">{profile?.display_name ?? 'Your name'}</p>
-          <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>{profile?.email}</p>
-          <div className="mt-2">
-            <LevelBadge level={level} name={levelName} />
-          </div>
-
+          <p className="text-base font-medium mt-3" style={{ color: t.text }}>{profile?.display_name ?? 'Your name'}</p>
+          <p className="text-xs mt-0.5" style={{ color: t.textMuted }}>{profile?.email}</p>
           {/* Shield count */}
           {streakShields > 0 && (
             <div className="mt-2 flex items-center gap-1.5 px-3 py-1 rounded-full text-xs"
@@ -138,14 +168,14 @@ export default function Profile() {
         <div className="space-y-3">
           {/* Display name */}
           <div className="rounded-2xl p-4"
-            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}>
-            <p className="text-xs mb-2" style={{ color: 'rgba(255,255,255,0.5)' }}>Display name</p>
+            style={{ background: t.cardBg, border: `1px solid ${t.cardBorder}` }}>
+            <p className="text-xs mb-2" style={{ color: t.textMuted }}>Display name</p>
             <div className="flex gap-2">
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="flex-1 px-3 py-2 rounded-xl text-sm outline-none"
-                style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', color: '#fff' }}
+                style={{ background: t.inputBg, border: t.inputBorder, color: t.inputColor }}
               />
               <button
                 onClick={handleSaveName}
@@ -160,15 +190,15 @@ export default function Profile() {
 
           {/* Dark mode */}
           <div className="rounded-2xl p-4 flex items-center justify-between"
-            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}>
+            style={{ background: t.cardBg, border: `1px solid ${t.cardBorder}` }}>
             <div>
-              <p className="text-sm text-white">Dark mode</p>
-              <p className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>Deep navy · always looks good</p>
+              <p className="text-sm" style={{ color: t.text }}>Dark mode</p>
+              <p className="text-xs" style={{ color: t.textMuted }}>Auto-follows device unless you change it</p>
             </div>
             <button
               onClick={toggleDarkMode}
               className="w-12 h-6 rounded-full relative transition-colors"
-              style={{ background: darkMode ? '#2563EB' : 'rgba(255,255,255,0.15)' }}
+              style={{ background: darkMode ? '#2563EB' : t.inputBg }}
             >
               <div className="absolute top-0.5 w-5 h-5 rounded-full bg-white transition-all"
                 style={{ left: darkMode ? '50%' : '2px' }} />
@@ -177,8 +207,8 @@ export default function Profile() {
 
           {/* Password */}
           <div className="rounded-2xl p-4"
-            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}>
-            <p className="text-sm text-white mb-2">Account</p>
+            style={{ background: t.cardBg, border: `1px solid ${t.cardBorder}` }}>
+            <p className="text-sm mb-2" style={{ color: t.text }}>Account</p>
             <button onClick={handlePasswordReset} className="text-sm"
               style={{ color: '#60A5FA' }}>
               Change password →
@@ -190,7 +220,7 @@ export default function Profile() {
           <button
             onClick={handleLogout}
             className="w-full py-3 rounded-2xl text-sm font-medium"
-            style={{ background: 'rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.75)', border: '1px solid rgba(255,255,255,0.09)' }}
+            style={{ background: t.inputBg, color: t.text, border: `1px solid ${t.cardBorder}` }}
           >
             Sign out
           </button>
@@ -222,13 +252,13 @@ export default function Profile() {
               animate={{ scale: 1 }}
               exit={{ scale: 0.9 }}
               className="w-full max-w-xs rounded-2xl p-6"
-              style={{ background: '#0F1B45', border: '1px solid rgba(248,113,113,0.3)' }}
+              style={{ background: t.sheetBg, border: '1px solid rgba(248,113,113,0.3)' }}
             >
               <h3 className="text-sm font-medium mb-1" style={{ color: '#F87171' }}>Delete account?</h3>
-              <p className="text-xs mb-3" style={{ color: 'rgba(255,255,255,0.55)' }}>
+              <p className="text-xs mb-3" style={{ color: t.textMuted }}>
                 This is permanent. All your habits, streaks, and journal entries will be lost.
               </p>
-              <p className="text-xs mb-2" style={{ color: 'rgba(255,255,255,0.55)' }}>
+              <p className="text-xs mb-2" style={{ color: t.textMuted }}>
                 Type <strong>DELETE</strong> to confirm:
               </p>
               <input
@@ -236,19 +266,19 @@ export default function Profile() {
                 onChange={(e) => setDeleteInput(e.target.value)}
                 placeholder="DELETE"
                 className="w-full px-3 py-2 rounded-xl text-sm outline-none mb-3"
-                style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', color: '#fff' }}
+                style={{ background: t.inputBg, border: t.inputBorder, color: t.inputColor }}
               />
               <div className="flex gap-2">
                 <button onClick={() => { setShowDeleteConfirm(false); setDeleteInput('') }}
                   className="flex-1 py-2 rounded-xl text-xs"
-                  style={{ background: 'rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.55)' }}>
+                  style={{ background: t.inputBg, color: t.textMuted }}>
                   Cancel
                 </button>
                 <button
                   onClick={handleDeleteAccount}
                   disabled={deleteInput !== 'DELETE'}
                   className="flex-1 py-2 rounded-xl text-xs font-medium"
-                  style={{ background: deleteInput === 'DELETE' ? 'rgba(248,113,113,0.3)' : 'rgba(255,255,255,0.1)', color: '#F87171' }}>
+                  style={{ background: deleteInput === 'DELETE' ? 'rgba(248,113,113,0.3)' : t.inputBg, color: '#F87171' }}>
                   Delete
                 </button>
               </div>

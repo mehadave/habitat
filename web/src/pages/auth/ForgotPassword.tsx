@@ -22,7 +22,7 @@ export default function ForgotPassword() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: '#0B1437' }}>
+    <div className="auth-bg min-h-screen flex items-center justify-center p-4">
       <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-sm">
         <h1 className="text-xl font-medium text-white text-center mb-2">Reset password</h1>
         <p className="text-sm text-center mb-6" style={{ color: 'rgba(255,255,255,0.45)' }}>

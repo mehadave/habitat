@@ -2,8 +2,45 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '../lib/supabase'
 import { useAuthStore } from '../store/authStore'
 import { useGamificationStore } from '../store/gamificationStore'
-import { calculateXPGain, isStreakMilestone, shouldGetVariableReward } from '../lib/gamification'
+import { isStreakMilestone } from '../lib/gamification'
 import type { Habit, HabitWithStreak } from '../lib/types'
+
+// Use local date (not UTC) everywhere
+export function localDateStr(date: Date = new Date()): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+}
+
+// Calculate current streak from sorted completion date strings (ascending)
+function calcCurrentStreak(sortedDates: string[]): number {
+  if (sortedDates.length === 0) return 0
+  const today = localDateStr()
+  const yesterday = localDateStr(new Date(Date.now() - 86400000))
+  const last = sortedDates[sortedDates.length - 1]
+  if (last !== today && last !== yesterday) return 0
+  let count = 1
+  for (let i = sortedDates.length - 2; i >= 0; i--) {
+    const curr = new Date(sortedDates[i] + 'T00:00:00')
+    const next = new Date(sortedDates[i + 1] + 'T00:00:00')
+    const diff = Math.round((next.getTime() - curr.getTime()) / 86400000)
+    if (diff === 1) count++
+    else break
+  }
+  return count
+}
+
+// Calculate longest streak from sorted completion date strings (ascending)
+function calcLongestStreak(sortedDates: string[]): number {
+  if (sortedDates.length === 0) return 0
+  let longest = 1, run = 1
+  for (let i = 1; i < sortedDates.length; i++) {
+    const prev = new Date(sortedDates[i - 1] + 'T00:00:00')
+    const curr = new Date(sortedDates[i] + 'T00:00:00')
+    const diff = Math.round((curr.getTime() - prev.getTime()) / 86400000)
+    if (diff === 1) { run++; longest = Math.max(longest, run) }
+    else run = 1
+  }
+  return longest
+}
 
 export function useHabits() {
   const { session } = useAuthStore()
@@ -31,7 +68,7 @@ export function useHabits() {
         .from('habit_completions')
         .select('habit_id, completed_date')
         .eq('user_id', userId!)
-        .gte('completed_date', new Date(Date.now() - 91 * 24 * 60 * 60 * 1000).toISOString().split('T')[0])
+        .gte('completed_date', localDateStr(new Date(Date.now() - 91 * 86400000)))
 
       return (habits || []).map((h: Habit) => ({
         ...h,
@@ -47,7 +84,7 @@ export function useHabits() {
 export function useToggleCompletion() {
   const qc = useQueryClient()
   const { session } = useAuthStore()
-  const { showToast, showCelebration } = useGamificationStore()
+  const { showCelebration } = useGamificationStore()
 
   return useMutation({
     mutationFn: async ({ habit, date }: { habit: HabitWithStreak; date: string }) => {
@@ -55,46 +92,65 @@ export function useToggleCompletion() {
       const exists = habit.completions?.includes(date)
 
       if (exists) {
+        // Remove completion
         await supabase
           .from('habit_completions')
           .delete()
           .eq('habit_id', habit.id)
           .eq('completed_date', date)
+
+        // Recalculate streak from remaining completions
+        const { data: remaining } = await supabase
+          .from('habit_completions')
+          .select('completed_date')
+          .eq('habit_id', habit.id)
+          .order('completed_date', { ascending: true })
+
+        const dates = (remaining || []).map((r: any) => r.completed_date as string)
+        const newStreak = calcCurrentStreak(dates)
+        const newLongest = Math.max(calcLongestStreak(dates), habit.streak?.longest_streak ?? 0)
+        const lastDate = dates.length > 0 ? dates[dates.length - 1] : null
+        const startDate = newStreak > 0 ? dates[dates.length - newStreak] : null
+
+        await supabase.from('streaks').upsert({
+          habit_id: habit.id,
+          user_id: userId,
+          current_streak: newStreak,
+          longest_streak: newLongest,
+          last_completed_date: lastDate,
+          streak_start_date: startDate,
+        }, { onConflict: 'habit_id' })
+
       } else {
+        // Add completion
         await supabase
           .from('habit_completions')
           .insert({ habit_id: habit.id, user_id: userId, completed_date: date })
 
-        await supabase.rpc('upsert_streak', {
-          p_habit_id: habit.id,
-          p_user_id: userId,
-          p_date: date,
-        })
+        // Recalculate streak
+        const { data: allDates } = await supabase
+          .from('habit_completions')
+          .select('completed_date')
+          .eq('habit_id', habit.id)
+          .order('completed_date', { ascending: true })
 
-        const xp = calculateXPGain('habit_complete', habit.star_rating)
-        await supabase.from('xp_events').insert({
-          user_id: userId,
+        const dates = (allDates || []).map((r: any) => r.completed_date as string)
+        const newStreak = calcCurrentStreak(dates)
+        const newLongest = Math.max(calcLongestStreak(dates), habit.streak?.longest_streak ?? 0)
+        const lastDate = dates.length > 0 ? dates[dates.length - 1] : null
+        const startDate = newStreak > 0 ? dates[dates.length - newStreak] : null
+
+        await supabase.from('streaks').upsert({
           habit_id: habit.id,
-          event_type: 'habit_complete',
-          xp_gained: xp,
-        })
-        await supabase.rpc('increment_user_xp', { uid: userId, amount: xp }).maybeSingle()
+          user_id: userId,
+          current_streak: newStreak,
+          longest_streak: newLongest,
+          last_completed_date: lastDate,
+          streak_start_date: startDate,
+        }, { onConflict: 'habit_id' })
 
-        const newStreak = (habit.streak?.current_streak ?? 0) + 1
         if (isStreakMilestone(newStreak)) {
           showCelebration(newStreak)
-        }
-
-        if (shouldGetVariableReward()) {
-          showToast(25, true)
-          await supabase.from('xp_events').insert({
-            user_id: userId,
-            habit_id: habit.id,
-            event_type: 'bonus',
-            xp_gained: 25,
-          })
-        } else {
-          showToast(xp, false)
         }
       }
     },

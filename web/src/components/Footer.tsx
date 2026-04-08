@@ -1,13 +1,21 @@
+import { useUIStore } from '../store/uiStore'
+
 export function Footer() {
+  const { darkMode } = useUIStore()
+
+  const color = darkMode ? 'rgba(255,255,255,0.28)' : 'rgba(11,20,55,0.35)'
+  const hoverColor = darkMode ? 'rgba(255,255,255,0.75)' : 'rgba(11,20,55,0.8)'
+  const borderColor = darkMode ? 'rgba(255,255,255,0.06)' : 'rgba(11,20,55,0.08)'
+
   return (
     <footer
       className="w-full flex flex-col items-center gap-1.5 px-4 text-center"
       style={{
         paddingTop: 16,
-        paddingBottom: 96, // clears the 80px bottom nav
-        color: 'rgba(255,255,255,0.28)',
+        paddingBottom: 96,
+        color,
         fontSize: 11,
-        borderTop: '1px solid rgba(255,255,255,0.06)',
+        borderTop: `1px solid ${borderColor}`,
         marginTop: 8,
       }}
     >
@@ -16,9 +24,9 @@ export function Footer() {
       <a
         href="mailto:davemeha60@gmail.com"
         className="transition-colors duration-200 hover:underline"
-        style={{ color: 'rgba(255,255,255,0.28)' }}
-        onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.75)')}
-        onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.28)')}
+        style={{ color }}
+        onMouseEnter={e => (e.currentTarget.style.color = hoverColor)}
+        onMouseLeave={e => (e.currentTarget.style.color = color)}
       >
         Contact
       </a>
