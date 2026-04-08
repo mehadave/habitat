@@ -67,7 +67,7 @@ export default function Login() {
             Habit<span style={{ color: '#93C5FD' }}>·</span>at
           </h1>
           <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.45)' }}>
-            Small waves. Big changes.
+            Small habits. Big changes.
           </p>
         </div>
 

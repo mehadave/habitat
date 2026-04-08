@@ -63,6 +63,7 @@ export default function Signup() {
             Welcome to Habit<span style={{ color: '#93C5FD' }}>·</span>at
           </h1>
           <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.45)' }}>
+            Small habits. Big changes.
             Let's make some waves.
           </p>
         </div>
