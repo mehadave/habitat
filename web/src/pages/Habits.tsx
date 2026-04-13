@@ -3,9 +3,18 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useHabits, useAddHabit, useUpdateHabit, useDeleteHabit, useToggleCompletion } from '../hooks/useHabits'
 import { useUIStore } from '../store/uiStore'
 import { HabitCard } from '../components/HabitCard'
+import { MonthlyHabitTracker } from '../components/MonthlyHabitTracker'
+import {
+  getHabitPref,
+  setHabitPref,
+  requestNotificationPermission,
+  syncNotificationsToSW,
+} from '../hooks/useNotifications'
 import type { HabitWithStreak } from '../lib/types'
 
 const EMOJIS = ['⭐','🏃','📚','💧','🧘','💪','🍎','😴','🎯','✍️','🎸','🌱','🧹','💊','☀️','🐬','🌊','🏊','🦋','🔥']
+
+const DAY_LABELS = ['Su','Mo','Tu','We','Th','Fr','Sa']
 
 interface HabitFormData {
   name: string
@@ -15,24 +24,82 @@ interface HabitFormData {
   is_private: boolean
 }
 
+interface FormWithNotif extends HabitFormData {
+  notifEnabled: boolean
+  notifTime: string
+  notifDays: number[]
+}
+
+function buildTokens(darkMode: boolean) {
+  return darkMode ? {
+    bg: '#0B1437',
+    text: '#ffffff',
+    textMuted: 'rgba(255,255,255,0.45)',
+    textSub: 'rgba(255,255,255,0.3)',
+    cardBg: 'rgba(255,255,255,0.04)',
+    cardBorder: 'rgba(255,255,255,0.09)',
+    inputBg: 'rgba(255,255,255,0.07)',
+    inputBorder: '1px solid rgba(255,255,255,0.12)',
+    inputColor: '#fff',
+    divider: 'rgba(255,255,255,0.1)',
+    sheetBg: '#0F1B45',
+  } : {
+    bg: '#EFF4FF',
+    text: '#0B1437',
+    textMuted: 'rgba(11,20,55,0.55)',
+    textSub: 'rgba(11,20,55,0.35)',
+    cardBg: 'rgba(255,255,255,0.85)',
+    cardBorder: 'rgba(11,20,55,0.09)',
+    inputBg: 'rgba(11,20,55,0.05)',
+    inputBorder: '1px solid rgba(11,20,55,0.15)',
+    inputColor: '#0B1437',
+    divider: 'rgba(11,20,55,0.1)',
+    sheetBg: '#EEF3FF',
+  }
+}
+
 function AddEditSheet({
+  habitId,
   initial,
   onSave,
   onClose,
   t,
 }: {
-  initial?: Partial<HabitFormData>
-  onSave: (data: HabitFormData) => void
+  habitId?: string
+  initial?: Partial<FormWithNotif>
+  onSave: (data: FormWithNotif) => void
   onClose: () => void
   t: ReturnType<typeof buildTokens>
 }) {
-  const [form, setForm] = useState<HabitFormData>({
+  const existingPref = habitId ? getHabitPref(habitId) : { enabled: false, time: '09:00', days: [] }
+
+  const [form, setForm] = useState<FormWithNotif>({
     name: initial?.name ?? '',
     emoji: initial?.emoji ?? '⭐',
     description: initial?.description ?? '',
     star_rating: initial?.star_rating ?? 0,
     is_private: initial?.is_private ?? false,
+    notifEnabled: initial?.notifEnabled ?? existingPref.enabled,
+    notifTime: initial?.notifTime ?? existingPref.time,
+    notifDays: initial?.notifDays ?? existingPref.days,
   })
+
+  function toggleDay(d: number) {
+    setForm(f => ({
+      ...f,
+      notifDays: f.notifDays.includes(d)
+        ? f.notifDays.filter(x => x !== d)
+        : [...f.notifDays, d],
+    }))
+  }
+
+  async function handleNotifToggle() {
+    if (!form.notifEnabled) {
+      const granted = await requestNotificationPermission()
+      if (!granted) return
+    }
+    setForm(f => ({ ...f, notifEnabled: !f.notifEnabled }))
+  }
 
   return (
     <motion.div
@@ -40,20 +107,20 @@ function AddEditSheet({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-50 flex items-end justify-center"
-      style={{ background: 'rgba(0,0,0,0.6)' }}
+      style={{ background: 'rgba(0,0,0,0.55)' }}
       onClick={onClose}
     >
       <motion.div
         initial={{ y: '100%' }}
         animate={{ y: 0 }}
         exit={{ y: '100%' }}
-        transition={{ type: 'spring', damping: 20 }}
+        transition={{ type: 'spring', damping: 22, stiffness: 300 }}
         className="w-full max-w-lg rounded-t-3xl p-6"
-        style={{ background: t.sheetBg, border: `1px solid ${t.cardBorder}`, maxHeight: '90vh', overflowY: 'auto' }}
+        style={{ background: t.sheetBg, border: `1px solid ${t.cardBorder}`, maxHeight: '92vh', overflowY: 'auto' }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="w-10 h-1 rounded-full mx-auto mb-5" style={{ background: t.divider }} />
-        <h2 className="text-base font-medium mb-4" style={{ color: t.text }}>
+        <h2 className="text-base font-semibold mb-5" style={{ color: t.text }}>
           {initial?.name ? 'Edit habit' : 'New habit'}
         </h2>
 
@@ -63,10 +130,11 @@ function AddEditSheet({
             <button
               key={e}
               onClick={() => setForm({ ...form, emoji: e })}
-              className="text-2xl flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center"
+              className="text-2xl flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-all"
               style={{
-                background: form.emoji === e ? 'rgba(37,99,235,0.3)' : t.inputBg,
-                border: form.emoji === e ? '1px solid #2563EB' : t.inputBorder,
+                background: form.emoji === e ? 'rgba(37,99,235,0.25)' : t.inputBg,
+                border: form.emoji === e ? '1.5px solid #2563EB' : t.inputBorder,
+                transform: form.emoji === e ? 'scale(1.1)' : 'scale(1)',
               }}
             >
               {e}
@@ -91,7 +159,7 @@ function AddEditSheet({
           style={{ background: t.inputBg, border: t.inputBorder, color: t.inputColor }}
         />
 
-        {/* Star rating */}
+        {/* Priority stars */}
         <div className="flex items-center gap-2 mb-4">
           <span className="text-xs" style={{ color: t.textMuted }}>Priority:</span>
           <div className="flex gap-1">
@@ -101,76 +169,99 @@ function AddEditSheet({
               </button>
             ))}
           </div>
-          <span className="text-xs ml-2" style={{ color: t.textMuted }}>
-            {form.star_rating >= 4 ? 'High priority' : form.star_rating >= 2 ? 'Medium' : ''}
+          <span className="text-xs ml-1" style={{ color: t.textMuted }}>
+            {form.star_rating >= 4 ? 'High' : form.star_rating >= 2 ? 'Medium' : ''}
           </span>
         </div>
 
-        {/* Privacy */}
-        <div className="flex items-center justify-between mb-5">
+        {/* Privacy toggle */}
+        <div className="flex items-center justify-between mb-4 py-3 rounded-xl px-3"
+          style={{ background: t.inputBg, border: t.inputBorder }}>
           <div>
-            <p className="text-sm" style={{ color: t.text }}>Private</p>
+            <p className="text-sm font-medium" style={{ color: t.text }}>Private</p>
             <p className="text-xs" style={{ color: t.textMuted }}>Blurs name & emoji</p>
           </div>
           <button
             onClick={() => setForm({ ...form, is_private: !form.is_private })}
-            className="w-12 h-6 rounded-full relative transition-colors"
-            style={{ background: form.is_private ? '#2563EB' : t.inputBg }}
+            className="w-11 h-6 rounded-full relative transition-colors flex-shrink-0"
+            style={{ background: form.is_private ? '#2563EB' : t.cardBorder }}
           >
-            <div
-              className="absolute top-0.5 w-5 h-5 rounded-full bg-white transition-all"
-              style={{ left: form.is_private ? '50%' : '2px' }}
-            />
+            <div className="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all"
+              style={{ left: form.is_private ? '22px' : '2px' }} />
           </button>
+        </div>
+
+        {/* Reminder section */}
+        <div className="rounded-xl mb-5 overflow-hidden" style={{ border: t.inputBorder }}>
+          <div className="flex items-center justify-between px-3 py-3"
+            style={{ background: t.inputBg }}>
+            <div>
+              <p className="text-sm font-medium" style={{ color: t.text }}>Daily reminder</p>
+              <p className="text-xs" style={{ color: t.textMuted }}>
+                {form.notifEnabled ? `Notifies at ${form.notifTime}` : 'Off'}
+              </p>
+            </div>
+            <button
+              onClick={handleNotifToggle}
+              className="w-11 h-6 rounded-full relative transition-colors flex-shrink-0"
+              style={{ background: form.notifEnabled ? '#2563EB' : t.cardBorder }}
+            >
+              <div className="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all"
+                style={{ left: form.notifEnabled ? '22px' : '2px' }} />
+            </button>
+          </div>
+
+          {form.notifEnabled && (
+            <div className="px-3 pb-3 pt-2" style={{ background: t.inputBg, borderTop: `1px solid ${t.divider}` }}>
+              <div className="flex items-center gap-3 mb-3">
+                <span className="text-xs" style={{ color: t.textMuted }}>Time</span>
+                <input
+                  type="time"
+                  value={form.notifTime}
+                  onChange={(e) => setForm({ ...form, notifTime: e.target.value })}
+                  className="px-3 py-1.5 rounded-lg text-sm outline-none"
+                  style={{ background: t.cardBg, border: t.inputBorder, color: t.inputColor }}
+                />
+              </div>
+              <div>
+                <p className="text-xs mb-2" style={{ color: t.textMuted }}>
+                  Days {form.notifDays.length === 0 ? '(every day)' : ''}
+                </p>
+                <div className="flex gap-1.5">
+                  {DAY_LABELS.map((label, i) => (
+                    <button
+                      key={i}
+                      onClick={() => toggleDay(i)}
+                      className="w-8 h-8 rounded-lg text-xs font-medium transition-all"
+                      style={{
+                        background: form.notifDays.includes(i) ? 'rgba(37,99,235,0.3)' : t.cardBg,
+                        border: form.notifDays.includes(i) ? '1.5px solid #2563EB' : t.inputBorder,
+                        color: form.notifDays.includes(i) ? '#93C5FD' : t.textMuted,
+                      }}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         <button
           onClick={() => { if (form.name.trim()) onSave(form) }}
           disabled={!form.name.trim()}
-          className="w-full py-3 rounded-xl text-sm font-medium text-white"
-          style={{ background: form.name.trim() ? '#2563EB' : t.inputBg }}
+          className="w-full py-3 rounded-xl text-sm font-semibold text-white transition-all"
+          style={{
+            background: form.name.trim() ? '#2563EB' : t.inputBg,
+            opacity: form.name.trim() ? 1 : 0.5,
+          }}
         >
           {initial?.name ? 'Save changes' : 'Add habit'}
         </button>
       </motion.div>
     </motion.div>
   )
-}
-
-function buildTokens(darkMode: boolean) {
-  return darkMode ? {
-    bg: '#0B1437',
-    text: '#ffffff',
-    textMuted: 'rgba(255,255,255,0.45)',
-    textSub: 'rgba(255,255,255,0.3)',
-    cardBg: 'rgba(255,255,255,0.04)',
-    cardBorder: 'rgba(255,255,255,0.09)',
-    inputBg: 'rgba(255,255,255,0.07)',
-    inputBorder: '1px solid rgba(255,255,255,0.12)',
-    inputColor: '#fff',
-    divider: 'rgba(255,255,255,0.1)',
-    navBg: 'rgba(11,20,55,0.85)',
-    navBorder: 'rgba(255,255,255,0.06)',
-    sheetBg: '#0F1B45',
-    badgeBg: 'rgba(255,255,255,0.08)',
-    badgeText: 'rgba(255,255,255,0.5)',
-  } : {
-    bg: '#EFF4FF',
-    text: '#0B1437',
-    textMuted: 'rgba(11,20,55,0.55)',
-    textSub: 'rgba(11,20,55,0.35)',
-    cardBg: 'rgba(255,255,255,0.75)',
-    cardBorder: 'rgba(11,20,55,0.09)',
-    inputBg: 'rgba(11,20,55,0.05)',
-    inputBorder: '1px solid rgba(11,20,55,0.15)',
-    inputColor: '#0B1437',
-    divider: 'rgba(11,20,55,0.12)',
-    navBg: 'rgba(239,244,255,0.92)',
-    navBorder: 'rgba(11,20,55,0.1)',
-    sheetBg: '#E8EFFF',
-    badgeBg: 'rgba(11,20,55,0.07)',
-    badgeText: 'rgba(11,20,55,0.5)',
-  }
 }
 
 export default function Habits() {
@@ -189,17 +280,34 @@ export default function Habits() {
 
   const activeHabits = habits.filter((h) => h.is_active !== false)
 
-  async function handleAdd(data: HabitFormData) {
-    await addMutation.mutateAsync({
-      ...data,
+  async function handleAdd(data: FormWithNotif) {
+    const habit = await addMutation.mutateAsync({
+      name: data.name,
+      emoji: data.emoji,
+      description: data.description,
+      star_rating: data.star_rating,
+      is_private: data.is_private,
       sort_order: activeHabits.length,
     })
+    if (habit && data.notifEnabled) {
+      setHabitPref(habit.id, { enabled: true, time: data.notifTime, days: data.notifDays })
+      syncNotificationsToSW([...habits, habit as HabitWithStreak])
+    }
     setShowAdd(false)
   }
 
-  async function handleEdit(data: HabitFormData) {
+  async function handleEdit(data: FormWithNotif) {
     if (!editHabit) return
-    await updateMutation.mutateAsync({ id: editHabit.id, ...data })
+    await updateMutation.mutateAsync({
+      id: editHabit.id,
+      name: data.name,
+      emoji: data.emoji,
+      description: data.description,
+      star_rating: data.star_rating,
+      is_private: data.is_private,
+    })
+    setHabitPref(editHabit.id, { enabled: data.notifEnabled, time: data.notifTime, days: data.notifDays })
+    syncNotificationsToSW(habits)
     setEditHabit(null)
   }
 
@@ -211,29 +319,30 @@ export default function Habits() {
   return (
     <div className="app-bg min-h-screen" style={{ paddingTop: 60, paddingBottom: 80 }}>
       <div className="px-4 pt-4">
+
         {/* Header */}
-        <div className="flex items-center justify-between mb-5">
+        <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-lg font-medium" style={{ color: t.text }}>Your habits</h1>
+            <h1 className="text-lg font-semibold" style={{ color: t.text }}>Your habits</h1>
             <p className="text-xs mt-0.5" style={{ color: t.textMuted }}>
-              {activeHabits.length} / 15 habits
+              {activeHabits.length} / 15 active
             </p>
           </div>
           <motion.button
-            whileTap={{ scale: 0.95 }}
+            whileTap={{ scale: 0.94 }}
             onClick={() => activeHabits.length < 15 && setShowAdd(true)}
             disabled={activeHabits.length >= 15}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium text-white"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold text-white"
             style={{
               background: activeHabits.length >= 15 ? t.inputBg : '#2563EB',
               opacity: activeHabits.length >= 15 ? 0.5 : 1,
+              boxShadow: activeHabits.length < 15 ? '0 2px 8px rgba(37,99,235,0.35)' : 'none',
             }}
           >
             + Add
           </motion.button>
         </div>
 
-        {/* Habits list */}
         {isLoading ? (
           <div className="flex justify-center py-12">
             <div className="w-6 h-6 rounded-full border-2 animate-spin"
@@ -242,28 +351,34 @@ export default function Habits() {
         ) : activeHabits.length === 0 ? (
           <div className="text-center py-20">
             <p className="text-4xl mb-3">🐬</p>
-            <p className="text-sm font-medium mb-1" style={{ color: t.text }}>No habits yet?</p>
-            <p className="text-xs mb-4" style={{ color: t.textMuted }}>Your pod is waiting.</p>
+            <p className="text-sm font-semibold mb-1" style={{ color: t.text }}>No habits yet</p>
+            <p className="text-xs mb-5" style={{ color: t.textMuted }}>Your pod is waiting.</p>
             <button
               onClick={() => setShowAdd(true)}
-              className="px-6 py-2.5 rounded-xl text-sm font-medium text-white"
-              style={{ background: '#2563EB' }}
+              className="px-6 py-2.5 rounded-xl text-sm font-semibold text-white"
+              style={{ background: '#2563EB', boxShadow: '0 2px 8px rgba(37,99,235,0.35)' }}
             >
               Add your first habit
             </button>
           </div>
         ) : (
-          <div className="space-y-3">
-            {activeHabits.map((habit) => (
-              <HabitCard
-                key={habit.id}
-                habit={habit}
-                onToggle={handleToggle}
-                onEdit={(h) => setEditHabit(h)}
-                onDelete={(id) => setDeleteConfirm(id)}
-              />
-            ))}
-          </div>
+          <>
+            {/* Monthly tracker at the top */}
+            <MonthlyHabitTracker habits={activeHabits} onToggle={handleToggle} />
+
+            {/* Habit cards */}
+            <div className="space-y-3">
+              {activeHabits.map((habit) => (
+                <HabitCard
+                  key={habit.id}
+                  habit={habit}
+                  onToggle={handleToggle}
+                  onEdit={(h) => setEditHabit(h)}
+                  onDelete={(id) => setDeleteConfirm(id)}
+                />
+              ))}
+            </div>
+          </>
         )}
       </div>
 
@@ -278,7 +393,8 @@ export default function Habits() {
       <AnimatePresence>
         {editHabit && (
           <AddEditSheet
-            initial={editHabit as Partial<HabitFormData>}
+            habitId={editHabit.id}
+            initial={editHabit as Partial<FormWithNotif>}
             onSave={handleEdit}
             onClose={() => setEditHabit(null)}
             t={t}
@@ -294,29 +410,36 @@ export default function Habits() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4"
-            style={{ background: 'rgba(0,0,0,0.6)' }}
+            style={{ background: 'rgba(0,0,0,0.55)' }}
           >
             <motion.div
-              initial={{ scale: 0.9 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.9 }}
+              initial={{ scale: 0.92, y: 8 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.92, y: 8 }}
               className="w-full max-w-xs rounded-2xl p-6"
-              style={{ background: t.sheetBg, border: `1px solid ${t.cardBorder}` }}
+              style={{
+                background: t.sheetBg,
+                border: `1px solid ${t.cardBorder}`,
+                boxShadow: '0 8px 32px rgba(0,0,0,0.25)',
+              }}
             >
-              <h3 className="text-sm font-medium mb-2" style={{ color: t.text }}>Archive this habit?</h3>
-              <p className="text-xs mb-4" style={{ color: t.textMuted }}>
-                Your history will be preserved.
+              <h3 className="text-sm font-semibold mb-1" style={{ color: t.text }}>Archive this habit?</h3>
+              <p className="text-xs mb-5" style={{ color: t.textMuted }}>
+                Your history will be preserved. You can re-add it any time.
               </p>
               <div className="flex gap-2">
-                <button onClick={() => setDeleteConfirm(null)}
-                  className="flex-1 py-2 rounded-xl text-xs"
-                  style={{ background: t.inputBg, color: t.textMuted }}>
+                <button
+                  onClick={() => setDeleteConfirm(null)}
+                  className="flex-1 py-2.5 rounded-xl text-xs font-medium"
+                  style={{ background: t.inputBg, color: t.textMuted }}
+                >
                   Cancel
                 </button>
                 <button
                   onClick={() => { deleteMutation.mutate(deleteConfirm); setDeleteConfirm(null) }}
-                  className="flex-1 py-2 rounded-xl text-xs font-medium"
-                  style={{ background: 'rgba(248,113,113,0.2)', color: '#F87171' }}>
+                  className="flex-1 py-2.5 rounded-xl text-xs font-semibold"
+                  style={{ background: 'rgba(248,113,113,0.18)', color: '#F87171' }}
+                >
                   Archive
                 </button>
               </div>

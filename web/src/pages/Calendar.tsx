@@ -6,7 +6,7 @@ import { useUIStore } from '../store/uiStore'
 const HABIT_COLORS = [
   '#F87171','#FB923C','#FBBF24','#4ADE80','#22D3EE',
   '#60A5FA','#A78BFA','#F472B6','#34D399','#818CF8',
-]
+] as const
 
 function getDaysInMonth(year: number, month: number) {
   return new Date(year, month + 1, 0).getDate()
@@ -210,72 +210,6 @@ export default function Calendar() {
                 )}
               </div>
             )}
-          </div>
-        )}
-
-        {/* Habit tracker matrix (image-3 style) */}
-        {habits.length > 0 && (
-          <div className="mb-6">
-            <h3 className="text-sm font-medium mb-3" style={{ color: t.text }}>
-              {monthNames[month]} habit tracker
-            </h3>
-            <div className="rounded-2xl overflow-hidden"
-              style={{ background: t.cardBg, border: `1px solid ${t.cardBorder}` }}>
-              {/* Day number header */}
-              <div className="flex border-b" style={{ borderColor: t.divider }}>
-                <div className="w-28 flex-shrink-0 px-3 py-2">
-                  <p className="text-xs font-medium" style={{ color: t.textSub }}>HABITS</p>
-                </div>
-                <div className="flex flex-1 overflow-x-auto no-scrollbar">
-                  {Array.from({ length: daysInMonth }).map((_, i) => {
-                    const day = i + 1
-                    const ds = dateStr(day)
-                    const isToday = ds === todayStr
-                    return (
-                      <div key={day} className="flex-shrink-0 w-7 flex items-center justify-center py-2">
-                        <span className="text-xs" style={{ color: isToday ? '#93C5FD' : t.textSub, fontWeight: isToday ? 600 : 400 }}>
-                          {day}
-                        </span>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-
-              {/* Habit rows */}
-              {habits.map((habit, hi) => {
-                const color = HABIT_COLORS[hi % HABIT_COLORS.length]
-                return (
-                  <div key={habit.id} className="flex border-b last:border-b-0" style={{ borderColor: t.divider }}>
-                    <div className="w-28 flex-shrink-0 flex items-center gap-2 px-3 py-2">
-                      <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: color }} />
-                      <span className="text-xs truncate" style={{ color: t.text, fontStyle: 'italic', fontFamily: 'Georgia, serif' }}>
-                        {habit.emoji} {habit.name}
-                      </span>
-                    </div>
-                    <div className="flex flex-1 overflow-x-auto no-scrollbar">
-                      {Array.from({ length: daysInMonth }).map((_, i) => {
-                        const day = i + 1
-                        const ds = dateStr(day)
-                        const done = habit.completions?.includes(ds)
-                        const isFuture = ds > todayStr
-                        return (
-                          <div key={day} className="flex-shrink-0 w-7 flex items-center justify-center py-2">
-                            {done ? (
-                              <div className="w-4 h-4 rounded-full" style={{ background: color, opacity: 0.9 }} />
-                            ) : isFuture ? (
-                              <div className="w-3 h-3 rounded-full" style={{ background: t.cardBg, border: `1px solid ${t.cardBorder}` }} />
-                            ) : (
-                              <div className="w-3 h-3 rounded-full" style={{ background: t.inputBg, border: `1px solid ${color}30` }} />
-                            )}
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
           </div>
         )}
 
