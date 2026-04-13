@@ -7,6 +7,7 @@ import { useHabits } from './hooks/useHabits'
 import { NavBar } from './components/NavBar'
 import { StreakCelebration } from './components/StreakCelebration'
 import { ProtectedRoute } from './components/ProtectedRoute'
+import { InstallPrompt } from './components/InstallPrompt'
 
 // Auth pages
 import Login from './pages/auth/Login'
@@ -41,7 +42,7 @@ function AppShell() {
             if (p === 'granted') {
               new Notification('Habit·at', {
                 body: `${incomplete.length} habit${incomplete.length > 1 ? 's' : ''} left today — keep your streak alive.`,
-                icon: '/icon-192.svg',
+                icon: '/icon-192.png',
               })
             }
           })
@@ -73,6 +74,7 @@ function AppShell() {
         <Route path="/profile" element={<Profile />} />
       </Routes>
       <StreakCelebration />
+      <InstallPrompt />
     </>
   )
 }
