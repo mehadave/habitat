@@ -61,8 +61,14 @@ body.light-mode .nav-bar-bottom {
 /* Light mode: cards inside .app-bg */
 body.light-mode .app-bg .habit-card,
 body.light-mode .app-bg .card {
-  background: rgba(255,255,255,0.75) !important;
+  background: rgba(255,255,255,0.85) !important;
   border-color: rgba(11,20,55,0.09) !important;
+  box-shadow: 0 2px 12px rgba(11,20,55,0.06);
+}
+
+/* Light mode: ensure text is never invisible */
+body.light-mode * {
+  --text-safe: #0B1437;
 }
 
 /* Scrollbars */
