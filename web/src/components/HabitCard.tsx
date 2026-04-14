@@ -28,7 +28,6 @@ function StarRating({ rating, darkMode }: { rating: number; darkMode: boolean })
 export function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCardProps) {
   const { darkMode } = useUIStore()
   const [revealed, setRevealed] = useState(false)
-  const [showDesc, setShowDesc] = useState(false)
   const [showHistory, setShowHistory] = useState(false)
   const [showActions, setShowActions] = useState(false)
 
@@ -52,7 +51,6 @@ export function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCardProps)
   const badgeColor = darkMode ? 'rgba(255,255,255,0.45)' : 'rgba(11,20,55,0.5)'
   const editBtnBg = darkMode ? 'rgba(255,255,255,0.06)' : 'rgba(11,20,55,0.05)'
   const editBtnColor = darkMode ? 'rgba(255,255,255,0.4)' : 'rgba(11,20,55,0.4)'
-  const historyBtnColor = darkMode ? 'rgba(255,255,255,0.35)' : 'rgba(11,20,55,0.35)'
 
   return (
     <div className="relative overflow-hidden rounded-2xl">
@@ -92,10 +90,7 @@ export function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCardProps)
         {/* Header row */}
         <div className="flex items-start gap-3">
           {/* Emoji + name */}
-          <button
-            className="flex items-center gap-2.5 flex-1 min-w-0 text-left"
-            onClick={() => habit.description && setShowDesc(d => !d)}
-          >
+          <div className="flex items-center gap-2.5 flex-1 min-w-0">
             <span
               className="text-2xl flex-shrink-0 leading-none"
               style={{ filter: isPrivate ? 'blur(6px)' : 'none' }}
@@ -109,12 +104,17 @@ export function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCardProps)
               >
                 {habit.name}
               </h3>
-              <p className="text-xs mt-0.5 leading-none" style={{ color: textMuted }}>
-                {monthsAgo > 0 ? `${monthsAgo}mo ago` : 'This month'}
-                {habit.description ? ' · tap to expand' : ''}
-              </p>
+              {/* View history toggle in subtitle area */}
+              <button
+                onClick={() => setShowHistory(h => !h)}
+                className="text-xs mt-0.5 leading-none"
+                style={{ color: textMuted }}
+              >
+                {monthsAgo > 0 ? `${monthsAgo}mo ago · ` : ''}
+                <span style={{ color: '#60A5FA' }}>{showHistory ? 'Hide history ▾' : 'View history ▸'}</span>
+              </button>
             </div>
-          </button>
+          </div>
 
           {/* Right side: edit + stars + streak */}
           <div className="flex items-center gap-2 flex-shrink-0">
@@ -123,7 +123,7 @@ export function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCardProps)
               className="w-7 h-7 rounded-lg flex items-center justify-center text-xs"
               style={{ background: editBtnBg, color: editBtnColor }}
             >
-              ✏️
+              <span style={{ display: 'inline-block', transform: 'scaleX(-1)' }}>✏️</span>
             </button>
             <div className="flex flex-col items-end gap-1">
               <StarRating rating={habit.star_rating} darkMode={darkMode} />
@@ -137,9 +137,9 @@ export function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCardProps)
           </div>
         </div>
 
-        {/* Description */}
-        {showDesc && habit.description && (
-          <div className="mt-3 px-3 py-2.5 rounded-xl" style={{ background: descBg, border: descBorder }}>
+        {/* Description — always visible when present */}
+        {habit.description && (
+          <div className="mt-2 px-3 py-2 rounded-xl" style={{ background: descBg, border: descBorder }}>
             <p className="text-xs leading-relaxed" style={{ color: textMuted }}>{habit.description}</p>
           </div>
         )}
@@ -157,16 +157,6 @@ export function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCardProps)
           </div>
         )}
 
-        {/* Expand history button */}
-        <button
-          onClick={() => setShowHistory(h => !h)}
-          className="flex items-center gap-1 mt-3 text-xs"
-          style={{ color: historyBtnColor }}
-        >
-          <span style={{ fontSize: 9, transition: 'transform 0.2s', display: 'inline-block', transform: showHistory ? 'rotate(90deg)' : 'rotate(0deg)' }}>▶</span>
-          <span>{showHistory ? 'Hide history' : 'View history'}</span>
-        </button>
-
         {/* Commit grid (hidden by default) */}
         {showHistory && (
           <div className="mt-3">
@@ -181,7 +171,7 @@ export function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCardProps)
 
         {streak < 3 && streak > 0 && (
           <p className="text-xs mt-2" style={{ color: 'rgba(248,113,113,0.6)' }}>
-            Keep it going today.
+            Let's check this off!
           </p>
         )}
       </motion.div>

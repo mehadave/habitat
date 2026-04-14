@@ -1,4 +1,5 @@
 import { useUIStore } from '../store/uiStore'
+import { localDateStr } from '../hooks/useHabits'
 import type { HabitWithStreak } from '../lib/types'
 
 interface Props {
@@ -6,56 +7,25 @@ interface Props {
   onToggle: (habitId: string, date: string) => void
 }
 
-function MiniDotGrid({ completions }: { completions: string[] }) {
-  const today = new Date()
-  const dates: string[] = []
-  for (let i = 13; i >= 0; i--) {
-    const d = new Date(today)
-    d.setDate(d.getDate() - i)
-    dates.push(d.toISOString().split('T')[0])
-  }
-
-  return (
-    <div className="flex gap-1 mt-2">
-      {dates.map((d) => {
-        const done = completions.includes(d)
-        return (
-          <div
-            key={d}
-            style={{
-              width: 8,
-              height: 8,
-              borderRadius: 2,
-              background: done ? '#2563EB' : 'rgba(248,113,113,0.18)',
-              border: done ? 'none' : '1px solid rgba(248,113,113,0.25)',
-            }}
-          />
-        )
-      })}
-    </div>
-  )
-}
-
 export function LosingSection({ habits, onToggle }: Props) {
   const { darkMode } = useUIStore()
-  const todayStr = new Date().toISOString().split('T')[0]
+  const todayStr = localDateStr()
   const losing = habits
     .filter((h) => (h.streak?.current_streak ?? 0) < 3)
     .sort((a, b) => (a.streak?.current_streak ?? 0) - (b.streak?.current_streak ?? 0))
-    .slice(0, 3)
+    .slice(0, 4)
 
   if (losing.length === 0) return null
 
-  const habitNameColor = darkMode ? 'white' : '#0B1437'
-  const starEmptyColor = darkMode ? 'rgba(255,255,255,0.25)' : 'rgba(11,20,55,0.25)'
   const headingColor = darkMode ? 'rgba(255,255,255,0.85)' : 'rgba(11,20,55,0.85)'
   const badgeBg = darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(11,20,55,0.07)'
   const badgeText = darkMode ? 'rgba(255,255,255,0.5)' : 'rgba(11,20,55,0.5)'
-  const needsYouColor = darkMode ? 'rgba(255,255,255,0.35)' : 'rgba(11,20,55,0.35)'
+  const nameColor = darkMode ? 'white' : '#0B1437'
+  const mutedColor = darkMode ? 'rgba(255,255,255,0.35)' : 'rgba(11,20,55,0.4)'
 
   return (
     <div className="mb-6">
-      <div className="flex items-center gap-2 mb-3">
+      <div className="flex items-center gap-2 mb-2">
         <h2 className="text-sm font-medium" style={{ color: headingColor }}>
           Needs attention
         </h2>
@@ -67,48 +37,41 @@ export function LosingSection({ habits, onToggle }: Props) {
         </span>
       </div>
 
-      <div className="space-y-2">
+      <div className="grid grid-cols-2 gap-2">
         {losing.map((habit) => {
           const streak = habit.streak?.current_streak ?? 0
           const doneToday = habit.completions?.includes(todayStr)
           return (
             <div
               key={habit.id}
-              className="rounded-2xl p-4"
+              className="rounded-xl p-3"
               style={{
                 background: 'rgba(248,113,113,0.04)',
                 border: '1px solid rgba(248,113,113,0.15)',
               }}
             >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-xl">{habit.emoji || '⭐'}</span>
-                  <div>
-                    <p className="text-sm font-medium" style={{ color: habitNameColor }}>{habit.name}</p>
-                    <div className="flex items-center gap-1.5 mt-0.5">
-                      {[1,2,3,4,5].map(n => (
-                        <span key={n} style={{ fontSize: 10, color: starEmptyColor }}>★</span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+              {/* Line 1: emoji + name + streak badge */}
+              <div className="flex items-center gap-1.5 mb-1">
+                <span className="text-sm flex-shrink-0">{habit.emoji || '⭐'}</span>
+                <span className="text-xs font-medium truncate flex-1" style={{ color: nameColor }}>
+                  {habit.name}
+                </span>
                 <span
-                  className="px-2 py-0.5 rounded-full text-xs font-medium"
+                  className="text-[10px] font-medium flex-shrink-0 px-1.5 py-0.5 rounded-full"
                   style={{ background: 'rgba(248,113,113,0.10)', color: '#F87171', border: '1px solid rgba(248,113,113,0.20)' }}
                 >
-                  slipping · only {streak} day{streak !== 1 ? 's' : ''}
+                  {streak}d
                 </span>
               </div>
-              <MiniDotGrid completions={habit.completions ?? []} />
-              <p className="text-xs mt-2" style={{ color: needsYouColor }}>
-                This one needs you today.
-              </p>
 
-              {!doneToday && (
+              {/* Line 2: action */}
+              {doneToday ? (
+                <p className="text-[10px]" style={{ color: '#93C5FD' }}>✓ Done today</p>
+              ) : (
                 <button
                   onClick={() => onToggle(habit.id, todayStr)}
-                  className="mt-2 px-3 py-1 rounded-lg text-xs font-medium"
-                  style={{ background: 'rgba(248,113,113,0.12)', color: '#F87171' }}
+                  className="text-[10px] font-medium"
+                  style={{ color: mutedColor }}
                 >
                   + Do it now
                 </button>

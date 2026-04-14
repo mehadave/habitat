@@ -213,6 +213,23 @@ export default function Calendar() {
           </div>
         )}
 
+        {/* Habit color legend */}
+        {habits.length > 0 && (
+          <div className="mb-6 rounded-2xl p-3"
+            style={{ background: t.cardBg, border: `1px solid ${t.cardBorder}` }}>
+            <p className="text-xs font-medium mb-2" style={{ color: t.textMuted }}>Habit colors</p>
+            <div className="flex flex-wrap gap-x-4 gap-y-1.5">
+              {habits.map((h, i) => (
+                <div key={h.id} className="flex items-center gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                    style={{ background: HABIT_COLORS[i % HABIT_COLORS.length] }} />
+                  <span className="text-xs" style={{ color: t.text }}>{h.emoji} {h.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* 90-day heatmap */}
         <div className="mb-6">
           <h3 className="text-sm font-medium mb-3" style={{ color: t.text }}>90-day overview</h3>

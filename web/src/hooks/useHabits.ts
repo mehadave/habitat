@@ -108,7 +108,7 @@ export function useToggleCompletion() {
 
         const dates = (remaining || []).map((r: any) => r.completed_date as string)
         const newStreak = calcCurrentStreak(dates)
-        const newLongest = Math.max(calcLongestStreak(dates), habit.streak?.longest_streak ?? 0)
+        const newLongest = calcLongestStreak(dates)
         const lastDate = dates.length > 0 ? dates[dates.length - 1] : null
         const startDate = newStreak > 0 ? dates[dates.length - newStreak] : null
 

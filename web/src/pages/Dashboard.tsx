@@ -137,32 +137,32 @@ export default function Dashboard() {
               ))}
             </div>
 
-            {/* Individual habit streaks */}
+            {/* Individual habit streaks — 3 per row grid */}
             {habits.length > 0 && (
               <div className="mb-6">
                 <p className="text-xs mb-3 font-medium" style={{ color: t.textMuted }}>
                   Individual streaks
                 </p>
-                <div className="space-y-2">
+                <div className="grid grid-cols-3 gap-2">
                   {habits.map((h, i) => {
                     const streak = h.streak?.current_streak ?? 0
                     const doneToday = h.completions?.includes(todayStr)
                     const color = HABIT_COLORS[i % HABIT_COLORS.length]
                     return (
-                      <div key={h.id} className="flex items-center gap-3 rounded-xl px-3 py-2.5"
+                      <div key={h.id} className="rounded-xl px-2.5 py-3 flex flex-col items-center text-center"
                         style={{ background: t.cardBg, border: `1px solid ${t.cardBorder}` }}>
-                        <div className="w-2 h-8 rounded-full flex-shrink-0" style={{ background: color }} />
-                        <span className="text-lg flex-shrink-0">{h.emoji || '⭐'}</span>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm truncate" style={{ color: t.text }}>{h.name}</p>
-                        </div>
-                        <div className="flex items-center gap-2 flex-shrink-0">
+                        <span className="text-lg mb-1">{h.emoji || '⭐'}</span>
+                        <p className="text-[10px] truncate w-full mb-1" style={{ color: t.text }}>{h.name}</p>
+                        <div className="flex items-center gap-1">
                           {doneToday && (
-                            <span className="text-xs" style={{ color: '#4ADE80' }}>✓</span>
+                            <span className="text-[10px]" style={{ color: '#4ADE80' }}>✓</span>
                           )}
                           <span className="text-xs font-semibold" style={{ color: streak > 0 ? color : t.textSub }}>
                             {streak}d
                           </span>
+                        </div>
+                        <div className="w-full h-1 rounded-full mt-1.5" style={{ background: `${color}22` }}>
+                          <div className="h-full rounded-full" style={{ width: `${Math.min(streak * 10, 100)}%`, background: color, transition: 'width 0.5s' }} />
                         </div>
                       </div>
                     )

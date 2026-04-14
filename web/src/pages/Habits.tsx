@@ -367,6 +367,9 @@ export default function Habits() {
             <MonthlyHabitTracker habits={activeHabits} onToggle={handleToggle} />
 
             {/* Habit cards */}
+            <p className="text-xs font-semibold tracking-wide uppercase mb-3" style={{ color: t.textMuted }}>
+              Your Habits!
+            </p>
             <div className="space-y-3">
               {activeHabits.map((habit) => (
                 <HabitCard
