@@ -4,11 +4,11 @@ import { motion } from 'framer-motion'
 import { supabase } from '../../lib/supabase'
 import { DolphinLogo } from '../../components/DolphinLogo'
 import { Footer } from '../../components/Footer'
-import { useUIStore } from '../../store/uiStore'
+// Auth pages always use dark theme
 
 export default function Signup() {
   const navigate = useNavigate()
-  const { darkMode } = useUIStore()
+  // Auth pages always use dark theme
 
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -17,13 +17,14 @@ export default function Signup() {
   const [loading, setLoading] = useState(false)
   const [sent, setSent] = useState(false)
 
-  const t = darkMode ? {
-    pageBg: '#0B1437',
-    pageBgImage: 'radial-gradient(ellipse at 20% 20%, rgba(99,102,241,0.15) 0%, transparent 55%), radial-gradient(ellipse at 80% 80%, rgba(14,165,233,0.12) 0%, transparent 50%)',
+  // Auth pages always use dark theme
+  const t = {
+    pageBg: '#0B1120',
+    pageBgImage: 'radial-gradient(ellipse at 20% 20%, rgba(56,189,248,0.12) 0%, transparent 55%), radial-gradient(ellipse at 80% 80%, rgba(14,165,233,0.10) 0%, transparent 50%)',
     text: '#ffffff',
-    textMuted: 'rgba(255,255,255,0.45)',
+    textMuted: 'rgba(255,255,255,0.5)',
     textSub: 'rgba(255,255,255,0.3)',
-    cardBg: 'rgba(255,255,255,0.04)',
+    cardBg: 'rgba(255,255,255,0.05)',
     cardBorder: '1px solid rgba(255,255,255,0.09)',
     inputBg: 'rgba(255,255,255,0.07)',
     inputBorder: '1px solid rgba(255,255,255,0.12)',
@@ -33,22 +34,6 @@ export default function Signup() {
     googleBorder: '1px solid rgba(255,255,255,0.12)',
     googleText: 'rgba(255,255,255,0.85)',
     linkColor: 'rgba(255,255,255,0.45)',
-  } : {
-    pageBg: '#EFF4FF',
-    pageBgImage: 'radial-gradient(ellipse at 20% 20%, rgba(99,102,241,0.09) 0%, transparent 55%), radial-gradient(ellipse at 80% 80%, rgba(14,165,233,0.07) 0%, transparent 50%)',
-    text: '#0B1437',
-    textMuted: 'rgba(11,20,55,0.55)',
-    textSub: 'rgba(11,20,55,0.35)',
-    cardBg: 'rgba(255,255,255,0.75)',
-    cardBorder: '1px solid rgba(11,20,55,0.09)',
-    inputBg: 'rgba(11,20,55,0.05)',
-    inputBorder: '1px solid rgba(11,20,55,0.15)',
-    inputColor: '#0B1437',
-    divider: 'rgba(11,20,55,0.12)',
-    googleBg: 'rgba(11,20,55,0.04)',
-    googleBorder: '1px solid rgba(11,20,55,0.12)',
-    googleText: 'rgba(11,20,55,0.8)',
-    linkColor: 'rgba(11,20,55,0.5)',
   }
 
   async function handleGoogleSignup() {

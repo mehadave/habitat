@@ -4,12 +4,10 @@ import { motion } from 'framer-motion'
 import { supabase } from '../../lib/supabase'
 import { DolphinLogo } from '../../components/DolphinLogo'
 import { Footer } from '../../components/Footer'
-import { useUIStore } from '../../store/uiStore'
+// Auth pages always use dark theme (no useUIStore needed)
 
 export default function Login() {
   const navigate = useNavigate()
-  const { darkMode } = useUIStore()
-
   const [mode, setMode] = useState<'email' | 'phone'>('email')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
@@ -19,14 +17,14 @@ export default function Login() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  // Theme tokens
-  const t = darkMode ? {
-    pageBg: '#0B1437',
-    pageBgImage: 'radial-gradient(ellipse at 20% 20%, rgba(99,102,241,0.15) 0%, transparent 55%), radial-gradient(ellipse at 80% 80%, rgba(14,165,233,0.12) 0%, transparent 50%)',
+  // Auth pages always use dark theme
+  const t = {
+    pageBg: '#0B1120',
+    pageBgImage: 'radial-gradient(ellipse at 20% 20%, rgba(56,189,248,0.12) 0%, transparent 55%), radial-gradient(ellipse at 80% 80%, rgba(14,165,233,0.10) 0%, transparent 50%)',
     text: '#ffffff',
-    textMuted: 'rgba(255,255,255,0.45)',
+    textMuted: 'rgba(255,255,255,0.5)',
     textSub: 'rgba(255,255,255,0.3)',
-    cardBg: 'rgba(255,255,255,0.04)',
+    cardBg: 'rgba(255,255,255,0.05)',
     cardBorder: '1px solid rgba(255,255,255,0.09)',
     inputBg: 'rgba(255,255,255,0.07)',
     inputBorder: '1px solid rgba(255,255,255,0.12)',
@@ -38,24 +36,6 @@ export default function Login() {
     googleBorder: '1px solid rgba(255,255,255,0.12)',
     googleText: 'rgba(255,255,255,0.85)',
     linkColor: 'rgba(255,255,255,0.45)',
-  } : {
-    pageBg: '#EFF4FF',
-    pageBgImage: 'radial-gradient(ellipse at 20% 20%, rgba(99,102,241,0.09) 0%, transparent 55%), radial-gradient(ellipse at 80% 80%, rgba(14,165,233,0.07) 0%, transparent 50%)',
-    text: '#0B1437',
-    textMuted: 'rgba(11,20,55,0.55)',
-    textSub: 'rgba(11,20,55,0.35)',
-    cardBg: 'rgba(255,255,255,0.75)',
-    cardBorder: '1px solid rgba(11,20,55,0.09)',
-    inputBg: 'rgba(11,20,55,0.05)',
-    inputBorder: '1px solid rgba(11,20,55,0.15)',
-    inputColor: '#0B1437',
-    tabBg: 'rgba(11,20,55,0.06)',
-    tabInactive: 'rgba(11,20,55,0.45)',
-    divider: 'rgba(11,20,55,0.12)',
-    googleBg: 'rgba(11,20,55,0.04)',
-    googleBorder: '1px solid rgba(11,20,55,0.12)',
-    googleText: 'rgba(11,20,55,0.8)',
-    linkColor: 'rgba(11,20,55,0.5)',
   }
 
   async function handleEmailLogin(e: React.FormEvent) {

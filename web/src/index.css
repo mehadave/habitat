@@ -5,68 +5,122 @@
 html, body {
   margin: 0;
   padding: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-size: 16px;
 }
 
 /* ── Dark mode (default) ─────────────────────────── */
 body {
-  background-color: #0B1437;
-  color: rgba(255,255,255,0.85);
+  background-color: #0B1120;
+  color: rgba(255,255,255,0.88);
 }
 
 .app-bg {
-  background-color: #0B1437;
+  background-color: #0B1120;
   background-image:
-    radial-gradient(ellipse at 15% 15%, rgba(99,102,241,0.13) 0%, transparent 55%),
-    radial-gradient(ellipse at 85% 80%, rgba(14,165,233,0.10) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 110%, rgba(139,92,246,0.08) 0%, transparent 45%);
+    radial-gradient(ellipse at 15% 15%, rgba(56,189,248,0.10) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 80%, rgba(14,165,233,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 110%, rgba(99,102,241,0.06) 0%, transparent 45%);
   background-attachment: fixed;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Ocean animated background (dark mode) ──────── */
+.app-bg::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 600px 200px at 20% 90%, rgba(6,182,212,0.08) 0%, transparent 100%),
+    radial-gradient(ellipse 400px 300px at 80% 20%, rgba(59,130,246,0.06) 0%, transparent 100%),
+    radial-gradient(ellipse 500px 200px at 60% 60%, rgba(14,165,233,0.05) 0%, transparent 100%);
+  animation: ocean-drift 12s ease-in-out infinite alternate;
+}
+
+.app-bg::after {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(circle 120px at 15% 25%, rgba(56,189,248,0.06) 0%, transparent 100%),
+    radial-gradient(circle 80px at 75% 45%, rgba(99,102,241,0.05) 0%, transparent 100%),
+    radial-gradient(circle 100px at 45% 75%, rgba(6,182,212,0.04) 0%, transparent 100%),
+    radial-gradient(circle 60px at 85% 85%, rgba(59,130,246,0.05) 0%, transparent 100%);
+  animation: bubbles-float 16s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes ocean-drift {
+  0%   { transform: translate(0, 0) scale(1); opacity: 0.7; }
+  50%  { transform: translate(30px, -15px) scale(1.05); opacity: 1; }
+  100% { transform: translate(-20px, 10px) scale(0.98); opacity: 0.8; }
+}
+
+@keyframes bubbles-float {
+  0%   { transform: translateY(0); opacity: 0.5; }
+  50%  { transform: translateY(-20px); opacity: 0.8; }
+  100% { transform: translateY(5px); opacity: 0.6; }
+}
+
+/* Ensure page content stays above animated bg */
+.app-bg > * {
+  position: relative;
+  z-index: 1;
 }
 
 /* ── Light mode ──────────────────────────────────── */
 body.light-mode {
-  background-color: #EFF4FF;
+  background-color: #F0F4FF;
   color: #0B1437;
 }
 
-/* Auth pages keep dark look in both modes — they use .auth-bg */
+/* Auth pages keep dark look in both modes */
 .auth-bg {
-  background-color: #0B1437;
+  background-color: #0B1120;
   background-image:
-    radial-gradient(ellipse at 20% 20%, rgba(99,102,241,0.15) 0%, transparent 55%),
-    radial-gradient(ellipse at 80% 80%, rgba(14,165,233,0.12) 0%, transparent 50%);
+    radial-gradient(ellipse at 20% 20%, rgba(56,189,248,0.12) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 80%, rgba(14,165,233,0.10) 0%, transparent 50%);
   background-attachment: fixed;
 }
 
 body.light-mode .app-bg {
-  background-color: #EFF4FF;
+  background-color: #F0F4FF;
   background-image:
-    radial-gradient(ellipse at 15% 15%, rgba(99,102,241,0.09) 0%, transparent 55%),
-    radial-gradient(ellipse at 85% 80%, rgba(14,165,233,0.07) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 110%, rgba(147,197,253,0.12) 0%, transparent 45%);
+    radial-gradient(ellipse at 15% 15%, rgba(59,130,246,0.07) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 80%, rgba(14,165,233,0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 110%, rgba(147,197,253,0.09) 0%, transparent 45%);
+}
+
+/* Hide ocean animation in light mode */
+body.light-mode .app-bg::before,
+body.light-mode .app-bg::after {
+  display: none;
 }
 
 /* Light mode: nav bars */
 body.light-mode .nav-bar-top {
-  background: rgba(239,244,255,0.92) !important;
+  background: rgba(240,244,255,0.92) !important;
   border-bottom-color: rgba(11,20,55,0.1) !important;
 }
 body.light-mode .nav-bar-bottom {
-  background: rgba(239,244,255,0.95) !important;
+  background: rgba(240,244,255,0.95) !important;
   border-top-color: rgba(11,20,55,0.1) !important;
 }
 
-/* Light mode: cards inside .app-bg */
+/* Light mode: cards */
 body.light-mode .app-bg .habit-card,
 body.light-mode .app-bg .card {
-  background: rgba(255,255,255,0.85) !important;
+  background: rgba(255,255,255,0.88) !important;
   border-color: rgba(11,20,55,0.09) !important;
   box-shadow: 0 2px 12px rgba(11,20,55,0.06);
 }
 
-/* Light mode: ensure text is never invisible */
 body.light-mode * {
   --text-safe: #0B1437;
 }
@@ -121,8 +175,8 @@ body.light-mode ::-webkit-scrollbar-thumb { background: rgba(11,20,55,0.15); }
 }
 
 @keyframes glow-pulse {
-  0%, 100% { box-shadow: 0 0 20px rgba(37,99,235,0.15); }
-  50%       { box-shadow: 0 0 35px rgba(37,99,235,0.3); }
+  0%, 100% { box-shadow: 0 0 20px rgba(56,189,248,0.12); }
+  50%       { box-shadow: 0 0 40px rgba(56,189,248,0.25); }
 }
 .dolphin-glow { animation: glow-pulse 3s ease-in-out infinite; }
 
@@ -133,3 +187,18 @@ body.light-mode ::-webkit-scrollbar-thumb { background: rgba(11,20,55,0.15); }
   100% { transform: translateY(0) rotate(0deg); opacity: 0; }
 }
 .dolphin-jump { animation: dolphin-jump 0.8s ease-in-out forwards; }
+
+/* ── Desktop nav tabs ────────────────────────────── */
+@media (min-width: 768px) {
+  .bottom-nav-mobile {
+    display: none !important;
+  }
+  .desktop-nav-tabs {
+    display: flex !important;
+  }
+}
+@media (max-width: 767px) {
+  .desktop-nav-tabs {
+    display: none !important;
+  }
+}

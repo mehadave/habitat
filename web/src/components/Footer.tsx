@@ -12,7 +12,7 @@ export function Footer() {
       className="w-full flex flex-col items-center gap-1.5 px-4 text-center"
       style={{
         paddingTop: 16,
-        paddingBottom: 96,
+        paddingBottom: 24,
         color,
         fontSize: 11,
         borderTop: `1px solid ${borderColor}`,

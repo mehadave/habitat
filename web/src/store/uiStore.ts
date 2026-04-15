@@ -19,6 +19,7 @@ export const useUIStore = create<UIState>()(
         const next = !get().darkMode
         set({ darkMode: next })
         document.body.classList.toggle('light-mode', !next)
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', next ? '#0B1120' : '#F0F4FF')
       },
       setDarkMode: (v) => {
         set({ darkMode: v })

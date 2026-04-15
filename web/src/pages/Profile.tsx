@@ -11,7 +11,7 @@ export default function Profile() {
   const { darkMode, toggleDarkMode, streakShields } = useUIStore()
 
   const t = darkMode ? {
-    bg: '#0B1437',
+    bg: '#0B1120',
     text: '#ffffff',
     textMuted: 'rgba(255,255,255,0.45)',
     textSub: 'rgba(255,255,255,0.3)',
@@ -27,7 +27,7 @@ export default function Profile() {
     badgeBg: 'rgba(255,255,255,0.08)',
     badgeText: 'rgba(255,255,255,0.5)',
   } : {
-    bg: '#EFF4FF',
+    bg: '#F0F4FF',
     text: '#0B1437',
     textMuted: 'rgba(11,20,55,0.55)',
     textSub: 'rgba(11,20,55,0.35)',
