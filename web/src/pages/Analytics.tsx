@@ -102,7 +102,7 @@ export default function Analytics() {
   return (
     <div className="app-bg min-h-screen" style={{ paddingTop: 60, paddingBottom: 80 }}>
       <div className="px-4 pt-4">
-        <h1 className="text-lg font-semibold mb-5" style={{ color: t.text }}>Analytics</h1>
+        <h1 className="text-2xl font-bold mb-5" style={{ color: t.text }}>Analytics</h1>
 
         {/* Range filter */}
         <div className="flex gap-2 mb-5">
@@ -154,7 +154,7 @@ export default function Analytics() {
         </div>
 
         {/* Per-habit table */}
-        <h2 className="text-sm font-semibold mb-3" style={{ color: t.text }}>Per habit</h2>
+        <h2 className="text-base font-bold mb-3" style={{ color: t.text }}>Per habit</h2>
         {habitStats.length === 0 ? (
           <p className="text-sm text-center py-8" style={{ color: t.textMuted }}>No habits tracked yet.</p>
         ) : (

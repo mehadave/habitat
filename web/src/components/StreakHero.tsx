@@ -2,9 +2,11 @@ interface StreakHeroProps {
   streak: number
   startDate?: string
   darkMode?: boolean
+  label?: string
+  sublabel?: string
 }
 
-export function StreakHero({ streak, startDate, darkMode = true }: StreakHeroProps) {
+export function StreakHero({ streak, startDate, darkMode = true, label, sublabel }: StreakHeroProps) {
   const daysIn = startDate
     ? Math.floor((Date.now() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24))
     : null
@@ -29,8 +31,13 @@ export function StreakHero({ streak, startDate, darkMode = true }: StreakHeroPro
         className="uppercase tracking-widest mt-1 font-semibold"
         style={{ fontSize: 12, color: labelColor, letterSpacing: '1px' }}
       >
-        Day Streak
+        {label ?? 'Day Streak'}
       </span>
+      {sublabel && (
+        <span className="mt-0.5" style={{ fontSize: 11, color: subColor }}>
+          {sublabel}
+        </span>
+      )}
       {formattedStart && daysIn !== null && (
         <span
           className="mt-1"

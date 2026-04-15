@@ -137,9 +137,59 @@ body.light-mode ::-webkit-scrollbar-thumb { background: rgba(11,20,55,0.15); }
   50%  { transform: translateX(-25px) scaleY(0.85); }
   100% { transform: translateX(0) scaleY(1); }
 }
-.wave-1 { animation: wave-anim 5s ease-in-out infinite; }
-.wave-2 { animation: wave-anim 7s ease-in-out infinite reverse; opacity: 0.5; }
-.wave-3 { animation: wave-anim 9s ease-in-out infinite; opacity: 0.3; }
+.wave-1 { animation: wave-anim 4s ease-in-out infinite; }
+.wave-2 { animation: wave-anim 6s ease-in-out infinite reverse; opacity: 0.7; }
+.wave-3 { animation: wave-anim 8s ease-in-out infinite; opacity: 0.5; }
+.wave-4 { animation: wave-anim 10s ease-in-out infinite reverse; opacity: 0.3; }
+
+/* ── Dolphin arc animations ──────────────────────── */
+@keyframes dolphin-arc-1 {
+  0%   { transform: translateY(30px) rotate(15deg); opacity: 0; }
+  15%  { transform: translateY(-10px) rotate(-25deg); opacity: 1; }
+  35%  { transform: translateY(-45px) rotate(-40deg); opacity: 1; }
+  50%  { transform: translateY(-55px) rotate(-15deg); opacity: 1; }
+  70%  { transform: translateY(-30px) rotate(10deg); opacity: 0.8; }
+  85%  { transform: translateY(10px) rotate(25deg); opacity: 0.3; }
+  100% { transform: translateY(30px) rotate(15deg); opacity: 0; }
+}
+.dolphin-arc-1 { animation: dolphin-arc-1 5s ease-in-out infinite; animation-delay: 0.5s; }
+
+@keyframes dolphin-arc-2 {
+  0%   { transform: translateY(25px) rotate(-10deg); opacity: 0; }
+  20%  { transform: translateY(-5px) rotate(20deg); opacity: 1; }
+  40%  { transform: translateY(-40px) rotate(35deg); opacity: 1; }
+  55%  { transform: translateY(-48px) rotate(12deg); opacity: 1; }
+  75%  { transform: translateY(-20px) rotate(-8deg); opacity: 0.7; }
+  90%  { transform: translateY(15px) rotate(-20deg); opacity: 0.2; }
+  100% { transform: translateY(25px) rotate(-10deg); opacity: 0; }
+}
+.dolphin-arc-2 { animation: dolphin-arc-2 6.5s ease-in-out infinite; animation-delay: 2s; }
+
+/* Splash drops */
+@keyframes splash-drop-0 {
+  0%, 100% { transform: translate(0, 0); opacity: 0; }
+  20%      { transform: translate(-8px, -20px); opacity: 0.8; }
+  50%      { transform: translate(-12px, -30px); opacity: 0.4; }
+  80%      { transform: translate(-6px, -5px); opacity: 0; }
+}
+@keyframes splash-drop-1 {
+  0%, 100% { transform: translate(0, 0); opacity: 0; }
+  25%      { transform: translate(5px, -25px); opacity: 0.7; }
+  55%      { transform: translate(10px, -35px); opacity: 0.3; }
+  85%      { transform: translate(3px, -8px); opacity: 0; }
+}
+@keyframes splash-drop-2 {
+  0%, 100% { transform: translate(0, 0); opacity: 0; }
+  15%      { transform: translate(-3px, -18px); opacity: 0.6; }
+  45%      { transform: translate(2px, -28px); opacity: 0.2; }
+  75%      { transform: translate(0, -4px); opacity: 0; }
+}
+.splash-drop-0 { animation: splash-drop-0 5s ease-out infinite; animation-delay: 0.8s; }
+.splash-drop-1 { animation: splash-drop-1 5s ease-out infinite; animation-delay: 1.1s; }
+.splash-drop-2 { animation: splash-drop-2 5s ease-out infinite; animation-delay: 1.4s; }
+.splash-right .splash-drop-0 { animation: splash-drop-0 6.5s ease-out infinite; animation-delay: 2.3s; }
+.splash-right .splash-drop-1 { animation: splash-drop-1 6.5s ease-out infinite; animation-delay: 2.5s; }
+.splash-right .splash-drop-2 { animation: splash-drop-2 6.5s ease-out infinite; animation-delay: 2.7s; }
 
 @keyframes fade-quote {
   0%   { opacity: 0; transform: translateY(4px); }

@@ -107,23 +107,38 @@ function AddEditSheet({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-end justify-center"
-      style={{ background: 'rgba(0,0,0,0.55)' }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
       onClick={onClose}
     >
       <motion.div
-        initial={{ y: '100%' }}
-        animate={{ y: 0 }}
-        exit={{ y: '100%' }}
-        transition={{ type: 'spring', damping: 22, stiffness: 300 }}
-        className="w-full max-w-lg rounded-t-3xl p-6"
-        style={{ background: t.sheetBg, border: `1px solid ${t.cardBorder}`, maxHeight: '92vh', overflowY: 'auto' }}
+        initial={{ scale: 0.92, opacity: 0, y: 12 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.92, opacity: 0, y: 12 }}
+        transition={{ type: 'spring', damping: 24, stiffness: 320 }}
+        className="w-full max-w-md rounded-3xl p-6"
+        style={{
+          background: t.sheetBg,
+          border: `1px solid ${t.cardBorder}`,
+          maxHeight: '88vh',
+          overflowY: 'auto',
+          boxShadow: '0 24px 64px rgba(0,0,0,0.45)',
+        }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="w-10 h-1 rounded-full mx-auto mb-5" style={{ background: t.divider }} />
-        <h2 className="text-base font-semibold mb-5" style={{ color: t.text }}>
-          {initial?.name ? 'Edit habit' : 'New habit'}
-        </h2>
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-xl font-bold" style={{ color: t.text }}>
+            {initial?.name ? 'Edit habit' : 'New habit'}
+          </h2>
+          <button
+            onClick={onClose}
+            className="w-8 h-8 rounded-full flex items-center justify-center text-lg leading-none"
+            style={{ background: t.inputBg, color: t.textMuted, border: t.inputBorder }}
+            aria-label="Close"
+          >
+            ×
+          </button>
+        </div>
 
         {/* Emoji picker */}
         <div className="flex gap-2 overflow-x-auto no-scrollbar mb-4 pb-1">
@@ -322,10 +337,10 @@ export default function Habits() {
       <div className="px-4 pt-4">
 
         {/* Header */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-5">
           <div>
-            <h1 className="text-lg font-semibold" style={{ color: t.text }}>Your habits</h1>
-            <p className="text-xs mt-0.5" style={{ color: t.textMuted }}>
+            <h1 className="text-2xl font-bold" style={{ color: t.text }}>Your habits</h1>
+            <p className="text-sm mt-1" style={{ color: t.textMuted }}>
               {activeHabits.length} / 15 active
             </p>
           </div>
@@ -368,7 +383,7 @@ export default function Habits() {
             <MonthlyHabitTracker habits={activeHabits} onToggle={handleToggle} />
 
             {/* Habit cards */}
-            <p className="text-xs font-semibold tracking-wide uppercase mb-3" style={{ color: t.textMuted }}>
+            <p className="text-sm font-semibold tracking-wide uppercase mb-3" style={{ color: t.textMuted }}>
               Your Habits!
             </p>
             <div className="space-y-3">

@@ -1,7 +1,12 @@
 import { useUIStore } from '../store/uiStore'
 
-export function Footer() {
-  const { darkMode } = useUIStore()
+interface FooterProps {
+  forceDark?: boolean
+}
+
+export function Footer({ forceDark }: FooterProps) {
+  const { darkMode: storeDark } = useUIStore()
+  const darkMode = forceDark ?? storeDark
 
   const color = darkMode ? 'rgba(255,255,255,0.28)' : 'rgba(11,20,55,0.35)'
   const hoverColor = darkMode ? 'rgba(255,255,255,0.75)' : 'rgba(11,20,55,0.8)'

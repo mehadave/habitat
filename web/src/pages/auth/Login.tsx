@@ -2,23 +2,12 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { supabase } from '../../lib/supabase'
+import { useUIStore } from '../../store/uiStore'
 import { DolphinLogo } from '../../components/DolphinLogo'
 import { Footer } from '../../components/Footer'
-// Auth pages always use dark theme (no useUIStore needed)
 
-export default function Login() {
-  const navigate = useNavigate()
-  const [mode, setMode] = useState<'email' | 'phone'>('email')
-  const [email, setEmail] = useState('')
-  const [phone, setPhone] = useState('')
-  const [password, setPassword] = useState('')
-  const [otp, setOtp] = useState('')
-  const [otpSent, setOtpSent] = useState(false)
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
-
-  // Auth pages always use dark theme
-  const t = {
+function buildTokens(darkMode: boolean) {
+  return darkMode ? {
     pageBg: '#0B1120',
     pageBgImage: 'radial-gradient(ellipse at 20% 20%, rgba(56,189,248,0.12) 0%, transparent 55%), radial-gradient(ellipse at 80% 80%, rgba(14,165,233,0.10) 0%, transparent 50%)',
     text: '#ffffff',
@@ -36,7 +25,40 @@ export default function Login() {
     googleBorder: '1px solid rgba(255,255,255,0.12)',
     googleText: 'rgba(255,255,255,0.85)',
     linkColor: 'rgba(255,255,255,0.45)',
+  } : {
+    pageBg: '#F0F4FF',
+    pageBgImage: 'radial-gradient(ellipse at 20% 20%, rgba(37,99,235,0.08) 0%, transparent 55%), radial-gradient(ellipse at 80% 80%, rgba(147,197,253,0.10) 0%, transparent 50%)',
+    text: '#0B1437',
+    textMuted: 'rgba(11,20,55,0.55)',
+    textSub: 'rgba(11,20,55,0.35)',
+    cardBg: 'rgba(255,255,255,0.85)',
+    cardBorder: '1px solid rgba(11,20,55,0.10)',
+    inputBg: 'rgba(11,20,55,0.05)',
+    inputBorder: '1px solid rgba(11,20,55,0.12)',
+    inputColor: '#0B1437',
+    tabBg: 'rgba(11,20,55,0.06)',
+    tabInactive: 'rgba(11,20,55,0.55)',
+    divider: 'rgba(11,20,55,0.1)',
+    googleBg: 'rgba(255,255,255,0.9)',
+    googleBorder: '1px solid rgba(11,20,55,0.12)',
+    googleText: 'rgba(11,20,55,0.85)',
+    linkColor: 'rgba(11,20,55,0.45)',
   }
+}
+
+export default function Login() {
+  const navigate = useNavigate()
+  const { darkMode } = useUIStore()
+  const [mode, setMode] = useState<'email' | 'phone'>('email')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [password, setPassword] = useState('')
+  const [otp, setOtp] = useState('')
+  const [otpSent, setOtpSent] = useState(false)
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const t = buildTokens(darkMode)
 
   async function handleEmailLogin(e: React.FormEvent) {
     e.preventDefault()
@@ -90,7 +112,7 @@ export default function Login() {
           <p className="text-sm mt-1" style={{ color: t.textMuted }}>Small habits. Big changes.</p>
         </div>
 
-        <div className="rounded-2xl p-6" style={{ background: t.cardBg, border: t.cardBorder }}>
+        <div className="rounded-2xl p-6" style={{ background: t.cardBg, border: t.cardBorder, boxShadow: darkMode ? 'none' : '0 4px 24px rgba(11,20,55,0.08)' }}>
           {/* Mode tabs */}
           <div className="flex gap-2 mb-6 p-1 rounded-xl" style={{ background: t.tabBg }}>
             {(['email', 'phone'] as const).map(m => (
@@ -116,7 +138,7 @@ export default function Login() {
               <button type="submit" disabled={loading}
                 className="w-full py-3 rounded-xl text-sm font-medium text-white transition-opacity"
                 style={{ background: '#2563EB', opacity: loading ? 0.6 : 1 }}>
-                {loading ? 'Signing in…' : 'Sign in'}
+                {loading ? 'Signing in...' : 'Sign in'}
               </button>
             </form>
           ) : (
@@ -131,7 +153,7 @@ export default function Login() {
                   <button onClick={handleSendOTP} disabled={loading || !phone}
                     className="w-full py-3 rounded-xl text-sm font-medium text-white"
                     style={{ background: '#2563EB', opacity: loading || !phone ? 0.6 : 1 }}>
-                    {loading ? 'Sending…' : 'Send code'}
+                    {loading ? 'Sending...' : 'Send code'}
                   </button>
                 </>
               ) : (
@@ -145,7 +167,7 @@ export default function Login() {
                   <button type="submit" disabled={loading || otp.length < 6}
                     className="w-full py-3 rounded-xl text-sm font-medium text-white"
                     style={{ background: '#2563EB', opacity: loading || otp.length < 6 ? 0.6 : 1 }}>
-                    {loading ? 'Verifying…' : 'Verify'}
+                    {loading ? 'Verifying...' : 'Verify'}
                   </button>
                 </form>
               )}

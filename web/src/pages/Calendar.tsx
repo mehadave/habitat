@@ -116,12 +116,13 @@ export default function Calendar() {
   return (
     <div className="app-bg min-h-screen" style={{ paddingTop: 60, paddingBottom: 80 }}>
       <div className="px-4 pt-4">
+        <h1 className="text-2xl font-bold mb-4" style={{ color: t.text }}>Calendar</h1>
         {/* Month nav */}
         <div className="flex items-center justify-between mb-4">
-          <button onClick={prevMonth} className="p-2 rounded-xl"
+          <button onClick={prevMonth} className="p-2 rounded-xl w-10 h-10 flex items-center justify-center text-lg"
             style={{ background: t.inputBg, color: t.text }}>‹</button>
-          <h2 className="text-base font-medium" style={{ color: t.text }}>{monthNames[month]} {year}</h2>
-          <button onClick={nextMonth} className="p-2 rounded-xl"
+          <h2 className="text-lg font-semibold" style={{ color: t.text }}>{monthNames[month]} {year}</h2>
+          <button onClick={nextMonth} className="p-2 rounded-xl w-10 h-10 flex items-center justify-center text-lg"
             style={{
               background: t.inputBg,
               color: isNextDisabled ? t.textSub : t.text,
@@ -186,7 +187,7 @@ export default function Calendar() {
         {selectedDate && (
           <div className="mb-6 rounded-2xl p-4"
             style={{ background: t.cardBg, border: `1px solid ${t.cardBorder}` }}>
-            <h3 className="text-sm font-medium mb-2" style={{ color: t.text }}>
+            <h3 className="text-base font-semibold mb-2" style={{ color: t.text }}>
               {new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
             </h3>
             {selectedCompletions.length === 0 ? (
@@ -232,7 +233,7 @@ export default function Calendar() {
 
         {/* 90-day heatmap */}
         <div className="mb-6">
-          <h3 className="text-sm font-medium mb-3" style={{ color: t.text }}>90-day overview</h3>
+          <h3 className="text-base font-semibold mb-3" style={{ color: t.text }}>90-day overview</h3>
           <div className="flex flex-wrap gap-1">
             {heatmapCells.map(({ date, count }) => (
               <div key={date} title={`${date}: ${count} completions`}

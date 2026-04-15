@@ -53,39 +53,52 @@ export function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCardProps)
   const editBtnColor = darkMode ? 'rgba(255,255,255,0.4)' : 'rgba(11,20,55,0.4)'
 
   return (
-    <div className="relative overflow-hidden rounded-2xl">
-      {/* Swipe actions */}
-      {showActions && (
-        <div
-          className="absolute right-0 top-0 bottom-0 flex items-center gap-2 pr-3 pl-6 z-10 rounded-r-2xl"
-          style={{ background: swipeActionsBg }}
+    <div className="relative rounded-2xl" style={{ isolation: 'isolate' }}>
+      {/* Swipe actions — positioned behind the card, revealed as card slides left */}
+      <div
+        className="absolute inset-y-0 right-0 flex items-center gap-2 pr-4 pointer-events-none rounded-2xl"
+        style={{
+          background: swipeActionsBg,
+          opacity: showActions ? 1 : 0,
+          transition: 'opacity 0.2s ease',
+          width: 140,
+          zIndex: 0,
+        }}
+      >
+        <button
+          onClick={() => { setShowActions(false); onEdit(habit) }}
+          className="px-3 py-1.5 rounded-lg text-xs font-semibold pointer-events-auto"
+          style={{ background: 'rgba(37,99,235,0.22)', color: '#93C5FD' }}
         >
-          <button
-            onClick={() => { setShowActions(false); onEdit(habit) }}
-            className="px-3 py-1.5 rounded-lg text-xs font-medium"
-            style={{ background: 'rgba(37,99,235,0.18)', color: '#93C5FD' }}
-          >
-            Edit
-          </button>
-          <button
-            onClick={() => { setShowActions(false); onDelete(habit.id) }}
-            className="px-3 py-1.5 rounded-lg text-xs font-medium"
-            style={{ background: 'rgba(248,113,113,0.15)', color: '#F87171' }}
-          >
-            Delete
-          </button>
-        </div>
-      )}
+          Edit
+        </button>
+        <button
+          onClick={() => { setShowActions(false); onDelete(habit.id) }}
+          className="px-3 py-1.5 rounded-lg text-xs font-semibold pointer-events-auto"
+          style={{ background: 'rgba(248,113,113,0.2)', color: '#F87171' }}
+        >
+          Delete
+        </button>
+      </div>
 
       <motion.div
         drag="x"
-        dragConstraints={{ left: -100, right: 0 }}
-        dragElastic={0.08}
+        dragConstraints={{ left: -140, right: 0 }}
+        dragElastic={0.05}
+        animate={{ x: showActions ? -140 : 0 }}
+        transition={{ type: 'spring', damping: 28, stiffness: 320 }}
         onDragEnd={(_, info) => {
-          setShowActions(info.offset.x < -50)
+          setShowActions(info.offset.x < -60 || info.velocity.x < -300)
         }}
-        className="p-4"
-        style={{ background: cardBg, border: cardBorder, boxShadow: cardShadow, borderRadius: 16 }}
+        className="p-4 relative"
+        style={{
+          background: cardBg,
+          border: cardBorder,
+          boxShadow: cardShadow,
+          borderRadius: 16,
+          zIndex: 1,
+          touchAction: 'pan-y',
+        }}
       >
         {/* Header row */}
         <div className="flex items-start gap-3">
