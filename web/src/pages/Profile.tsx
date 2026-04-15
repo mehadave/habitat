@@ -3,6 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuthStore } from '../store/authStore'
 import { useUIStore } from '../store/uiStore'
+import { useHabits } from '../hooks/useHabits'
+import {
+  isWeeklySummaryEnabled,
+  setWeeklySummaryEnabled,
+  scheduleWeeklySummary,
+  requestNotificationPermission,
+} from '../hooks/useNotifications'
 import { motion, AnimatePresence } from 'framer-motion'
 
 export default function Profile() {
@@ -44,6 +51,7 @@ export default function Profile() {
     badgeText: 'rgba(11,20,55,0.5)',
   }
 
+  const { data: habits = [] } = useHabits()
   const [name, setName] = useState(profile?.display_name ?? '')
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -51,7 +59,19 @@ export default function Profile() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [deleteInput, setDeleteInput] = useState('')
   const [error, setError] = useState('')
+  const [weeklySummary, setWeeklySummary] = useState(isWeeklySummaryEnabled())
   const fileRef = useRef<HTMLInputElement>(null)
+
+  async function handleWeeklySummaryToggle() {
+    const next = !weeklySummary
+    if (next) {
+      const granted = await requestNotificationPermission()
+      if (!granted) return
+    }
+    setWeeklySummary(next)
+    setWeeklySummaryEnabled(next)
+    scheduleWeeklySummary(habits)
+  }
 
 
   const initials = (profile?.display_name ?? profile?.email ?? 'U')
@@ -198,6 +218,25 @@ export default function Profile() {
             >
               <div className="absolute top-0.5 w-5 h-5 rounded-full bg-white transition-all"
                 style={{ left: darkMode ? '50%' : '2px' }} />
+            </button>
+          </div>
+
+          {/* Weekly summary */}
+          <div className="rounded-2xl p-4 flex items-center justify-between"
+            style={{ background: t.cardBg, border: `1px solid ${t.cardBorder}` }}>
+            <div className="flex-1 pr-3">
+              <p className="text-sm" style={{ color: t.text }}>Weekly summary</p>
+              <p className="text-xs" style={{ color: t.textMuted }}>
+                Get a notification every Sunday at 9 AM with your week's stats
+              </p>
+            </div>
+            <button
+              onClick={handleWeeklySummaryToggle}
+              className="w-12 h-6 rounded-full relative transition-colors flex-shrink-0"
+              style={{ background: weeklySummary ? '#2563EB' : t.inputBg }}
+            >
+              <div className="absolute top-0.5 w-5 h-5 rounded-full bg-white transition-all"
+                style={{ left: weeklySummary ? '50%' : '2px' }} />
             </button>
           </div>
 

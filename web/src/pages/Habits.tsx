@@ -4,6 +4,7 @@ import { useHabits, useAddHabit, useUpdateHabit, useDeleteHabit, useToggleComple
 import { useUIStore } from '../store/uiStore'
 import { HabitCard } from '../components/HabitCard'
 import { MonthlyHabitTracker } from '../components/MonthlyHabitTracker'
+import { ArchivedHabitsSection } from '../components/ArchivedHabitsSection'
 import {
   getHabitPref,
   setHabitPref,
@@ -381,6 +382,9 @@ export default function Habits() {
                 />
               ))}
             </div>
+
+            {/* Archived habits section */}
+            <ArchivedHabitsSection />
           </>
         )}
       </div>

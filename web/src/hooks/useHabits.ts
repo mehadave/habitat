@@ -198,6 +198,64 @@ export function useDeleteHabit() {
       const { error } = await supabase.from('habits').update({ is_active: false }).eq('id', id)
       if (error) throw error
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['habits'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['habits'] })
+      qc.invalidateQueries({ queryKey: ['archived-habits'] })
+    },
+  })
+}
+
+export function useArchivedHabits() {
+  const { session } = useAuthStore()
+  const userId = session?.user?.id
+
+  return useQuery({
+    queryKey: ['archived-habits', userId],
+    enabled: !!userId,
+    queryFn: async (): Promise<Habit[]> => {
+      const { data, error } = await supabase
+        .from('habits')
+        .select('*')
+        .eq('user_id', userId!)
+        .eq('is_active', false)
+        .order('created_at', { ascending: false })
+      if (error) throw error
+      return data as Habit[]
+    },
+  })
+}
+
+export function useRestoreHabit() {
+  const qc = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('habits').update({ is_active: true }).eq('id', id)
+      if (error) throw error
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['habits'] })
+      qc.invalidateQueries({ queryKey: ['archived-habits'] })
+    },
+  })
+}
+
+export function usePermanentlyDeleteHabit() {
+  const qc = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      // Delete cascades to completions and streaks via FK
+      const { error: compErr } = await supabase.from('completions').delete().eq('habit_id', id)
+      if (compErr) throw compErr
+      const { error: streakErr } = await supabase.from('streaks').delete().eq('habit_id', id)
+      if (streakErr) throw streakErr
+      const { error } = await supabase.from('habits').delete().eq('id', id)
+      if (error) throw error
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['habits'] })
+      qc.invalidateQueries({ queryKey: ['archived-habits'] })
+    },
   })
 }

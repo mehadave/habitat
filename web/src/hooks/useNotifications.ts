@@ -1,4 +1,5 @@
 import type { HabitWithStreak } from '../lib/types'
+import { localDateStr } from './useHabits'
 
 export interface NotifPref {
   enabled: boolean
@@ -7,6 +8,7 @@ export interface NotifPref {
 }
 
 const STORAGE_KEY = 'habitat-notifications'
+const WEEKLY_SUMMARY_KEY = 'habitat-weekly-summary-enabled'
 
 function getAll(): Record<string, NotifPref> {
   try {
@@ -58,4 +60,73 @@ export function syncNotificationsToSW(habits: HabitWithStreak[]) {
       days: all[h.id].days,
     }))
   sw.postMessage({ type: 'SCHEDULE_NOTIFICATIONS', habits: toSchedule })
+}
+
+// ─── Weekly summary ─────────────────────────────────────────────────────────
+
+export function isWeeklySummaryEnabled(): boolean {
+  return localStorage.getItem(WEEKLY_SUMMARY_KEY) === 'true'
+}
+
+export function setWeeklySummaryEnabled(enabled: boolean) {
+  localStorage.setItem(WEEKLY_SUMMARY_KEY, enabled ? 'true' : 'false')
+}
+
+/** Compute week stats from the last 7 days (inclusive of today). */
+function computeWeekStats(habits: HabitWithStreak[]) {
+  const now = new Date()
+  const weekStart = new Date(now)
+  weekStart.setDate(now.getDate() - 6)
+  const weekStartStr = localDateStr(weekStart)
+  const todayStr = localDateStr()
+
+  const days: string[] = []
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(weekStart)
+    d.setDate(weekStart.getDate() + i)
+    days.push(localDateStr(d))
+  }
+
+  let totalCompleted = 0
+  let possible = 0
+  const perfectDays = days.filter(day => {
+    if (day > todayStr) return false
+    return habits.length > 0 && habits.every(h => h.completions?.includes(day))
+  }).length
+
+  habits.forEach(h => {
+    const completedThisWeek = (h.completions ?? []).filter(
+      d => d >= weekStartStr && d <= todayStr
+    ).length
+    totalCompleted += completedThisWeek
+    possible += 7
+  })
+
+  const pct = possible > 0 ? Math.round((totalCompleted / possible) * 100) : 0
+  const topHabit = [...habits]
+    .map(h => ({
+      name: h.name,
+      emoji: h.emoji ?? '⭐',
+      count: (h.completions ?? []).filter(d => d >= weekStartStr && d <= todayStr).length,
+    }))
+    .sort((a, b) => b.count - a.count)[0]
+
+  return { pct, totalCompleted, perfectDays, topHabit, habitCount: habits.length }
+}
+
+/** Schedule a weekly summary notification for Sunday at 9:00 AM local time. */
+export function scheduleWeeklySummary(habits: HabitWithStreak[]) {
+  const sw = navigator.serviceWorker?.controller
+  if (!sw) return
+
+  if (!isWeeklySummaryEnabled()) {
+    sw.postMessage({ type: 'CANCEL_WEEKLY_SUMMARY' })
+    return
+  }
+
+  const stats = computeWeekStats(habits)
+  sw.postMessage({
+    type: 'SCHEDULE_WEEKLY_SUMMARY',
+    stats,
+  })
 }

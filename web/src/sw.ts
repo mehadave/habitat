@@ -159,8 +159,72 @@ function scheduleHabitNotification(habit: HabitNotifConfig): void {
   alarmTimers.set(habit.id, timerId)
 }
 
+// ─── Weekly summary ───────────────────────────────────────────────────────────
+
+interface WeeklyStats {
+  pct: number
+  totalCompleted: number
+  perfectDays: number
+  topHabit?: { name: string; emoji: string; count: number }
+  habitCount: number
+}
+
+let weeklySummaryTimer: ReturnType<typeof setTimeout> | null = null
+
+function msUntilNextSundayAt(hour: number, minute: number): number {
+  const now = new Date()
+  const next = new Date(now)
+  const daysUntilSunday = (7 - now.getDay()) % 7
+  next.setDate(now.getDate() + daysUntilSunday)
+  next.setHours(hour, minute, 0, 0)
+  if (next.getTime() <= now.getTime()) {
+    next.setDate(next.getDate() + 7)
+  }
+  return next.getTime() - now.getTime()
+}
+
+function scheduleWeeklySummaryNotification(stats: WeeklyStats): void {
+  if (weeklySummaryTimer !== null) clearTimeout(weeklySummaryTimer)
+
+  const ms = msUntilNextSundayAt(9, 0) // Sunday 9:00 AM
+
+  weeklySummaryTimer = setTimeout(async () => {
+    weeklySummaryTimer = null
+
+    const emoji = stats.pct >= 80 ? '🏆' : stats.pct >= 50 ? '💪' : '🌱'
+    const title = `${emoji} Your week in review`
+    const lines: string[] = []
+    lines.push(`${stats.pct}% completion rate`)
+    if (stats.perfectDays > 0) lines.push(`${stats.perfectDays} perfect day${stats.perfectDays > 1 ? 's' : ''}`)
+    if (stats.topHabit && stats.topHabit.count > 0) {
+      lines.push(`Top: ${stats.topHabit.emoji} ${stats.topHabit.name} (${stats.topHabit.count}/7)`)
+    }
+
+    try {
+      await self.registration.showNotification(title, {
+        body: lines.join(' · '),
+        icon: '/icon-192.png',
+        badge: '/icon-192.png',
+        tag: 'weekly-summary',
+        data: { type: 'weekly-summary' },
+      } as NotificationOptions)
+    } catch {
+      // ignore
+    }
+
+    // Reschedule for next week using the same (soon-stale) stats as a fallback.
+    // The client will re-sync fresh stats on next app open.
+    scheduleWeeklySummaryNotification(stats)
+  }, ms)
+}
+
 self.addEventListener('message', (event) => {
-  const msg = event.data as { type: string; habits?: HabitNotifConfig[]; habitId?: string }
+  const msg = event.data as {
+    type: string
+    habits?: HabitNotifConfig[]
+    habitId?: string
+    stats?: WeeklyStats
+  }
 
   if (msg?.type === 'SCHEDULE_NOTIFICATIONS' && msg.habits) {
     const newIds = new Set(msg.habits.map((h) => h.id))
@@ -179,6 +243,17 @@ self.addEventListener('message', (event) => {
     if (timerId !== undefined) {
       clearTimeout(timerId)
       alarmTimers.delete(msg.habitId)
+    }
+  }
+
+  if (msg?.type === 'SCHEDULE_WEEKLY_SUMMARY' && msg.stats) {
+    scheduleWeeklySummaryNotification(msg.stats)
+  }
+
+  if (msg?.type === 'CANCEL_WEEKLY_SUMMARY') {
+    if (weeklySummaryTimer !== null) {
+      clearTimeout(weeklySummaryTimer)
+      weeklySummaryTimer = null
     }
   }
 })
