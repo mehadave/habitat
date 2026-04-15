@@ -42,17 +42,23 @@ function EntryCard({
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
           <MoodChip score={entry.mood_score} />
-          {/* Edit icon */}
+          {/* Edit icon — flipped to match HabitCard orientation */}
           <button
             onClick={() => onEdit(entry)}
-            className="w-6 h-6 rounded-lg flex items-center justify-center text-xs transition-colors"
-            style={{ color: t.textSub, background: t.cardBg }}
+            className="w-7 h-7 rounded-lg flex items-center justify-center text-xs transition-colors"
+            style={{ color: t.textSub, background: t.inputBg }}
             title="Edit entry"
           >
-            ✏️
+            <span style={{ display: 'inline-block', transform: 'scaleX(-1)' }}>✏️</span>
           </button>
-          <button onClick={() => onDelete(entry.id)} className="text-xs"
-            style={{ color: t.textSub }}>✕</button>
+          <button
+            onClick={() => onDelete(entry.id)}
+            className="w-7 h-7 rounded-lg flex items-center justify-center text-xs"
+            style={{ color: t.textSub, background: t.inputBg }}
+            title="Delete entry"
+          >
+            ✕
+          </button>
         </div>
       </div>
       <p className="text-sm leading-relaxed whitespace-pre-wrap"
@@ -155,9 +161,9 @@ export default function Journal() {
       <div className="px-4 pt-4">
         {/* Header */}
         <div className="flex flex-col items-center mb-5">
-          <DolphinLogo size={40} />
-          <h1 className="text-lg font-medium mt-2" style={{ color: t.text }}>brain dump. no filter.</h1>
-          <p className="text-xs mt-1" style={{ color: t.textMuted }}>
+          <DolphinLogo size={44} />
+          <h1 className="text-2xl font-bold mt-3" style={{ color: t.text }}>brain dump. no filter.</h1>
+          <p className="text-sm mt-1" style={{ color: t.textMuted }}>
             Tap "New entry" to save and start fresh.
           </p>
         </div>
@@ -216,13 +222,17 @@ export default function Journal() {
 
         {/* Edit modal for past entries */}
         {editingEntry && (
-          <div className="fixed inset-0 z-50 flex items-end justify-center"
-            style={{ background: 'rgba(0,0,0,0.6)' }}
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
             onClick={() => setEditingEntry(null)}>
-            <div className="w-full max-w-lg rounded-t-3xl p-6"
-              style={{ background: t.sheetBg, border: `1px solid ${t.cardBorder}` }}
+            <div className="w-full max-w-md rounded-3xl p-6"
+              style={{ background: t.sheetBg, border: `1px solid ${t.cardBorder}`, boxShadow: '0 24px 64px rgba(0,0,0,0.45)', maxHeight: '88vh', overflowY: 'auto' }}
               onClick={e => e.stopPropagation()}>
-              <div className="w-10 h-1 rounded-full mx-auto mb-4" style={{ background: t.divider }} />
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-sm font-semibold" style={{ color: t.text }}>Edit entry</span>
+                <button onClick={() => setEditingEntry(null)} className="w-8 h-8 rounded-full flex items-center justify-center text-lg"
+                  style={{ background: t.inputBg, color: t.textMuted }}>×</button>
+              </div>
               <p className="text-xs mb-2 font-medium" style={{ color: t.textMuted }}>
                 Editing — {new Date(editingEntry.created_at).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}
               </p>

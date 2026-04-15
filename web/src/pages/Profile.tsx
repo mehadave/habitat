@@ -140,6 +140,7 @@ export default function Profile() {
   return (
     <div className="app-bg min-h-screen" style={{ paddingTop: 60, paddingBottom: 80 }}>
       <div className="px-4 pt-4 max-w-lg mx-auto">
+        <h1 className="text-2xl font-bold mb-5" style={{ color: t.text }}>Profile</h1>
 
         {/* Avatar */}
         <div className="flex flex-col items-center mb-6">
@@ -169,8 +170,8 @@ export default function Profile() {
           </div>
           <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
 
-          <p className="text-base font-medium mt-3" style={{ color: t.text }}>{profile?.display_name ?? 'Your name'}</p>
-          <p className="text-xs mt-0.5" style={{ color: t.textMuted }}>{profile?.email}</p>
+          <p className="text-lg font-bold mt-3" style={{ color: t.text }}>{profile?.display_name ?? 'Your name'}</p>
+          <p className="text-sm mt-0.5" style={{ color: t.textMuted }}>{profile?.email}</p>
           {/* Shield count */}
           {streakShields > 0 && (
             <div className="mt-2 flex items-center gap-1.5 px-3 py-1 rounded-full text-xs"

@@ -2,23 +2,12 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { supabase } from '../../lib/supabase'
+import { useUIStore } from '../../store/uiStore'
 import { DolphinLogo } from '../../components/DolphinLogo'
 import { Footer } from '../../components/Footer'
-// Auth pages always use dark theme
 
-export default function Signup() {
-  const navigate = useNavigate()
-  // Auth pages always use dark theme
-
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [sent, setSent] = useState(false)
-
-  // Auth pages always use dark theme
-  const t = {
+function buildTokens(darkMode: boolean) {
+  return darkMode ? {
     pageBg: '#0B1120',
     pageBgImage: 'radial-gradient(ellipse at 20% 20%, rgba(56,189,248,0.12) 0%, transparent 55%), radial-gradient(ellipse at 80% 80%, rgba(14,165,233,0.10) 0%, transparent 50%)',
     text: '#ffffff',
@@ -34,7 +23,37 @@ export default function Signup() {
     googleBorder: '1px solid rgba(255,255,255,0.12)',
     googleText: 'rgba(255,255,255,0.85)',
     linkColor: 'rgba(255,255,255,0.45)',
+  } : {
+    pageBg: '#F0F4FF',
+    pageBgImage: 'radial-gradient(ellipse at 20% 20%, rgba(37,99,235,0.08) 0%, transparent 55%), radial-gradient(ellipse at 80% 80%, rgba(147,197,253,0.10) 0%, transparent 50%)',
+    text: '#0B1437',
+    textMuted: 'rgba(11,20,55,0.55)',
+    textSub: 'rgba(11,20,55,0.35)',
+    cardBg: 'rgba(255,255,255,0.85)',
+    cardBorder: '1px solid rgba(11,20,55,0.10)',
+    inputBg: 'rgba(11,20,55,0.05)',
+    inputBorder: '1px solid rgba(11,20,55,0.12)',
+    inputColor: '#0B1437',
+    divider: 'rgba(11,20,55,0.1)',
+    googleBg: 'rgba(255,255,255,0.9)',
+    googleBorder: '1px solid rgba(11,20,55,0.12)',
+    googleText: 'rgba(11,20,55,0.85)',
+    linkColor: 'rgba(11,20,55,0.45)',
   }
+}
+
+export default function Signup() {
+  const navigate = useNavigate()
+  const { darkMode } = useUIStore()
+
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [sent, setSent] = useState(false)
+
+  const t = buildTokens(darkMode)
 
   async function handleGoogleSignup() {
     await supabase.auth.signInWithOAuth({
@@ -90,7 +109,7 @@ export default function Signup() {
           <p className="text-sm mt-1" style={{ color: t.textMuted }}>Let's make some waves.</p>
         </div>
 
-        <div className="rounded-2xl p-6" style={{ background: t.cardBg, border: t.cardBorder }}>
+        <div className="rounded-2xl p-6" style={{ background: t.cardBg, border: t.cardBorder, boxShadow: darkMode ? 'none' : '0 4px 24px rgba(11,20,55,0.08)' }}>
           {/* Google */}
           <button onClick={handleGoogleSignup}
             className="w-full py-3 rounded-xl text-sm font-medium flex items-center justify-center gap-2 transition-all mb-4"
@@ -127,7 +146,7 @@ export default function Signup() {
             <button type="submit" disabled={loading}
               className="w-full py-3 rounded-xl text-sm font-medium text-white"
               style={{ background: '#2563EB', opacity: loading ? 0.6 : 1 }}>
-              {loading ? 'Creating account…' : 'Create account'}
+              {loading ? 'Creating account...' : 'Create account'}
             </button>
           </form>
         </div>
