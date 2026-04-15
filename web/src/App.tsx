@@ -1,5 +1,6 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
+import { AnimatePresence } from 'framer-motion'
 import { useAuthInit } from './hooks/useAuth'
 import { useAuthStore } from './store/authStore'
 import { useUIStore } from './store/uiStore'
@@ -8,7 +9,8 @@ import { NavBar } from './components/NavBar'
 import { StreakCelebration } from './components/StreakCelebration'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { InstallPrompt } from './components/InstallPrompt'
-import { syncNotificationsToSW } from './hooks/useNotifications'
+import { OnboardingModal, hasCompletedOnboarding } from './components/OnboardingModal'
+import { syncNotificationsToSW, scheduleWeeklySummary } from './hooks/useNotifications'
 
 // Auth pages
 import Login from './pages/auth/Login'
@@ -31,9 +33,16 @@ function AppShell() {
   const habitsRef = useRef(habits)
   habitsRef.current = habits
 
+  const [showOnboarding, setShowOnboarding] = useState(() => !hasCompletedOnboarding())
+
   // Sync notification schedules to SW whenever habits load
   useEffect(() => {
     if (habits.length > 0) syncNotificationsToSW(habits)
+  }, [habits])
+
+  // Schedule weekly summary on app load + whenever habits change
+  useEffect(() => {
+    scheduleWeeklySummary(habits)
   }, [habits])
 
   // Handle COMPLETE_HABIT message from SW notification action
@@ -95,6 +104,9 @@ function AppShell() {
       </Routes>
       <StreakCelebration />
       <InstallPrompt />
+      <AnimatePresence>
+        {showOnboarding && <OnboardingModal onClose={() => setShowOnboarding(false)} />}
+      </AnimatePresence>
     </>
   )
 }
