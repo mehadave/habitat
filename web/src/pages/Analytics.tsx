@@ -19,7 +19,7 @@ export default function Analytics() {
   const [range, setRange] = useState<Range>('30d')
 
   const t = darkMode ? {
-    bg: '#0B1437',
+    bg: '#0B1120',
     text: '#ffffff',
     textMuted: 'rgba(255,255,255,0.45)',
     textSub: 'rgba(255,255,255,0.3)',
@@ -33,7 +33,7 @@ export default function Analytics() {
     tooltipText: '#fff',
     axisTick: 'rgba(255,255,255,0.3)',
   } : {
-    bg: '#EFF4FF',
+    bg: '#F0F4FF',
     text: '#0B1437',
     textMuted: 'rgba(11,20,55,0.55)',
     textSub: 'rgba(11,20,55,0.35)',

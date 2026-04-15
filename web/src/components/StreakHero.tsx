@@ -1,9 +1,10 @@
 interface StreakHeroProps {
   streak: number
   startDate?: string
+  darkMode?: boolean
 }
 
-export function StreakHero({ streak, startDate }: StreakHeroProps) {
+export function StreakHero({ streak, startDate, darkMode = true }: StreakHeroProps) {
   const daysIn = startDate
     ? Math.floor((Date.now() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24))
     : null
@@ -12,24 +13,28 @@ export function StreakHero({ streak, startDate }: StreakHeroProps) {
     ? new Date(startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
     : null
 
+  const numColor = darkMode ? '#ffffff' : '#0B1437'
+  const labelColor = darkMode ? 'rgba(255,255,255,0.5)' : 'rgba(11,20,55,0.5)'
+  const subColor = darkMode ? 'rgba(255,255,255,0.35)' : 'rgba(11,20,55,0.35)'
+
   return (
     <div className="flex flex-col items-center py-6">
       <span
-        className="font-medium leading-none"
-        style={{ fontSize: 56, color: '#ffffff' }}
+        className="font-bold leading-none"
+        style={{ fontSize: 56, color: numColor }}
       >
         {streak}
       </span>
       <span
-        className="uppercase tracking-widest mt-1"
-        style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', letterSpacing: '1px' }}
+        className="uppercase tracking-widest mt-1 font-semibold"
+        style={{ fontSize: 12, color: labelColor, letterSpacing: '1px' }}
       >
         Day Streak
       </span>
       {formattedStart && daysIn !== null && (
         <span
           className="mt-1"
-          style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)' }}
+          style={{ fontSize: 12, color: subColor }}
         >
           Started {formattedStart} · {daysIn} day{daysIn !== 1 ? 's' : ''} in
         </span>

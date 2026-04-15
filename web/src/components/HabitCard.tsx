@@ -37,7 +37,7 @@ export function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCardProps)
   const monthsAgo = Math.floor((Date.now() - new Date(habit.created_at).getTime()) / (1000 * 60 * 60 * 24 * 30))
   const isPrivate = habit.is_private && !revealed
 
-  const cardBg = darkMode ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.9)'
+  const cardBg = darkMode ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.9)'
   const cardShadow = darkMode ? 'none' : '0 2px 12px rgba(11,20,55,0.07)'
   const cardBorder = streak < 3 && streak > 0
     ? '1px solid rgba(248,113,113,0.2)'

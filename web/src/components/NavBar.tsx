@@ -80,7 +80,6 @@ export function NavBar() {
   const initials = (profile?.display_name ?? profile?.email ?? 'U')
     .split(' ').map((w: string) => w[0]).join('').toUpperCase().slice(0, 2)
 
-  // Close dropdown on outside click
   useEffect(() => {
     function handler(e: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -91,29 +90,62 @@ export function NavBar() {
     return () => document.removeEventListener('mousedown', handler)
   }, [])
 
+  const topBarBg = darkMode ? 'rgba(11,17,32,0.88)' : 'rgba(240,244,255,0.92)'
+  const topBarBorder = darkMode ? 'rgba(255,255,255,0.06)' : 'rgba(11,20,55,0.1)'
+  const tabBg = darkMode ? 'rgba(255,255,255,0.06)' : 'rgba(11,20,55,0.06)'
+  const tabActiveBg = darkMode ? 'rgba(56,189,248,0.15)' : 'rgba(37,99,235,0.12)'
+  const tabActiveText = darkMode ? '#38BDF8' : '#2563EB'
+  const tabInactiveText = darkMode ? 'rgba(255,255,255,0.4)' : 'rgba(11,20,55,0.4)'
+  const brandColor = darkMode ? 'white' : '#0B1437'
+
   return (
     <>
       {/* Top bar */}
       <div
         className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4 py-3"
         style={{
-          background: darkMode ? 'rgba(11,20,55,0.85)' : 'rgba(239,244,255,0.92)',
-          backdropFilter: 'blur(12px)',
-          borderBottom: `1px solid ${darkMode ? 'rgba(255,255,255,0.06)' : 'rgba(11,20,55,0.1)'}`,
+          background: topBarBg,
+          backdropFilter: 'blur(16px)',
+          borderBottom: `1px solid ${topBarBorder}`,
         }}
       >
+        {/* Left: Logo */}
         <Link to="/dashboard" className="flex items-center gap-2">
           <DolphinLogo size={32} />
-          <span className="text-sm font-medium" style={{ color: darkMode ? 'white' : '#0B1437' }}>
-            Habit<span style={{ color: '#93C5FD' }}>·</span>at
+          <span className="text-sm font-bold" style={{ color: brandColor }}>
+            Habit<span style={{ color: '#38BDF8' }}>·</span>at
           </span>
         </Link>
 
-        {/* Profile button */}
+        {/* Center: Desktop nav tabs */}
+        <div
+          className="desktop-nav-tabs items-center gap-1 rounded-2xl px-1.5 py-1"
+          style={{ background: tabBg, display: 'none' }}
+        >
+          {NAV_ITEMS.map(({ to, label, icon }) => {
+            const active = location.pathname === to
+            return (
+              <Link
+                key={to}
+                to={to}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold transition-all"
+                style={{
+                  background: active ? tabActiveBg : 'transparent',
+                  color: active ? tabActiveText : tabInactiveText,
+                }}
+              >
+                <span style={{ fontSize: 14 }}>{icon}</span>
+                <span>{label}</span>
+              </Link>
+            )
+          })}
+        </div>
+
+        {/* Right: Profile button */}
         <div className="relative" ref={dropdownRef}>
           <button
             onClick={() => setShowDropdown((v) => !v)}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium text-white transition-all"
+            className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-medium text-white transition-all"
             style={{
               background: profile?.avatar_url ? 'transparent' : '#2563EB',
               border: showDropdown ? '2px solid #60A5FA' : '2px solid transparent',
@@ -130,11 +162,11 @@ export function NavBar() {
         </div>
       </div>
 
-      {/* Bottom nav */}
+      {/* Bottom nav — mobile only */}
       <nav
-        className="fixed bottom-0 left-0 right-0 z-40 flex items-center"
+        className="bottom-nav-mobile fixed bottom-0 left-0 right-0 z-40 flex items-center"
         style={{
-          background: darkMode ? 'rgba(11,20,55,0.92)' : 'rgba(239,244,255,0.92)',
+          background: darkMode ? 'rgba(11,17,32,0.94)' : 'rgba(240,244,255,0.94)',
           backdropFilter: 'blur(16px)',
           borderTop: `1px solid ${darkMode ? 'rgba(255,255,255,0.07)' : 'rgba(11,20,55,0.1)'}`,
           paddingBottom: 'env(safe-area-inset-bottom)',
@@ -147,10 +179,10 @@ export function NavBar() {
               key={to}
               to={to}
               className="flex-1 flex flex-col items-center py-3 gap-0.5 transition-all"
-              style={{ color: active ? '#93C5FD' : darkMode ? 'rgba(255,255,255,0.35)' : 'rgba(11,20,55,0.35)' }}
+              style={{ color: active ? '#38BDF8' : darkMode ? 'rgba(255,255,255,0.35)' : 'rgba(11,20,55,0.35)' }}
             >
-              <span style={{ fontSize: 18 }}>{icon}</span>
-              <span style={{ fontSize: 10 }}>{label}</span>
+              <span style={{ fontSize: 20 }}>{icon}</span>
+              <span style={{ fontSize: 11, fontWeight: active ? 600 : 400 }}>{label}</span>
             </Link>
           )
         })}
