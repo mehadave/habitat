@@ -242,56 +242,73 @@ body.light-mode ::-webkit-scrollbar-thumb { background: rgba(11,20,55,0.15); }
 
 /* ── Full-width dolphin swim across the page ─────── */
 /*
- * Two dolphins travel left → right across the full viewport.
- * Near the Frozen ring (~60-67 % x) each does one clockwise somersault
- * (positive rotate 0→360). Post-flip rotation stays near 360 so the
- * browser never interpolates counter-clockwise back toward 0.
- * Pink dolphin is offset -11 s so they're always staggered.
+ * 13 s cycle, no opacity pauses — dolphins are visible the whole time.
+ * They swim flat (y ≈ 0-4 px, gentle bob) for the first ~48 % of the
+ * journey, arc up to jump through the water ring (centered at ~76 vw)
+ * from 48-72 %, then dive back to water level and exit right.
+ * Somersault is strictly clockwise (0→360, always positive increments).
+ * Post-flip rotation stays ≥ 355 so the browser never snaps back CCW.
+ * Pink is offset −6.5 s (half cycle) so one dolphin is always on-screen.
  */
 @keyframes dolphin-swim-blue {
-  0%   { transform: translate(-80px, 0px)             rotate(-4deg);  opacity: 0;    }
-  3%   { transform: translate(-48px, 0px)             rotate(-4deg);  opacity: 0.92; }
-  16%  { transform: translate(15vw,  -18px)           rotate(-13deg); opacity: 0.92; }
-  30%  { transform: translate(31vw,  -32px)           rotate(-9deg);  opacity: 0.92; }
-  42%  { transform: translate(46vw,  -26px)           rotate(-3deg);  opacity: 0.92; }
-  /* Wind-up before ring */
-  47%  { transform: translate(54vw,  -22px)           rotate(0deg);   opacity: 0.92; }
-  /* Clockwise somersault through ring opening */
-  51%  { transform: translate(59vw,  -22px)           rotate(120deg); opacity: 0.92; }
-  55%  { transform: translate(64vw,  -22px)           rotate(240deg); opacity: 0.92; }
-  59%  { transform: translate(69vw,  -22px)           rotate(360deg); opacity: 0.92; }
-  /* Post-ring glide — stay near 360 to avoid any counter-clockwise snap */
-  71%  { transform: translate(80vw,  -11px)           rotate(356deg); opacity: 0.92; }
-  85%  { transform: translate(92vw,   6px)            rotate(358deg); opacity: 0.92; }
-  96%  { transform: translate(calc(100vw + 30px), 12px) rotate(360deg); opacity: 0.3; }
-  100% { transform: translate(calc(100vw + 80px), 12px) rotate(360deg); opacity: 0;   }
+  /* ── Enter from left, at water surface ── */
+  0%   { transform: translate(-72px, 3px)              rotate(0deg);   }
+  /* ── Gentle water-level swim ── */
+  8%   { transform: translate(8vw,   1px)              rotate(-2deg);  }
+  17%  { transform: translate(19vw,  4px)              rotate(3deg);   }
+  26%  { transform: translate(29vw,  1px)              rotate(-2deg);  }
+  35%  { transform: translate(40vw,  4px)              rotate(3deg);   }
+  43%  { transform: translate(49vw,  1px)              rotate(-1deg);  }
+  /* ── Wind-up: start climbing ── */
+  48%  { transform: translate(55vw, -10px)             rotate(-12deg); }
+  54%  { transform: translate(62vw, -52px)             rotate(-22deg); }
+  /* ── Somersault through ring (~76 vw) ── */
+  58%  { transform: translate(67vw, -65px)             rotate(60deg);  }
+  62%  { transform: translate(73vw, -65px)             rotate(200deg); }
+  66%  { transform: translate(78vw, -52px)             rotate(340deg); }
+  /* ── Land back in water ── */
+  71%  { transform: translate(83vw,  0px)              rotate(360deg); }
+  /* ── Water-level swim to exit ── */
+  79%  { transform: translate(89vw,  4px)              rotate(358deg); }
+  88%  { transform: translate(96vw,  1px)              rotate(360deg); }
+  /* ── Exit right ── */
+  100% { transform: translate(calc(100vw + 72px), 3px) rotate(360deg); }
 }
 
 @keyframes dolphin-swim-pink {
-  0%   { transform: translate(-80px, 5px)             rotate(-3deg);  opacity: 0;    }
-  3%   { transform: translate(-48px, 5px)             rotate(-3deg);  opacity: 0.84; }
-  16%  { transform: translate(14vw,  -12px)           rotate(-11deg); opacity: 0.84; }
-  30%  { transform: translate(30vw,  -24px)           rotate(-7deg);  opacity: 0.84; }
-  42%  { transform: translate(45vw,  -19px)           rotate(-2deg);  opacity: 0.84; }
-  /* Wind-up before ring */
-  47%  { transform: translate(53vw,  -16px)           rotate(0deg);   opacity: 0.84; }
-  /* Clockwise somersault */
-  51%  { transform: translate(58vw,  -16px)           rotate(120deg); opacity: 0.84; }
-  55%  { transform: translate(63vw,  -16px)           rotate(240deg); opacity: 0.84; }
-  59%  { transform: translate(68vw,  -16px)           rotate(360deg); opacity: 0.84; }
-  /* Post-ring — same trick, stay near 360 */
-  71%  { transform: translate(79vw,   -7px)           rotate(356deg); opacity: 0.84; }
-  85%  { transform: translate(91vw,   10px)           rotate(358deg); opacity: 0.84; }
-  96%  { transform: translate(calc(100vw + 30px), 17px) rotate(360deg); opacity: 0.25;}
-  100% { transform: translate(calc(100vw + 80px), 17px) rotate(360deg); opacity: 0;  }
+  /* ── Enter from left, slightly lower ── */
+  0%   { transform: translate(-72px, 6px)              rotate(0deg);   }
+  /* ── Gentle water-level swim ── */
+  8%   { transform: translate(7vw,   3px)              rotate(-2deg);  }
+  17%  { transform: translate(18vw,  7px)              rotate(3deg);   }
+  26%  { transform: translate(28vw,  3px)              rotate(-2deg);  }
+  35%  { transform: translate(39vw,  7px)              rotate(3deg);   }
+  43%  { transform: translate(48vw,  3px)              rotate(-1deg);  }
+  /* ── Wind-up: start climbing ── */
+  48%  { transform: translate(54vw, -7px)              rotate(-10deg); }
+  54%  { transform: translate(61vw, -46px)             rotate(-20deg); }
+  /* ── Somersault through ring ── */
+  58%  { transform: translate(66vw, -58px)             rotate(60deg);  }
+  62%  { transform: translate(72vw, -58px)             rotate(200deg); }
+  66%  { transform: translate(77vw, -46px)             rotate(340deg); }
+  /* ── Land back in water ── */
+  71%  { transform: translate(82vw,  3px)              rotate(360deg); }
+  /* ── Water-level swim to exit ── */
+  79%  { transform: translate(88vw,  7px)              rotate(358deg); }
+  88%  { transform: translate(95vw,  3px)              rotate(360deg); }
+  /* ── Exit right ── */
+  100% { transform: translate(calc(100vw + 72px), 6px) rotate(360deg); }
 }
 
+/* linear so speed is constant — no ease-in/out hesitation at loop point */
 .dolphin-swim-blue {
-  animation: dolphin-swim-blue 22s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+  animation: dolphin-swim-blue 13s linear infinite;
+  opacity: 0.9;
 }
 .dolphin-swim-pink {
-  animation: dolphin-swim-pink 22s cubic-bezier(0.37, 0, 0.63, 1) infinite;
-  animation-delay: -11s;
+  animation: dolphin-swim-pink 13s linear infinite;
+  animation-delay: -6.5s;
+  opacity: 0.85;
 }
 
 /* ── Desktop nav tabs ────────────────────────────── */

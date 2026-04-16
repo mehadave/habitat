@@ -8,122 +8,139 @@ import { motion, AnimatePresence } from 'framer-motion'
 import type { HabitWithStreak } from '../lib/types'
 
 /* ──────────────────────────────────────────────────────────────────────────────
-   Frozen-inspired 3D snowflake ring.
-   No CSS rotation — it just sits in 3D perspective facing slightly left.
-   The 6 arms have 2 branch tiers + diamond tips, Elsa-aesthetic colours.
+   Water-droplet ring with a mini snowflake bullseye target in the center.
+   The outer ring looks like a glassy water hoop with drips hanging from the
+   bottom arc. The inner snowflake is the "target" the dolphins aim for.
+   Rendered with CSS 3D perspective so it faces slightly left-front.
    ────────────────────────────────────────────────────────────────────────────── */
-function IceRing() {
-  const CX = 64, CY = 64              // centre of the 128×128 viewBox
-  const ARM_LEN = 52                  // arm radius
+function WaterRing() {
+  const CX = 60, CY = 62, R = 44
 
-  // Compute one arm's geometry at angle `deg` (0 = top)
-  function arm(deg: number) {
-    const rad = (deg - 90) * (Math.PI / 180)
-    const cos = Math.cos(rad), sin = Math.sin(rad)
-    const perp = rad + Math.PI / 2
-    const pcos = Math.cos(perp), psin = Math.sin(perp)
+  // Drip positions — angles measured clockwise from top (180 = directly below)
+  // Spread across the lower half of the ring
+  const drips = [
+    { angle: 165, stem: 10, r: 2.2 },
+    { angle: 195, stem: 15, r: 3.0 },
+    { angle: 220, stem: 20, r: 3.8 },
+    { angle: 250, stem: 24, r: 4.5 },
+    { angle: 270, stem: 26, r: 5.0 },
+    { angle: 290, stem: 24, r: 4.5 },
+    { angle: 318, stem: 19, r: 3.6 },
+    { angle: 342, stem: 13, r: 2.5 },
+    { angle: 358, stem:  9, r: 1.8 },
+  ]
 
-    const tip = { x: CX + ARM_LEN * cos, y: CY + ARM_LEN * sin }
+  // Small 6-arm snowflake in center — "target" the dolphin aims through
+  const flakeArms = [0, 60, 120, 180, 240, 300]
+  const FR = 14 // flake arm radius
 
-    // Inner branches — at 38 % along arm
-    const b1x = CX + ARM_LEN * 0.38 * cos, b1y = CY + ARM_LEN * 0.38 * sin
-    // Outer branches — at 65 % along arm
-    const b2x = CX + ARM_LEN * 0.65 * cos, b2y = CY + ARM_LEN * 0.65 * sin
-
-    const bL1 = 12, bL2 = 8
-
-    return { tip, cos, sin, pcos, psin,
-      b1: { x: b1x, y: b1y, len: bL1 },
-      b2: { x: b2x, y: b2y, len: bL2 },
-    }
+  // Ring point from angle (clockwise-from-top convention)
+  function ringPt(angleDeg: number) {
+    const a = (angleDeg - 90) * (Math.PI / 180)
+    return { x: CX + R * Math.cos(a), y: CY + R * Math.sin(a), cos: Math.cos(a), sin: Math.sin(a) }
   }
 
-  const angles = [0, 60, 120, 180, 240, 300]
-  const arms = angles.map(arm)
-
   return (
-    <svg viewBox="0 0 128 128" width={100} height={100} style={{ display: 'block' }} fill="none">
+    <svg viewBox="0 0 120 160" width={92} height={123} fill="none">
       <defs>
-        <filter id="sf-glow" x="-30%" y="-30%" width="160%" height="160%">
-          <feGaussianBlur stdDeviation="2.2" result="blur" />
-          <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-        </filter>
-        <filter id="sf-glow-sm" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="1.2" result="blur" />
-          <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-        </filter>
-        <radialGradient id="sf-center" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
-          <stop offset="100%" stopColor="#7dd3fc" stopOpacity="0.4" />
+        <linearGradient id="wring-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%"   stopColor="#bae6fd" stopOpacity="0.95" />
+          <stop offset="50%"  stopColor="#38bdf8" stopOpacity="0.90" />
+          <stop offset="100%" stopColor="#0284c7" stopOpacity="0.80" />
+        </linearGradient>
+        <radialGradient id="drop-grad" cx="38%" cy="32%" r="62%">
+          <stop offset="0%"   stopColor="#e0f2fe" stopOpacity="0.98" />
+          <stop offset="100%" stopColor="#0ea5e9" stopOpacity="0.82" />
         </radialGradient>
+        <filter id="wring-glow" x="-25%" y="-25%" width="150%" height="150%">
+          <feGaussianBlur stdDeviation="2.5" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="drop-glow" x="-70%" y="-70%" width="240%" height="240%">
+          <feGaussianBlur stdDeviation="1.6" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
       </defs>
 
-      {/* ── Soft outer glow halo ── */}
-      <circle cx={CX} cy={CY} r={ARM_LEN + 10} stroke="#7dd3fc" strokeWidth="1"
-        opacity="0.18" filter="url(#sf-glow)" />
+      {/* ── Outer halo ── */}
+      <circle cx={CX} cy={CY} r={R + 9} stroke="#38bdf8" strokeWidth="1.2"
+        opacity="0.18" />
 
-      {/* ── Inner dashed hex-circle ── */}
-      <circle cx={CX} cy={CY} r={ARM_LEN * 0.42} stroke="#bae6fd" strokeWidth="0.8"
-        strokeDasharray="4 5" opacity="0.5" />
+      {/* ── Main glassy water ring ── */}
+      <circle cx={CX} cy={CY} r={R} stroke="url(#wring-grad)" strokeWidth="6"
+        fill="rgba(14,165,233,0.05)" filter="url(#wring-glow)" />
 
-      {/* ── 6 arms ── */}
-      {arms.map((a, i) => (
-        <g key={i} filter="url(#sf-glow)">
-          {/* Main shaft */}
-          <line x1={CX} y1={CY} x2={a.tip.x} y2={a.tip.y}
-            stroke="#bae6fd" strokeWidth="2" strokeLinecap="round" />
+      {/* ── Inner shimmer ring — makes it look thick/glassy ── */}
+      <circle cx={CX} cy={CY} r={R - 3} stroke="rgba(255,255,255,0.22)"
+        strokeWidth="1.5" fill="none" strokeDasharray="6 5" />
 
-          {/* Inner branch pair */}
-          <line x1={a.b1.x} y1={a.b1.y}
-            x2={a.b1.x + a.b1.len * a.pcos} y2={a.b1.y + a.b1.len * a.psin}
-            stroke="#7dd3fc" strokeWidth="1.3" strokeLinecap="round" />
-          <line x1={a.b1.x} y1={a.b1.y}
-            x2={a.b1.x - a.b1.len * a.pcos} y2={a.b1.y - a.b1.len * a.psin}
-            stroke="#7dd3fc" strokeWidth="1.3" strokeLinecap="round" />
-          {/* Tiny tip on each inner branch */}
-          <circle cx={a.b1.x + a.b1.len * a.pcos} cy={a.b1.y + a.b1.len * a.psin}
-            r="1.5" fill="#e0f2fe" opacity="0.85" />
-          <circle cx={a.b1.x - a.b1.len * a.pcos} cy={a.b1.y - a.b1.len * a.psin}
-            r="1.5" fill="#e0f2fe" opacity="0.85" />
+      {/* ── Top-arc highlight — glassy sheen ── */}
+      <path
+        d={`M ${CX - R * 0.72} ${CY - R * 0.68}
+            A ${R} ${R} 0 0 1 ${CX + R * 0.72} ${CY - R * 0.68}`}
+        stroke="rgba(255,255,255,0.45)" strokeWidth="2.2" strokeLinecap="round" fill="none"
+      />
 
-          {/* Outer branch pair */}
-          <line x1={a.b2.x} y1={a.b2.y}
-            x2={a.b2.x + a.b2.len * a.pcos} y2={a.b2.y + a.b2.len * a.psin}
-            stroke="#bae6fd" strokeWidth="1" strokeLinecap="round" />
-          <line x1={a.b2.x} y1={a.b2.y}
-            x2={a.b2.x - a.b2.len * a.pcos} y2={a.b2.y - a.b2.len * a.psin}
-            stroke="#bae6fd" strokeWidth="1" strokeLinecap="round" />
+      {/* ── Water drips hanging from the bottom arc ── */}
+      {drips.map((d, i) => {
+        const p = ringPt(d.angle)
+        // Drip direction: 65 % gravity (down) + 35 % outward from center
+        const gx = 0, gy = 1          // straight down
+        const ox = p.cos, oy = p.sin  // outward from center
+        const dx = gx * 0.65 + ox * 0.35
+        const dy = gy * 0.65 + oy * 0.35
+        const len = Math.sqrt(dx * dx + dy * dy)
+        const nx = dx / len, ny = dy / len
+        const tx = p.x + nx * d.stem
+        const ty = p.y + ny * d.stem
+        const dropX = p.x + nx * (d.stem + d.r * 1.35)
+        const dropY = p.y + ny * (d.stem + d.r * 1.35)
+        return (
+          <g key={i} filter="url(#drop-glow)">
+            <line x1={p.x} y1={p.y} x2={tx} y2={ty}
+              stroke="#38bdf8" strokeWidth="1.4" strokeLinecap="round" opacity="0.72" />
+            <ellipse cx={dropX} cy={dropY} rx={d.r * 0.85} ry={d.r}
+              fill="url(#drop-grad)" />
+          </g>
+        )
+      })}
 
-          {/* Diamond crystal tip — oriented along the arm */}
-          <polygon
-            points={`
-              ${a.tip.x + 5 * a.cos},${a.tip.y + 5 * a.sin}
-              ${a.tip.x + 2.5 * a.pcos},${a.tip.y + 2.5 * a.psin}
-              ${a.tip.x - 5 * a.cos},${a.tip.y - 5 * a.sin}
-              ${a.tip.x - 2.5 * a.pcos},${a.tip.y - 2.5 * a.psin}
-            `}
-            fill="#e0f2fe" opacity="0.92"
-          />
-        </g>
-      ))}
-
-      {/* ── Center 6-pointed star ── */}
-      {angles.map((deg, i) => {
+      {/* ── Center mini snowflake (the "target") ── */}
+      {flakeArms.map((deg, i) => {
         const rad = (deg - 90) * (Math.PI / 180)
-        const ex = CX + 9 * Math.cos(rad), ey = CY + 9 * Math.sin(rad)
-        return <line key={i} x1={CX} y1={CY} x2={ex} y2={ey}
-          stroke="#e0f2fe" strokeWidth="1.8" strokeLinecap="round" />
+        const ex = CX + FR * Math.cos(rad), ey = CY + FR * Math.sin(rad)
+        // Small crossbar at 58 % of arm
+        const bx = CX + FR * 0.58 * Math.cos(rad), by = CY + FR * 0.58 * Math.sin(rad)
+        const pr = rad + Math.PI / 2
+        const bl = 4.5
+        return (
+          <g key={i}>
+            <line x1={CX} y1={CY} x2={ex} y2={ey}
+              stroke="#bae6fd" strokeWidth="1.6" strokeLinecap="round" opacity="0.92" />
+            <line x1={bx - bl * Math.cos(pr)} y1={by - bl * Math.sin(pr)}
+              x2={bx + bl * Math.cos(pr)} y2={by + bl * Math.sin(pr)}
+              stroke="#bae6fd" strokeWidth="1" strokeLinecap="round" opacity="0.72" />
+            <circle cx={ex} cy={ey} r="1.3" fill="#e0f2fe" opacity="0.9" />
+          </g>
+        )
       })}
 
       {/* Center gem */}
-      <circle cx={CX} cy={CY} r="5" fill="url(#sf-center)" filter="url(#sf-glow-sm)" />
+      <circle cx={CX} cy={CY} r="4" fill="#e0f2fe" opacity="0.88" filter="url(#drop-glow)" />
+
+      {/* Tiny scatter bubbles near ring */}
+      <circle cx={CX - R - 7} cy={CY - 12} r="1.6" fill="#7dd3fc" opacity="0.45" />
+      <circle cx={CX + R + 6} cy={CY +  8} r="1.1" fill="#7dd3fc" opacity="0.38" />
+      <circle cx={CX -  8}    cy={CY - R - 8} r="1.3" fill="#bae6fd" opacity="0.55" />
     </svg>
   )
 }
 
 /* ──────────────────────────────────────────────────────────────────────────────
-   Logo-identical dolphin shapes (no book) used for the swim animation.
-   viewBox 0 0 60 60 matches DolphinLogo exactly.
+   Logo-identical dolphin — mirrored to face RIGHT (direction of travel).
+   Original logo has eye at x≈22 (left), tail at x≈56 (right) → faces left.
+   We wrap in <g transform="translate(60,0) scale(-1,1)"> to flip within the
+   60×60 viewBox: x′ = 60 − x → eye at x=38 (right), tail at x=4 (left).
    ────────────────────────────────────────────────────────────────────────────── */
 function SwimDolphin({ color }: { color: 'blue' | 'pink' }) {
   const isPink = color === 'pink'
@@ -134,28 +151,32 @@ function SwimDolphin({ color }: { color: 'blue' | 'pink' }) {
   const eyeBg     = isPink ? '#fce7f3' : '#dbeafe'
   const eyePupil  = isPink ? '#9d174d' : '#1e3a8a'
 
+  const sz = isPink ? 44 : 50
+
   return (
-    <svg viewBox="0 0 60 60" width={isPink ? 44 : 50} height={isPink ? 44 : 50}
-      fill="none" xmlns="http://www.w3.org/2000/svg">
-      {/* Body */}
-      <ellipse cx="28" cy="34" rx="18" ry="13" fill={bodyBase} />
-      {/* Upper body highlight */}
-      <path d="M12 28 Q18 18 28 20 Q38 18 44 28 Q38 26 28 27 Q18 26 12 28Z" fill={bodyTop} />
-      {/* Dorsal fin */}
-      <path d="M26 20 Q30 10 38 14 Q34 18 30 21Z" fill={dorsalFin} />
-      {/* Left flipper */}
-      <path d="M13 34 Q8 38 10 44 Q14 40 16 36Z" fill={bodyBase} />
-      {/* Right flipper */}
-      <path d="M42 34 Q46 37 45 42 Q42 39 40 36Z" fill={bodyBase} />
-      {/* Tail */}
-      <path d="M44 38 Q52 32 56 26 Q52 30 48 34 Q54 26 56 18 Q50 24 46 32Z" fill={tailColor} />
-      {/* Eye */}
-      <ellipse cx="22" cy="27" rx="4" ry="3.5" fill={eyeBg} />
-      <circle cx="22.5" cy="27" r="2" fill={eyePupil} />
-      <circle cx="23.5" cy="25.8" r="0.8" fill="white" />
-      {/* Smile */}
-      <path d="M17 31 Q20 33 23 31" stroke={tailColor} strokeWidth="0.8"
-        strokeLinecap="round" fill="none" />
+    <svg viewBox="0 0 60 60" width={sz} height={sz} fill="none">
+      {/* translate(60,0) scale(-1,1) mirrors the drawing: x → 60-x */}
+      <g transform="translate(60,0) scale(-1,1)">
+        {/* Body */}
+        <ellipse cx="28" cy="34" rx="18" ry="13" fill={bodyBase} />
+        {/* Upper body highlight */}
+        <path d="M12 28 Q18 18 28 20 Q38 18 44 28 Q38 26 28 27 Q18 26 12 28Z" fill={bodyTop} />
+        {/* Dorsal fin */}
+        <path d="M26 20 Q30 10 38 14 Q34 18 30 21Z" fill={dorsalFin} />
+        {/* Left flipper */}
+        <path d="M13 34 Q8 38 10 44 Q14 40 16 36Z" fill={bodyBase} />
+        {/* Right flipper */}
+        <path d="M42 34 Q46 37 45 42 Q42 39 40 36Z" fill={bodyBase} />
+        {/* Tail */}
+        <path d="M44 38 Q52 32 56 26 Q52 30 48 34 Q54 26 56 18 Q50 24 46 32Z" fill={tailColor} />
+        {/* Eye */}
+        <ellipse cx="22" cy="27" rx="4" ry="3.5" fill={eyeBg} />
+        <circle cx="22.5" cy="27" r="2" fill={eyePupil} />
+        <circle cx="23.5" cy="25.8" r="0.8" fill="white" />
+        {/* Smile */}
+        <path d="M17 31 Q20 33 23 31" stroke={tailColor} strokeWidth="0.8"
+          strokeLinecap="round" fill="none" />
+      </g>
     </svg>
   )
 }
@@ -168,58 +189,58 @@ function OceanWave({ darkMode }: { darkMode: boolean }) {
 
   return (
     /*
-     * overflow: visible → dolphins can arc above the wave strip without clipping.
-     * The parent hero div has overflow-x: clip so no horizontal scroll appears.
-     * Ring is positioned at ~65 % from left (between middle and right).
-     * Dolphins are below the ring in z-order so they appear to loop through
-     * the snowflake opening rather than sitting on top of it.
+     * overflow: visible → dolphins arc above the hero boundary freely.
+     * Parent hero div uses overflow-x: clip → no horizontal scrollbar.
+     * Ring centred at 76 % from left (between middle and right edge).
+     * Ring bottom is 44 px above the wave floor — clear of all page text.
+     * Dolphins z-index 4, ring z-index 3 → dolphins pass in front.
      */
     <div
       className="pointer-events-none"
-      style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 140, overflow: 'visible' }}
+      style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 145, overflow: 'visible' }}
     >
-      {/* ── Frozen 3D snowflake ring ── */}
-      {/*
-        perspective(520px) rotateY(55deg) → face tilts toward the left
-        rotateX(-12deg) → slight tilt up for depth
-        The ring sits at 64 % from left (between mid and right),
-        and 42 px up from ocean floor — well below any text.
-      */}
+      {/* ── Water-drip ring with snowflake target ──
+          CSS 3D: perspective(420px) rotateY(42deg) → opening faces left-front,
+          slightly more toward the left so dolphins visually swim through it.
+          rotateX(-10deg) → small upward tilt for depth.
+          Ring SVG is 92×123 px → centre it at left: calc(76% - 46px).
+          bottom: 46 px keeps it above the wave tops and well below any text.
+      ── */}
       <div style={{
         position: 'absolute',
-        left: 'calc(64% - 50px)',   // centre the 100px ring at 64 % of page
-        bottom: 42,
+        left: 'calc(76% - 46px)',
+        bottom: 44,
         zIndex: 3,
-        filter: 'drop-shadow(0 0 18px rgba(56,189,248,0.60)) drop-shadow(0 0 6px rgba(186,230,253,0.4))',
-        transform: 'perspective(520px) rotateY(55deg) rotateX(-12deg)',
+        transform: 'perspective(420px) rotateY(42deg) rotateX(-10deg)',
         transformOrigin: 'center center',
+        filter: 'drop-shadow(0 0 16px rgba(14,165,233,0.65)) drop-shadow(0 0 5px rgba(186,230,253,0.45))',
       }}>
-        <IceRing />
+        <WaterRing />
       </div>
 
-      {/* ── Blue dolphin ── z-index 4 so it renders above the ring */}
+      {/* ── Blue dolphin — swims left → right ── */}
       <div
         className="dolphin-swim-blue"
-        style={{ position: 'absolute', bottom: 65, left: 0, zIndex: 4 }}
+        style={{ position: 'absolute', bottom: 62, left: 0, zIndex: 4 }}
       >
         <SwimDolphin color="blue" />
       </div>
 
-      {/* ── Pink dolphin ── */}
+      {/* ── Pink dolphin — offset -6.5 s ── */}
       <div
         className="dolphin-swim-pink"
-        style={{ position: 'absolute', bottom: 65, left: 0, zIndex: 4 }}
+        style={{ position: 'absolute', bottom: 62, left: 0, zIndex: 4 }}
       >
         <SwimDolphin color="pink" />
       </div>
 
       {/* ── 4-layer wave SVG ── */}
-      <svg viewBox="0 0 1440 140" preserveAspectRatio="none"
+      <svg viewBox="0 0 1440 145" preserveAspectRatio="none"
         style={{ width: '200%', height: '100%', position: 'absolute', bottom: 0 }}>
-        <path className="wave-1" d="M0,55 C180,28 360,75 540,55 C720,28 900,75 1080,55 C1260,28 1440,75 1440,55 L1440,140 L0,140 Z" fill={fill1} />
-        <path className="wave-2" d="M0,68 C200,44 400,86 600,68 C800,44 1000,86 1200,68 C1400,44 1440,68 1440,68 L1440,140 L0,140 Z" fill={fill2} />
-        <path className="wave-3" d="M0,82 C240,60 480,96 720,82 C960,64 1200,96 1440,82 L1440,140 L0,140 Z" fill={fill3} />
-        <path className="wave-4" d="M0,96 C300,78 600,108 900,96 C1200,84 1440,108 1440,96 L1440,140 L0,140 Z" fill={fill4} />
+        <path className="wave-1" d="M0,55 C180,28 360,75 540,55 C720,28 900,75 1080,55 C1260,28 1440,75 1440,55 L1440,145 L0,145 Z" fill={fill1} />
+        <path className="wave-2" d="M0,68 C200,44 400,86 600,68 C800,44 1000,86 1200,68 C1400,44 1440,68 1440,68 L1440,145 L0,145 Z" fill={fill2} />
+        <path className="wave-3" d="M0,82 C240,60 480,96 720,82 C960,64 1200,96 1440,82 L1440,145 L0,145 Z" fill={fill3} />
+        <path className="wave-4" d="M0,96 C300,78 600,108 900,96 C1200,84 1440,108 1440,96 L1440,145 L0,145 Z" fill={fill4} />
       </svg>
     </div>
   )
