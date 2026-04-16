@@ -11,7 +11,31 @@ import type { HabitWithStreak } from '../lib/types'
    Realistic dolphin SVG silhouette path
    ────────────────────────────────────────────────────────────────────────────── */
 
-const DOLPHIN_PATH = "M2,22 C4,20 6,16 10,14 C14,12 18,10 22,9 C26,8 30,8.5 33,10 C36,11.5 38,13 40,15 C42,17 43,19 44,20 C44.5,20.5 45,20 45.5,19.5 C46,19 46.5,18 46,17.5 C45,16 44,14 42,12 C40,10 38,8 35,7 C32,6 28,6 24,7 C20,8 16,10 12,13 C8,16 5,19 3,22 C2.5,23 2,24 2.5,24.5 C3,25 4,24 5,23 C5,23 4,24 3.5,24.5 L2,24.5 Z M33,12 C33.5,11.5 34.5,11.5 35,12 C35.5,12.5 35.5,13.5 35,14 C34.5,14.5 33.5,14.5 33,14 C32.5,13.5 32.5,12.5 33,12 Z M6,21 C6.5,22 5.5,23.5 4,24 C3,24.5 2,24 2,23 C2,22 3,21 4,20.5 C5,20 5.5,20 6,21 Z"
+// Realistic leaping-dolphin silhouette — nose at right, tail at left, body in graceful arc
+// viewBox "0 0 48 32"
+const DOLPHIN_PATH = [
+  // ── Beak tip to dorsal outline ──
+  "M46,28",                         // beak tip (lower-right)
+  "L44,23",                         // top of beak
+  "C40,18 34,15 28,16",             // forehead / back of head
+  "C22,17 16,21 12,25",             // upper back
+  "C9,27 7,29 6,30",                // peduncle top
+  // ── Upper tail fluke ──
+  "C4,27 2,23 2,21",
+  "C4,22 6,26 8,28",
+  // ── Lower tail fluke ──
+  "C6,30 4,33 2,34",                // lower lobe
+  "C4,33 7,31 9,31",
+  // ── Belly back to beak ──
+  "C13,33 20,35 28,34",
+  "C34,33 40,30 44,27",
+  "L46,30",
+  "L46,28 Z",
+  // ── Dorsal fin (separate sub-path) ──
+  "M28,16 C26,10 24,6 22,6 C20,8 21,14 24,17 Z",
+  // ── Eye ──
+  "M41,21 A1.6,1.6 0 1,0 41.01,21 Z",
+].join(" ")
 
 function OceanWave({ darkMode }: { darkMode: boolean }) {
   const fill1 = darkMode ? 'rgba(56,189,248,0.14)' : 'rgba(37,99,235,0.12)'
@@ -93,7 +117,7 @@ function PodiumSection({ habits, onToggle, darkMode }: {
 }) {
   const todayStr = localDateStr()
   const ranked = habits
-    .filter(h => (h.streak?.current_streak ?? 0) >= 3)
+    .filter(h => (h.streak?.current_streak ?? 0) >= 1)
     .sort((a, b) => (b.streak?.current_streak ?? 0) - (a.streak?.current_streak ?? 0))
     .slice(0, 3)
 

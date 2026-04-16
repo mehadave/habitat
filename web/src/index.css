@@ -25,7 +25,7 @@ body {
     radial-gradient(ellipse at 50% 110%, rgba(99,102,241,0.06) 0%, transparent 45%);
   background-attachment: fixed;
   position: relative;
-  overflow: hidden;
+  overflow: clip; /* clips without creating a scroll container — keeps fixed modals working */
 }
 
 /* ── Ocean animated background (dark mode) ──────── */
@@ -68,8 +68,10 @@ body {
   100% { transform: translateY(5px); opacity: 0.6; }
 }
 
-/* Ensure page content stays above animated bg */
-.app-bg > * {
+/* Ensure page content stays above animated bg.
+   Exclude elements that use the 'fixed' Tailwind class (modals, overlays)
+   so their position:fixed isn't overridden by this rule. */
+.app-bg > *:not([class~="fixed"]) {
   position: relative;
   z-index: 1;
 }
