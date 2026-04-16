@@ -140,8 +140,8 @@ function AddEditSheet({
           </button>
         </div>
 
-        {/* Emoji picker */}
-        <div className="flex gap-2 overflow-x-auto no-scrollbar mb-4 pb-1">
+        {/* Emoji picker — py-2 px-1 ensures the scale(1.1) border isn't clipped */}
+        <div className="flex gap-2 overflow-x-auto no-scrollbar mb-4 py-2 px-1">
           {EMOJIS.map((e) => (
             <button
               key={e}
