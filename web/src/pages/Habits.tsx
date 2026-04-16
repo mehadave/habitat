@@ -107,20 +107,20 @@ function AddEditSheet({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 flex items-start justify-center pt-[8vh] px-4 pb-4"
       style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
       onClick={onClose}
     >
       <motion.div
-        initial={{ scale: 0.92, opacity: 0, y: 12 }}
+        initial={{ scale: 0.92, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
-        exit={{ scale: 0.92, opacity: 0, y: 12 }}
+        exit={{ scale: 0.92, opacity: 0, y: 20 }}
         transition={{ type: 'spring', damping: 24, stiffness: 320 }}
         className="w-full max-w-md rounded-3xl p-6"
         style={{
           background: t.sheetBg,
           border: `1px solid ${t.cardBorder}`,
-          maxHeight: '88vh',
+          maxHeight: '80vh',
           overflowY: 'auto',
           boxShadow: '0 24px 64px rgba(0,0,0,0.45)',
         }}
