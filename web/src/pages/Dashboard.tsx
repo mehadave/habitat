@@ -8,34 +8,95 @@ import { motion, AnimatePresence } from 'framer-motion'
 import type { HabitWithStreak } from '../lib/types'
 
 /* ──────────────────────────────────────────────────────────────────────────────
-   Realistic dolphin SVG silhouette path
+   Dolphin silhouette — clean torpedo body, nose right, tail left
    ────────────────────────────────────────────────────────────────────────────── */
-
-// Realistic leaping-dolphin silhouette — nose at right, tail at left, body in graceful arc
-// viewBox "0 0 48 32"
-const DOLPHIN_PATH = [
-  // ── Beak tip to dorsal outline ──
-  "M46,28",                         // beak tip (lower-right)
-  "L44,23",                         // top of beak
-  "C40,18 34,15 28,16",             // forehead / back of head
-  "C22,17 16,21 12,25",             // upper back
-  "C9,27 7,29 6,30",                // peduncle top
-  // ── Upper tail fluke ──
-  "C4,27 2,23 2,21",
-  "C4,22 6,26 8,28",
-  // ── Lower tail fluke ──
-  "C6,30 4,33 2,34",                // lower lobe
-  "C4,33 7,31 9,31",
-  // ── Belly back to beak ──
-  "C13,33 20,35 28,34",
-  "C34,33 40,30 44,27",
-  "L46,30",
-  "L46,28 Z",
-  // ── Dorsal fin (separate sub-path) ──
-  "M28,16 C26,10 24,6 22,6 C20,8 21,14 24,17 Z",
-  // ── Eye ──
-  "M41,21 A1.6,1.6 0 1,0 41.01,21 Z",
+const DOLPHIN_BODY = [
+  "M46,15 L44,11",
+  "C40,6 34,4 28,5",
+  "C22,6 16,9 12,13",
+  "C9,15 7,17 6,18",
+  "C4,15 2,11 2,9",
+  "C4,10 6,14 8,16",
+  "C6,18 4,21 2,22",
+  "C4,21 7,19 9,19",
+  "C13,21 20,23 28,22",
+  "C34,21 40,18 44,15",
+  "L46,18 L46,15 Z",
+  "M28,5 C26,0 24,0 23,1 C22,3 23,7 25,8 Z",
 ].join(" ")
+
+/* Frozen-inspired ice ring SVG */
+function IceRing() {
+  const pts6 = Array.from({ length: 6 }, (_, i) => {
+    const a = (i * 60 - 90) * (Math.PI / 180)
+    return { x: 50 + 44 * Math.cos(a), y: 50 + 44 * Math.sin(a) }
+  })
+  const pts6b = Array.from({ length: 6 }, (_, i) => {
+    const a = (i * 60 - 60) * (Math.PI / 180)
+    return { x: 50 + 44 * Math.cos(a), y: 50 + 44 * Math.sin(a) }
+  })
+
+  return (
+    <svg
+      viewBox="0 0 100 100"
+      width={88}
+      height={88}
+      style={{ display: 'block' }}
+    >
+      <defs>
+        <linearGradient id="iceG1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%"   stopColor="#e0f2fe" stopOpacity="0.95" />
+          <stop offset="45%"  stopColor="#38bdf8" stopOpacity="0.75" />
+          <stop offset="100%" stopColor="#bae6fd" stopOpacity="0.9"  />
+        </linearGradient>
+        <filter id="iceGlow">
+          <feGaussianBlur stdDeviation="2.5" result="blur" />
+          <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
+      </defs>
+
+      {/* Outer glow ring */}
+      <circle cx="50" cy="50" r="46" stroke="#7dd3fc" strokeWidth="1" fill="none" opacity="0.25" />
+
+      {/* Main ice ring */}
+      <circle cx="50" cy="50" r="42" stroke="url(#iceG1)" strokeWidth="4.5"
+        fill="rgba(186,230,253,0.04)" filter="url(#iceGlow)" />
+
+      {/* Inner dashed ring */}
+      <circle cx="50" cy="50" r="35" stroke="#bae6fd" strokeWidth="1" fill="none"
+        strokeDasharray="5 4" opacity="0.45" />
+
+      {/* Crystal spikes at 6 outer points */}
+      {pts6.map((p, i) => {
+        const angle = i * 60 - 90
+        const rad = angle * (Math.PI / 180)
+        const tx = p.x + 7 * Math.cos(rad)
+        const ty = p.y + 7 * Math.sin(rad)
+        return (
+          <g key={i}>
+            <line x1={p.x} y1={p.y} x2={tx} y2={ty}
+              stroke="#e0f2fe" strokeWidth="1.5" strokeLinecap="round" opacity="0.85" />
+            <circle cx={tx} cy={ty} r="1.5" fill="#bae6fd" opacity="0.9" />
+          </g>
+        )
+      })}
+
+      {/* Sparkle dots between spikes */}
+      {pts6b.map((p, i) => (
+        <circle key={i} cx={p.x} cy={p.y} r="1" fill="#e0f2fe" opacity="0.6" />
+      ))}
+
+      {/* Inner shimmer circles */}
+      <circle cx="50" cy="50" r="20" stroke="rgba(186,230,253,0.2)" strokeWidth="1"
+        fill="rgba(186,230,253,0.03)" strokeDasharray="3 6" />
+
+      {/* Center star glint */}
+      <circle cx="50" cy="50" r="2.5" fill="#bae6fd" opacity="0.5" />
+      <line x1="47" y1="50" x2="53" y2="50" stroke="#e0f2fe" strokeWidth="0.8" opacity="0.6" />
+      <line x1="50" y1="47" x2="50" y2="53" stroke="#e0f2fe" strokeWidth="0.8" opacity="0.6" />
+    </svg>
+  )
+}
 
 function OceanWave({ darkMode }: { darkMode: boolean }) {
   const fill1 = darkMode ? 'rgba(56,189,248,0.14)' : 'rgba(37,99,235,0.12)'
@@ -44,63 +105,77 @@ function OceanWave({ darkMode }: { darkMode: boolean }) {
   const fill4 = darkMode ? 'rgba(37,99,235,0.05)' : 'rgba(37,99,235,0.04)'
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 overflow-hidden pointer-events-none" style={{ height: 100 }}>
-      {/* Dolphin 1 — blue, leaping left-to-right */}
-      <svg
-        className="dolphin-arc-1"
-        viewBox="0 0 48 32"
-        fill="none"
-        style={{ position: 'absolute', width: 44, height: 30, left: '20%', bottom: 35 }}
+    /*
+     * overflow: visible — lets dolphins arc above the hero boundary without clipping.
+     * The parent hero div uses overflow-x: clip so no horizontal scrollbar appears.
+     */
+    <div
+      className="pointer-events-none"
+      style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 130, overflow: 'visible' }}
+    >
+      {/* ── Ice ring — centered, Frozen-inspired ── */}
+      <div
+        style={{
+          position: 'absolute',
+          left: '50%',
+          bottom: 62,
+          transform: 'translateX(-50%)',
+          filter: 'drop-shadow(0 0 14px rgba(56,189,248,0.55))',
+          zIndex: 1,
+        }}
       >
-        <path
-          d={DOLPHIN_PATH}
-          fill="#38BDF8"
-          opacity="0.9"
-          transform="rotate(-25 24 16)"
-        />
-      </svg>
-
-      {/* Dolphin 2 — pink, leaping right-to-left (mirrored) */}
-      <svg
-        className="dolphin-arc-2"
-        viewBox="0 0 48 32"
-        fill="none"
-        style={{ position: 'absolute', width: 38, height: 26, right: '16%', bottom: 28 }}
-      >
-        <path
-          d={DOLPHIN_PATH}
-          fill="#F472B6"
-          opacity="0.85"
-          transform="scale(-1,1) translate(-48,0) rotate(-18 24 16)"
-        />
-      </svg>
-
-      {/* Splash drops — blue */}
-      <div className="splash-left" style={{ position: 'absolute', left: '24%', bottom: 30 }}>
-        {[0, 1, 2].map(i => (
-          <div key={i} className={`splash-drop splash-drop-${i}`} style={{
-            position: 'absolute', width: 3, height: 3, borderRadius: '50%',
-            background: '#38BDF8', opacity: 0.5,
-          }} />
-        ))}
+        <div className="ice-ring-spin">
+          <IceRing />
+        </div>
       </div>
 
-      {/* Splash drops — pink */}
-      <div className="splash-right" style={{ position: 'absolute', right: '18%', bottom: 24 }}>
-        {[0, 1, 2].map(i => (
-          <div key={i} className={`splash-drop splash-drop-${i}`} style={{
-            position: 'absolute', width: 3, height: 3, borderRadius: '50%',
-            background: '#F472B6', opacity: 0.4,
-          }} />
-        ))}
-      </div>
+      {/* ── Blue dolphin — full-width left→right swim ── */}
+      <svg
+        className="dolphin-swim-blue"
+        viewBox="0 0 48 24"
+        fill="none"
+        style={{ position: 'absolute', width: 52, height: 26, bottom: 70, left: 0, zIndex: 2 }}
+      >
+        <defs>
+          <linearGradient id="blueDolphinG" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#7dd3fc" />
+            <stop offset="100%" stopColor="#2563eb" />
+          </linearGradient>
+        </defs>
+        <path d={DOLPHIN_BODY} fill="url(#blueDolphinG)" />
+        {/* Eye */}
+        <ellipse cx="41" cy="13" rx="1.8" ry="1.5" fill="white" opacity="0.9" />
+        <circle cx="41.4" cy="13" r="0.9" fill="#1e3a8a" />
+        <circle cx="41.8" cy="12.4" r="0.35" fill="white" />
+      </svg>
 
-      {/* 4-layer waves */}
-      <svg viewBox="0 0 1440 100" preserveAspectRatio="none" style={{ width: '200%', height: '100%', position: 'absolute', bottom: 0 }}>
-        <path className="wave-1" d="M0,35 C180,15 360,55 540,35 C720,15 900,55 1080,35 C1260,15 1440,55 1440,35 L1440,100 L0,100 Z" fill={fill1} />
-        <path className="wave-2" d="M0,45 C200,25 400,65 600,45 C800,25 1000,65 1200,45 C1400,25 1440,45 1440,45 L1440,100 L0,100 Z" fill={fill2} />
-        <path className="wave-3" d="M0,55 C240,35 480,70 720,55 C960,40 1200,70 1440,55 L1440,100 L0,100 Z" fill={fill3} />
-        <path className="wave-4" d="M0,68 C300,50 600,78 900,68 C1200,58 1440,78 1440,68 L1440,100 L0,100 Z" fill={fill4} />
+      {/* ── Pink dolphin — follows blue, offset by -9s ── */}
+      <svg
+        className="dolphin-swim-pink"
+        viewBox="0 0 48 24"
+        fill="none"
+        style={{ position: 'absolute', width: 44, height: 22, bottom: 70, left: 0, zIndex: 2 }}
+      >
+        <defs>
+          <linearGradient id="pinkDolphinG" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#f9a8d4" />
+            <stop offset="100%" stopColor="#be185d" />
+          </linearGradient>
+        </defs>
+        <path d={DOLPHIN_BODY} fill="url(#pinkDolphinG)" />
+        {/* Eye */}
+        <ellipse cx="41" cy="13" rx="1.8" ry="1.5" fill="white" opacity="0.9" />
+        <circle cx="41.4" cy="13" r="0.9" fill="#9d174d" />
+        <circle cx="41.8" cy="12.4" r="0.35" fill="white" />
+      </svg>
+
+      {/* ── 4-layer wave SVG ── */}
+      <svg viewBox="0 0 1440 130" preserveAspectRatio="none"
+        style={{ width: '200%', height: '100%', position: 'absolute', bottom: 0 }}>
+        <path className="wave-1" d="M0,50 C180,25 360,70 540,50 C720,25 900,70 1080,50 C1260,25 1440,70 1440,50 L1440,130 L0,130 Z" fill={fill1} />
+        <path className="wave-2" d="M0,62 C200,40 400,80 600,62 C800,40 1000,80 1200,62 C1400,40 1440,62 1440,62 L1440,130 L0,130 Z" fill={fill2} />
+        <path className="wave-3" d="M0,75 C240,55 480,90 720,75 C960,58 1200,90 1440,75 L1440,130 L0,130 Z" fill={fill3} />
+        <path className="wave-4" d="M0,90 C300,72 600,100 900,90 C1200,78 1440,100 1440,90 L1440,130 L0,130 Z" fill={fill4} />
       </svg>
     </div>
   )
@@ -443,8 +518,8 @@ export default function Dashboard() {
 
   return (
     <div className="app-bg min-h-screen" style={{ paddingTop: 60, paddingBottom: 80 }}>
-      {/* Hero section */}
-      <div className="flex flex-col items-center px-4 pt-6 pb-20 relative">
+      {/* Hero section — overflow-x:clip prevents horizontal scroll while allowing dolphins to arc vertically */}
+      <div className="flex flex-col items-center px-4 pt-6 pb-20 relative" style={{ overflowX: 'clip' }}>
         <div className="dolphin-glow rounded-full p-3 mb-3" style={{ background: darkMode ? 'rgba(56,189,248,0.08)' : 'rgba(37,99,235,0.08)' }}>
           <DolphinLogo size={56} />
         </div>

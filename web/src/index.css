@@ -240,6 +240,64 @@ body.light-mode ::-webkit-scrollbar-thumb { background: rgba(11,20,55,0.15); }
 }
 .dolphin-jump { animation: dolphin-jump 0.8s ease-in-out forwards; }
 
+/* ── Full-width dolphin swim across the page ─────── */
+/*
+ * Dolphins travel from left:-80px to right:calc(100vw+80px).
+ * At ~50% they reach the ice ring and execute a full 360° somersault.
+ * After each loop they restart from the left — natural & seamless.
+ */
+@keyframes dolphin-swim-blue {
+  0%   { transform: translate(-80px, 8px) rotate(-8deg); opacity: 0; }
+  4%   { opacity: 0.92; }
+  22%  { transform: translate(20vw, -38px) rotate(-22deg); opacity: 0.92; }
+  40%  { transform: translate(40vw, -58px) rotate(-14deg); opacity: 0.92; }
+  /* Approaching ice ring */
+  47%  { transform: translate(48vw, -62px) rotate(-6deg); opacity: 0.92; }
+  /* Through ring — full somersault */
+  50%  { transform: translate(52vw, -65px) rotate(180deg); opacity: 0.92; }
+  53%  { transform: translate(56vw, -62px) rotate(360deg); opacity: 0.92; }
+  /* Post-ring glide */
+  66%  { transform: translate(68vw, -36px) rotate(-14deg); opacity: 0.92; }
+  84%  { transform: translate(86vw, 2px) rotate(-5deg); opacity: 0.92; }
+  96%  { opacity: 0.9; }
+  100% { transform: translate(calc(100vw + 80px), 8px) rotate(0deg); opacity: 0; }
+}
+
+@keyframes dolphin-swim-pink {
+  0%   { transform: translate(-80px, 18px) rotate(-6deg); opacity: 0; }
+  4%   { opacity: 0.85; }
+  22%  { transform: translate(17vw, -22px) rotate(-16deg); opacity: 0.85; }
+  40%  { transform: translate(37vw, -40px) rotate(-10deg); opacity: 0.85; }
+  /* Approaching ice ring (slightly lower path) */
+  47%  { transform: translate(47vw, -44px) rotate(-3deg); opacity: 0.85; }
+  /* Through ring — somersault */
+  50%  { transform: translate(51vw, -47px) rotate(180deg); opacity: 0.85; }
+  53%  { transform: translate(55vw, -44px) rotate(360deg); opacity: 0.85; }
+  /* Post-ring */
+  66%  { transform: translate(66vw, -20px) rotate(-10deg); opacity: 0.85; }
+  84%  { transform: translate(84vw, 14px) rotate(-4deg); opacity: 0.85; }
+  96%  { opacity: 0.8; }
+  100% { transform: translate(calc(100vw + 80px), 18px) rotate(0deg); opacity: 0; }
+}
+
+.dolphin-swim-blue {
+  animation: dolphin-swim-blue 18s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+.dolphin-swim-pink {
+  animation: dolphin-swim-pink 18s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  animation-delay: -9s; /* stagger by half so they don't bunch up */
+}
+
+/* Ice ring — slow gentle spin */
+@keyframes ice-ring-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.ice-ring-spin {
+  animation: ice-ring-spin 12s linear infinite;
+  transform-origin: center;
+}
+
 /* ── Desktop nav tabs ────────────────────────────── */
 @media (min-width: 768px) {
   .bottom-nav-mobile {

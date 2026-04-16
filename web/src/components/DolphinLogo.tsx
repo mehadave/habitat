@@ -6,120 +6,93 @@ interface DolphinLogoProps {
 
 export function DolphinLogo({ size = 40, className, color = 'blue' }: DolphinLogoProps) {
   const isPink = color === 'pink'
-  const body    = isPink ? '#F9A8D4' : '#60A5FA'
-  const bodyMid = isPink ? '#F472B6' : '#38BDF8'
-  const bodyDark = isPink ? '#EC4899' : '#2563EB'
-  const belly   = isPink ? '#FDE8F3' : '#DBEAFE'
+
+  const bodyBase  = isPink ? '#9d174d' : '#1e3a8a'
+  const bodyTop   = isPink ? '#ec4899' : '#2563eb'
+  const dorsalFin = isPink ? '#f9a8d4' : '#93c5fd'
+  const tailColor = isPink ? '#be185d' : '#1d4ed8'
+  const eyeBg     = isPink ? '#fce7f3' : '#dbeafe'
+  const eyePupil  = isPink ? '#9d174d' : '#1e3a8a'
 
   return (
     <svg
       width={size}
       height={size}
-      viewBox="0 0 68 52"
+      viewBox="0 0 60 60"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
     >
-      {/* ── Body — sleek torpedo profile, facing right ── */}
-      {/* Upper edge: tail root → shoulder → back → head */}
-      {/* Lower edge: head → belly → tail root */}
+      {/* Body - dark base */}
+      <ellipse cx="28" cy="34" rx="18" ry="13" fill={bodyBase} />
+
+      {/* Upper body - bright highlight */}
       <path
-        d="M62,22
-           C58,17 52,14 44,14
-           C36,14 28,15 20,17
-           C14,18 10,21 8,25
-           C10,29 14,32 20,33
-           C28,35 36,36 44,36
-           C52,36 58,33 62,28
-           Z"
-        fill={body}
+        d="M12 28 Q18 18 28 20 Q38 18 44 28 Q38 26 28 27 Q18 26 12 28Z"
+        fill={bodyTop}
       />
 
-      {/* ── Belly highlight ── lighter ventral strip */}
+      {/* Dorsal fin - sky / pink swept back */}
       <path
-        d="M60,27
-           C56,32 50,35 44,36
-           C36,37 28,36 20,34
-           C14,33 10,31 8,29
-           C12,30 18,32 26,33
-           C36,34 48,33 56,29
-           Z"
-        fill={belly}
-        opacity="0.65"
+        d="M26 20 Q30 10 38 14 Q34 18 30 21Z"
+        fill={dorsalFin}
       />
 
-      {/* ── Beak / rostrum ── long pointed snout */}
+      {/* Left flipper */}
       <path
-        d="M62,22
-           C60,19 58,17 56,17
-           C54,17 52,18 52,18
-           L66,20
-           L66,24
-           L52,23
-           C52,23 54,24 56,25
-           C58,26 60,24 62,28
-           Z"
-        fill={bodyMid}
+        d="M13 34 Q8 38 10 44 Q14 40 16 36Z"
+        fill={bodyBase}
       />
 
-      {/* ── Dorsal fin ── prominent swept-back triangle */}
+      {/* Right flipper */}
       <path
-        d="M42,14
-           C40,8 36,2 34,2
-           C32,4 31,10 33,14
-           Z"
-        fill={bodyDark}
+        d="M42 34 Q46 37 45 42 Q42 39 40 36Z"
+        fill={bodyBase}
       />
 
-      {/* ── Tail flukes ── forked */}
-      {/* Upper lobe */}
+      {/* Tail - forked */}
       <path
-        d="M8,25
-           C6,21 2,18 2,16
-           C4,17 7,21 9,24
-           Z"
-        fill={bodyDark}
-      />
-      {/* Lower lobe */}
-      <path
-        d="M8,25
-           C6,29 2,34 2,36
-           C4,35 7,31 9,27
-           Z"
-        fill={bodyDark}
+        d="M44 38 Q52 32 56 26 Q52 30 48 34 Q54 26 56 18 Q50 24 46 32Z"
+        fill={tailColor}
       />
 
-      {/* ── Pectoral flipper ── */}
+      {/* Eye white */}
+      <ellipse cx="22" cy="27" rx="4" ry="3.5" fill={eyeBg} />
+
+      {/* Pupil */}
+      <circle cx="22.5" cy="27" r="2" fill={eyePupil} />
+
+      {/* Eye highlight */}
+      <circle cx="23.5" cy="25.8" r="0.8" fill="#ffffff" />
+
+      {/* Smile */}
       <path
-        d="M30,33
-           C26,40 20,45 18,43
-           C20,41 26,37 28,33
-           Z"
-        fill={bodyDark}
-        opacity="0.7"
-      />
-
-      {/* ── Eye ── */}
-      <ellipse cx="54" cy="20" rx="2.8" ry="2.4" fill="white" />
-      <circle cx="54.5" cy="20" r="1.5" fill="#1a2744" />
-      <circle cx="55.2" cy="19.3" r="0.55" fill="white" />
-
-      {/* ── Melon highlight ── subtle sheen on forehead */}
-      <ellipse
-        cx="55" cy="17" rx="5" ry="3"
-        fill="white"
-        opacity="0.12"
-        transform="rotate(-10 55 17)"
-      />
-
-      {/* ── Smile ── */}
-      <path
-        d="M60,26 Q57,28 55,27"
-        stroke={bodyDark}
-        strokeWidth="0.85"
+        d="M17 31 Q20 33 23 31"
+        stroke={tailColor}
+        strokeWidth="0.8"
         strokeLinecap="round"
         fill="none"
       />
+
+      {/* Book - white rounded rectangle */}
+      <rect x="10" y="36" width="14" height="10" rx="1.5" fill="#ffffff" />
+
+      {/* Book spine */}
+      <line x1="17" y1="36" x2="17" y2="46" stroke="#cbd5e1" strokeWidth="0.8" />
+
+      {/* Book pages open V at top */}
+      <path d="M10 37 Q13.5 34 17 37" stroke="#cbd5e1" strokeWidth="0.7" fill="none" strokeLinecap="round" />
+      <path d="M17 37 Q20.5 34 24 37" stroke="#cbd5e1" strokeWidth="0.7" fill="none" strokeLinecap="round" />
+
+      {/* Book text lines left page */}
+      <rect x="11.5" y="39" width="4" height="1" rx="0.4" fill="#94a3b8" />
+      <rect x="11.5" y="41" width="4" height="1" rx="0.4" fill="#cbd5e1" />
+      <rect x="11.5" y="43" width="3" height="1" rx="0.4" fill="#cbd5e1" />
+
+      {/* Book text lines right page */}
+      <rect x="18" y="39" width="4" height="1" rx="0.4" fill="#94a3b8" />
+      <rect x="18" y="41" width="4" height="1" rx="0.4" fill="#cbd5e1" />
+      <rect x="18" y="43" width="3" height="1" rx="0.4" fill="#cbd5e1" />
     </svg>
   )
 }

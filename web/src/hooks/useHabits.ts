@@ -64,19 +64,40 @@ export function useHabits() {
         .select('*')
         .eq('user_id', userId!)
 
+      // Fetch ALL completions — no date cap — so streak & total count are always accurate
       const { data: completions } = await supabase
         .from('habit_completions')
         .select('habit_id, completed_date')
         .eq('user_id', userId!)
-        .gte('completed_date', localDateStr(new Date(Date.now() - 91 * 86400000)))
+        .order('completed_date', { ascending: true })
 
-      return (habits || []).map((h: Habit) => ({
-        ...h,
-        streak: streaks?.find((s) => s.habit_id === h.id),
-        completions: completions
-          ?.filter((c) => c.habit_id === h.id)
-          .map((c) => c.completed_date) ?? [],
-      }))
+      return (habits || []).map((h: Habit) => {
+        const habitDates = (completions ?? [])
+          .filter((c) => c.habit_id === h.id)
+          .map((c) => c.completed_date as string)
+          // already sorted ascending from the query, but dedupe just in case
+          .filter((d, i, arr) => arr.indexOf(d) === i)
+
+        // Always derive streak values from the source of truth (completions),
+        // never from the potentially-stale streaks cache table.
+        const dynamicCurrent = calcCurrentStreak(habitDates)
+        const dynamicLongest = calcLongestStreak(habitDates)
+        const dbStreak = streaks?.find((s) => s.habit_id === h.id)
+
+        return {
+          ...h,
+          streak: {
+            habit_id: h.id,
+            user_id: userId!,
+            ...(dbStreak ?? {}),
+            // Override cached values with freshly computed ones
+            current_streak: dynamicCurrent,
+            longest_streak: Math.max(dynamicLongest, dynamicCurrent),
+            last_completed_date: habitDates.length > 0 ? habitDates[habitDates.length - 1] : null,
+          },
+          completions: habitDates,
+        }
+      })
     },
   })
 }
