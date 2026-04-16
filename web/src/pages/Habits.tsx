@@ -175,19 +175,34 @@ function AddEditSheet({
           style={{ background: t.inputBg, border: t.inputBorder, color: t.inputColor }}
         />
 
-        {/* Priority stars */}
+        {/* Priority — High / Medium / Low pill buttons */}
         <div className="flex items-center gap-2 mb-4">
-          <span className="text-xs" style={{ color: t.textMuted }}>Priority:</span>
-          <div className="flex gap-1">
-            {[1,2,3,4,5].map(n => (
-              <button key={n} onClick={() => setForm({ ...form, star_rating: n })}>
-                <span style={{ fontSize: 20, color: n <= form.star_rating ? '#60A5FA' : t.textSub }}>★</span>
-              </button>
-            ))}
+          <span className="text-xs flex-shrink-0" style={{ color: t.textMuted }}>Priority:</span>
+          <div className="flex gap-1.5">
+            {([
+              { label: 'High',   value: 5, color: '#F87171', bg: 'rgba(248,113,113,0.13)', border: 'rgba(248,113,113,0.35)' },
+              { label: 'Medium', value: 3, color: '#FBBF24', bg: 'rgba(251,191,36,0.12)',  border: 'rgba(251,191,36,0.35)'  },
+              { label: 'Low',    value: 1, color: '#60A5FA', bg: 'rgba(96,165,250,0.12)',  border: 'rgba(96,165,250,0.30)'  },
+            ] as const).map(({ label, value, color, bg, border }) => {
+              const sel = (label === 'High' && form.star_rating >= 4)
+                       || (label === 'Medium' && form.star_rating >= 2 && form.star_rating < 4)
+                       || (label === 'Low' && form.star_rating < 2)
+              return (
+                <button
+                  key={label}
+                  onClick={() => setForm({ ...form, star_rating: value })}
+                  className="px-3 py-1 rounded-full text-xs font-medium transition-all"
+                  style={{
+                    background: sel ? bg : t.inputBg,
+                    border: `1px solid ${sel ? border : 'transparent'}`,
+                    color: sel ? color : t.textSub,
+                  }}
+                >
+                  {label}
+                </button>
+              )
+            })}
           </div>
-          <span className="text-xs ml-1" style={{ color: t.textMuted }}>
-            {form.star_rating >= 4 ? 'High' : form.star_rating >= 2 ? 'Medium' : ''}
-          </span>
         </div>
 
         {/* Privacy toggle */}

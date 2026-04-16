@@ -11,17 +11,24 @@ interface HabitCardProps {
   onDelete: (habitId: string) => void
 }
 
-function StarRating({ rating, darkMode }: { rating: number; darkMode: boolean }) {
+function PriorityBadge({ rating }: { rating: number }) {
+  if (rating >= 4) return (
+    <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
+      style={{ background: 'rgba(248,113,113,0.13)', color: '#F87171', border: '1px solid rgba(248,113,113,0.30)' }}>
+      High
+    </span>
+  )
+  if (rating >= 2) return (
+    <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
+      style={{ background: 'rgba(251,191,36,0.12)', color: '#FBBF24', border: '1px solid rgba(251,191,36,0.30)' }}>
+      Med
+    </span>
+  )
   return (
-    <div className="flex gap-0.5">
-      {[1, 2, 3, 4, 5].map((n) => (
-        <span
-          key={n}
-          className="text-xs leading-none"
-          style={{ color: n <= rating ? '#60A5FA' : darkMode ? 'rgba(255,255,255,0.18)' : 'rgba(11,20,55,0.18)' }}
-        >★</span>
-      ))}
-    </div>
+    <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
+      style={{ background: 'rgba(96,165,250,0.12)', color: '#60A5FA', border: '1px solid rgba(96,165,250,0.25)' }}>
+      Low
+    </span>
   )
 }
 
@@ -139,7 +146,7 @@ export function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCardProps)
               <span style={{ display: 'inline-block', transform: 'scaleX(-1)' }}>✏️</span>
             </button>
             <div className="flex flex-col items-end gap-1">
-              <StarRating rating={habit.star_rating} darkMode={darkMode} />
+              <PriorityBadge rating={habit.star_rating} />
               <span
                 className="text-xs font-semibold"
                 style={{ color: streakColor }}
