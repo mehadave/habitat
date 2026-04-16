@@ -222,11 +222,11 @@ export default function Journal() {
 
         {/* Edit modal for past entries */}
         {editingEntry && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          <div className="fixed inset-0 z-50 flex items-start justify-center pt-[10vh] px-4 pb-4"
             style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
             onClick={() => setEditingEntry(null)}>
             <div className="w-full max-w-md rounded-3xl p-6"
-              style={{ background: t.sheetBg, border: `1px solid ${t.cardBorder}`, boxShadow: '0 24px 64px rgba(0,0,0,0.45)', maxHeight: '88vh', overflowY: 'auto' }}
+              style={{ background: t.sheetBg, border: `1px solid ${t.cardBorder}`, boxShadow: '0 24px 64px rgba(0,0,0,0.45)', maxHeight: '75vh', overflowY: 'auto' }}
               onClick={e => e.stopPropagation()}>
               <div className="flex items-center justify-between mb-4">
                 <span className="text-sm font-semibold" style={{ color: t.text }}>Edit entry</span>
