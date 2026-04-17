@@ -14,8 +14,6 @@ import type { HabitWithStreak } from '../lib/types'
    ────────────────────────────────────────────────────────────────────────────── */
 function WaterRing() {
   const CX = 60, CY = 60, R = 42
-  const flakeAngles = [0, 60, 120, 180, 240, 300]
-  const FR = 13 // mini snowflake arm radius
 
   return (
     <svg viewBox="0 0 120 120" width={96} height={96} fill="none">
@@ -35,10 +33,6 @@ function WaterRing() {
         {/* Radial glow filter */}
         <filter id="wr-glow" x="-28%" y="-28%" width="156%" height="156%">
           <feGaussianBlur stdDeviation="2.8" result="b"/>
-          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-        <filter id="wr-soft" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="1.4" result="b"/>
           <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
       </defs>
@@ -93,27 +87,6 @@ function WaterRing() {
       <path d={`M ${CX - 30} ${CY - 36} A ${R} ${R} 0 0 1 ${CX + 30} ${CY - 36}`}
         stroke="rgba(255,255,255,0.52)" strokeWidth="2.2" strokeLinecap="round" fill="none" />
 
-      {/* ── Center mini snowflake (the target) ── */}
-      {flakeAngles.map((deg, i) => {
-        const rad = (deg - 90) * (Math.PI / 180)
-        const ex = CX + FR * Math.cos(rad), ey = CY + FR * Math.sin(rad)
-        const bx = CX + FR * 0.55 * Math.cos(rad), by = CY + FR * 0.55 * Math.sin(rad)
-        const pr = rad + Math.PI / 2
-        const bl = 4
-        return (
-          <g key={i}>
-            <line x1={CX} y1={CY} x2={ex} y2={ey}
-              stroke="#bae6fd" strokeWidth="1.5" strokeLinecap="round" opacity="0.88" />
-            <line x1={bx - bl * Math.cos(pr)} y1={by - bl * Math.sin(pr)}
-              x2={bx + bl * Math.cos(pr)} y2={by + bl * Math.sin(pr)}
-              stroke="#bae6fd" strokeWidth="0.9" strokeLinecap="round" opacity="0.65" />
-            <circle cx={ex} cy={ey} r="1.2" fill="#e0f2fe" opacity="0.90" />
-          </g>
-        )
-      })}
-
-      {/* Center gem */}
-      <circle cx={CX} cy={CY} r="3.5" fill="#e0f2fe" opacity="0.88" filter="url(#wr-soft)" />
     </svg>
   )
 }
