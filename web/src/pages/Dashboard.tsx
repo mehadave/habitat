@@ -43,9 +43,6 @@ function WaterRing() {
         </filter>
       </defs>
 
-      {/* ── Outer faint halo ── */}
-      <circle cx={CX} cy={CY} r={R + 9} stroke="#38bdf8" strokeWidth="1.2" opacity="0.16" />
-
       {/* ── Animated water swirling inside the ring ── */}
       <g clipPath="url(#wr-inner)">
         {/* Subtle water fill */}
@@ -91,10 +88,6 @@ function WaterRing() {
       {/* ── Static glassy ring border (on top of water) ── */}
       <circle cx={CX} cy={CY} r={R} stroke="url(#wr-grad)" strokeWidth="6"
         fill="none" filter="url(#wr-glow)" />
-
-      {/* Inner edge shimmer */}
-      <circle cx={CX} cy={CY} r={R - 3.5} stroke="rgba(255,255,255,0.24)"
-        strokeWidth="1.4" fill="none" strokeDasharray="7 5" />
 
       {/* Top-arc glassy highlight */}
       <path d={`M ${CX - 30} ${CY - 36} A ${R} ${R} 0 0 1 ${CX + 30} ${CY - 36}`}
