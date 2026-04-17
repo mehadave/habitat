@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useUIStore } from '../store/uiStore'
+import { localDateStr } from '../hooks/useHabits'
 
 interface CommitGridProps {
   habitId?: string
@@ -8,12 +9,6 @@ interface CommitGridProps {
   completions: string[]
   onToggle: (date: string) => void
   isLoading?: boolean
-}
-
-function getDateString(daysAgo: number): string {
-  const d = new Date()
-  d.setDate(d.getDate() - daysAgo)
-  return d.toISOString().split('T')[0]
 }
 
 function formatDate(dateStr: string): string {
@@ -24,13 +19,71 @@ function formatDate(dateStr: string): string {
   })
 }
 
+const DOW_LABELS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
+
 export function CommitGrid({ habitName, completions, onToggle, isLoading }: CommitGridProps) {
   const { darkMode } = useUIStore()
   const [confirmDate, setConfirmDate] = useState<string | null>(null)
   const [burstCell, setBurstCell] = useState<string | null>(null)
 
-  const todayStr = getDateString(0)
+  const todayLocal = new Date()
+  const todayStr = localDateStr(todayLocal)
 
+  // Month navigation — default to current month
+  const [viewYear, setViewYear] = useState(todayLocal.getFullYear())
+  const [viewMonth, setViewMonth] = useState(todayLocal.getMonth())
+
+  function prevMonth() {
+    if (viewMonth === 0) { setViewYear(y => y - 1); setViewMonth(11) }
+    else setViewMonth(m => m - 1)
+  }
+  function nextMonth() {
+    // Don't allow navigating past the current month
+    if (viewYear === todayLocal.getFullYear() && viewMonth >= todayLocal.getMonth()) return
+    if (viewMonth === 11) { setViewYear(y => y + 1); setViewMonth(0) }
+    else setViewMonth(m => m + 1)
+  }
+
+  const isCurrentMonth = viewYear === todayLocal.getFullYear() && viewMonth === todayLocal.getMonth()
+
+  // Build calendar cells for viewYear/viewMonth
+  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate()
+  const firstDOW = new Date(viewYear, viewMonth, 1).getDay() // 0 = Sunday
+
+  // Padding + days + trailing padding to fill last week
+  const cells: (string | null)[] = Array(firstDOW).fill(null)
+  for (let d = 1; d <= daysInMonth; d++) {
+    cells.push(
+      `${viewYear}-${String(viewMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`
+    )
+  }
+  while (cells.length % 7 !== 0) cells.push(null)
+
+  // Split into week rows
+  const weeks: (string | null)[][] = []
+  for (let i = 0; i < cells.length; i += 7) {
+    weeks.push(cells.slice(i, i + 7))
+  }
+
+  // Stats (all-time, not just visible month)
+  const totalCompletions = completions.length
+  const sorted = completions.slice().sort()
+  const bestStreak = (() => {
+    let best = 0, cur = 0, prev = ''
+    for (const d of sorted) {
+      if (prev) {
+        const diff = (new Date(d + 'T00:00:00').getTime() - new Date(prev + 'T00:00:00').getTime()) / 86400000
+        cur = diff === 1 ? cur + 1 : 1
+      } else {
+        cur = 1
+      }
+      if (cur > best) best = cur
+      prev = d
+    }
+    return best
+  })()
+
+  // Colours
   const emptyBg = darkMode ? 'rgba(255,255,255,0.07)' : 'rgba(11,20,55,0.07)'
   const emptyBorder = darkMode ? '1px solid rgba(255,255,255,0.12)' : '1px solid rgba(11,20,55,0.12)'
   const sheetBg = darkMode ? '#0F1B45' : '#E8EFFF'
@@ -40,80 +93,79 @@ export function CommitGrid({ habitName, completions, onToggle, isLoading }: Comm
   const statsMuted = darkMode ? 'rgba(255,255,255,0.4)' : 'rgba(11,20,55,0.4)'
   const cancelBg = darkMode ? 'rgba(255,255,255,0.07)' : 'rgba(11,20,55,0.07)'
   const cancelColor = darkMode ? 'rgba(255,255,255,0.55)' : 'rgba(11,20,55,0.55)'
+  const labelColor = darkMode ? 'rgba(255,255,255,0.3)' : 'rgba(11,20,55,0.3)'
+  const navBg = darkMode ? 'rgba(255,255,255,0.06)' : 'rgba(11,20,55,0.06)'
 
-  // Build 91-day grid (13 columns × 7 rows), newest right
-  const cells: string[] = []
-  for (let i = 90; i >= 0; i--) {
-    cells.push(getDateString(i))
+  function getCellColor(dateStr: string): string {
+    return completions.includes(dateStr) ? '#2563EB' : emptyBg
   }
-
-  function getCellColor(dateStr: string, isOnARoll: boolean): string {
-    const done = completions.includes(dateStr)
-    if (done && isOnARoll) return '#93C5FD'
-    if (done) return '#2563EB'
-    return emptyBg
-  }
-
-  function getCellBorder(dateStr: string, isOnARoll: boolean): string {
+  function getCellBorder(dateStr: string): string {
     if (dateStr === todayStr) return '1px solid #60A5FA'
-    const done = completions.includes(dateStr)
-    if (!done) return emptyBorder
-    if (isOnARoll) return '1px solid #93C5FD'
-    return '1px solid #2563EB'
-  }
-
-  function isOnARoll(dateStr: string): boolean {
-    const idx = cells.indexOf(dateStr)
-    if (idx < 0) return false
-    let count = 0
-    for (let i = idx; i < cells.length; i++) {
-      if (completions.includes(cells[i])) count++
-      else break
-    }
-    return count >= 5
+    return completions.includes(dateStr) ? '1px solid #2563EB' : emptyBorder
   }
 
   function handleCellClick(dateStr: string) {
-    if (dateStr > todayStr) return // future
+    if (dateStr > todayStr) return
     if (dateStr === todayStr) {
-      // Toggle today directly
       setBurstCell(dateStr)
       setTimeout(() => setBurstCell(null), 400)
       onToggle(dateStr)
       return
     }
-    // Past date — confirm
     setConfirmDate(dateStr)
   }
 
-  const columns: string[][] = []
-  for (let col = 0; col < 13; col++) {
-    columns.push(cells.slice(col * 7, col * 7 + 7))
-  }
-
-  const totalCompletions = completions.length
-  const bestStreak = (() => {
-    let best = 0, cur = 0
-    for (let i = 0; i < cells.length; i++) {
-      if (completions.includes(cells[i])) {
-        cur++
-        if (cur > best) best = cur
-      } else {
-        cur = 0
-      }
-    }
-    return best
-  })()
+  const monthLabel = new Date(viewYear, viewMonth, 1).toLocaleDateString('en-US', {
+    month: 'short',
+    year: 'numeric',
+  })
 
   return (
-    <div>
-      {/* Grid */}
-      <div className="flex gap-[2.5px]" style={{ opacity: isLoading ? 0.5 : 1 }}>
-        {columns.map((col, ci) => (
-          <div key={ci} className="flex flex-col gap-[2.5px]">
-            {col.map((dateStr) => {
+    <div style={{ opacity: isLoading ? 0.5 : 1 }}>
+      {/* Month nav header */}
+      <div className="flex items-center justify-between mb-1.5">
+        <button
+          onClick={prevMonth}
+          className="w-5 h-5 rounded flex items-center justify-center text-xs"
+          style={{ background: navBg, color: textMuted }}
+        >
+          ‹
+        </button>
+        <span className="text-[10px] font-semibold" style={{ color: labelColor }}>
+          {monthLabel}
+        </span>
+        <button
+          onClick={nextMonth}
+          className="w-5 h-5 rounded flex items-center justify-center text-xs"
+          style={{
+            background: navBg,
+            color: isCurrentMonth ? 'rgba(255,255,255,0.15)' : textMuted,
+            cursor: isCurrentMonth ? 'not-allowed' : 'pointer',
+          }}
+        >
+          ›
+        </button>
+      </div>
+
+      {/* Day-of-week labels */}
+      <div className="grid grid-cols-7 gap-[2.5px] mb-[2.5px]">
+        {DOW_LABELS.map(l => (
+          <div key={l} className="text-center" style={{ fontSize: 7, color: labelColor, lineHeight: '10px' }}>
+            {l}
+          </div>
+        ))}
+      </div>
+
+      {/* Calendar grid — each week is a row */}
+      <div className="flex flex-col gap-[2.5px]">
+        {weeks.map((week, wi) => (
+          <div key={wi} className="flex gap-[2.5px]">
+            {week.map((dateStr, di) => {
+              if (!dateStr) {
+                // Empty padding cell
+                return <div key={di} style={{ width: 10, height: 10, borderRadius: 2, flexShrink: 0 }} />
+              }
               const isFuture = dateStr > todayStr
-              const roll = isOnARoll(dateStr)
               const isBursting = burstCell === dateStr
               return (
                 <motion.div
@@ -123,10 +175,11 @@ export function CommitGrid({ habitName, completions, onToggle, isLoading }: Comm
                     width: 10,
                     height: 10,
                     borderRadius: 2,
-                    background: getCellColor(dateStr, roll),
-                    border: getCellBorder(dateStr, roll),
-                    opacity: isFuture ? 0.3 : 1,
+                    background: getCellColor(dateStr),
+                    border: getCellBorder(dateStr),
+                    opacity: isFuture ? 0.25 : 1,
                     cursor: isFuture ? 'not-allowed' : 'pointer',
+                    flexShrink: 0,
                   }}
                   animate={isBursting ? { scale: [1, 1.4, 1] } : { scale: 1 }}
                   transition={{ duration: 0.3 }}
