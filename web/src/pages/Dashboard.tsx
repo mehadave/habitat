@@ -199,12 +199,14 @@ function OceanWave({ darkMode }: { darkMode: boolean }) {
         <WaterRing />
       </div>
 
-      {/* ── Blue dolphin — swims left → right ── */}
+      {/* ── Blue dolphin — outer div translates, inner div rotates ── */}
       <div
         className="dolphin-swim-blue"
         style={{ position: 'absolute', bottom: 62, left: 0, zIndex: 4 }}
       >
-        <SwimDolphin color="blue" />
+        <div className="dolphin-flip-blue">
+          <SwimDolphin color="blue" />
+        </div>
       </div>
 
       {/* ── Pink dolphin — offset -6.5 s ── */}
@@ -212,7 +214,9 @@ function OceanWave({ darkMode }: { darkMode: boolean }) {
         className="dolphin-swim-pink"
         style={{ position: 'absolute', bottom: 62, left: 0, zIndex: 4 }}
       >
-        <SwimDolphin color="pink" />
+        <div className="dolphin-flip-pink">
+          <SwimDolphin color="pink" />
+        </div>
       </div>
 
       {/* ── "Hi!" speech bubbles — appear while dolphins peek underwater at ~13 vw ──
