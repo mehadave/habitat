@@ -8,130 +8,119 @@ import { motion, AnimatePresence } from 'framer-motion'
 import type { HabitWithStreak } from '../lib/types'
 
 /* ──────────────────────────────────────────────────────────────────────────────
-   Water-droplet ring with a mini snowflake bullseye target in the center.
-   The outer ring looks like a glassy water hoop with drips hanging from the
-   bottom arc. The inner snowflake is the "target" the dolphins aim for.
-   Rendered with CSS 3D perspective so it faces slightly left-front.
+   Water ring — static glassy hoop, animated water swirling inside,
+   mini snowflake target in the center. No drips.
+   SVG SMIL animateTransform drives the internal flow (no CSS classes needed).
    ────────────────────────────────────────────────────────────────────────────── */
 function WaterRing() {
-  const CX = 60, CY = 62, R = 44
-
-  // Drip positions — angles measured clockwise from top (180 = directly below)
-  // Spread across the lower half of the ring
-  const drips = [
-    { angle: 165, stem: 10, r: 2.2 },
-    { angle: 195, stem: 15, r: 3.0 },
-    { angle: 220, stem: 20, r: 3.8 },
-    { angle: 250, stem: 24, r: 4.5 },
-    { angle: 270, stem: 26, r: 5.0 },
-    { angle: 290, stem: 24, r: 4.5 },
-    { angle: 318, stem: 19, r: 3.6 },
-    { angle: 342, stem: 13, r: 2.5 },
-    { angle: 358, stem:  9, r: 1.8 },
-  ]
-
-  // Small 6-arm snowflake in center — "target" the dolphin aims through
-  const flakeArms = [0, 60, 120, 180, 240, 300]
-  const FR = 14 // flake arm radius
-
-  // Ring point from angle (clockwise-from-top convention)
-  function ringPt(angleDeg: number) {
-    const a = (angleDeg - 90) * (Math.PI / 180)
-    return { x: CX + R * Math.cos(a), y: CY + R * Math.sin(a), cos: Math.cos(a), sin: Math.sin(a) }
-  }
+  const CX = 60, CY = 60, R = 42
+  const flakeAngles = [0, 60, 120, 180, 240, 300]
+  const FR = 13 // mini snowflake arm radius
 
   return (
-    <svg viewBox="0 0 120 160" width={92} height={123} fill="none">
+    <svg viewBox="0 0 120 120" width={96} height={96} fill="none">
       <defs>
-        <linearGradient id="wring-grad" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%"   stopColor="#bae6fd" stopOpacity="0.95" />
-          <stop offset="50%"  stopColor="#38bdf8" stopOpacity="0.90" />
-          <stop offset="100%" stopColor="#0284c7" stopOpacity="0.80" />
+        {/* Clip to ring interior — water stays inside */}
+        <clipPath id="wr-inner">
+          <circle cx={CX} cy={CY} r={R - 5} />
+        </clipPath>
+
+        {/* Ring stroke gradient — glassy water look */}
+        <linearGradient id="wr-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%"   stopColor="#bae6fd" stopOpacity="0.97" />
+          <stop offset="50%"  stopColor="#38bdf8" stopOpacity="0.92" />
+          <stop offset="100%" stopColor="#0284c7" stopOpacity="0.82" />
         </linearGradient>
-        <radialGradient id="drop-grad" cx="38%" cy="32%" r="62%">
-          <stop offset="0%"   stopColor="#e0f2fe" stopOpacity="0.98" />
-          <stop offset="100%" stopColor="#0ea5e9" stopOpacity="0.82" />
-        </radialGradient>
-        <filter id="wring-glow" x="-25%" y="-25%" width="150%" height="150%">
-          <feGaussianBlur stdDeviation="2.5" result="b"/>
+
+        {/* Radial glow filter */}
+        <filter id="wr-glow" x="-28%" y="-28%" width="156%" height="156%">
+          <feGaussianBlur stdDeviation="2.8" result="b"/>
           <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
-        <filter id="drop-glow" x="-70%" y="-70%" width="240%" height="240%">
-          <feGaussianBlur stdDeviation="1.6" result="b"/>
+        <filter id="wr-soft" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="1.4" result="b"/>
           <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
       </defs>
 
-      {/* ── Outer halo ── */}
-      <circle cx={CX} cy={CY} r={R + 9} stroke="#38bdf8" strokeWidth="1.2"
-        opacity="0.18" />
+      {/* ── Outer faint halo ── */}
+      <circle cx={CX} cy={CY} r={R + 9} stroke="#38bdf8" strokeWidth="1.2" opacity="0.16" />
 
-      {/* ── Main glassy water ring ── */}
-      <circle cx={CX} cy={CY} r={R} stroke="url(#wring-grad)" strokeWidth="6"
-        fill="rgba(14,165,233,0.05)" filter="url(#wring-glow)" />
+      {/* ── Animated water swirling inside the ring ── */}
+      <g clipPath="url(#wr-inner)">
+        {/* Subtle water fill */}
+        <circle cx={CX} cy={CY} r={R - 5} fill="rgba(14,165,233,0.07)" />
 
-      {/* ── Inner shimmer ring — makes it look thick/glassy ── */}
-      <circle cx={CX} cy={CY} r={R - 3} stroke="rgba(255,255,255,0.22)"
-        strokeWidth="1.5" fill="none" strokeDasharray="6 5" />
+        {/* Swirl ring 1 — clockwise, slower */}
+        <circle cx={CX} cy={CY} r={R * 0.70} stroke="rgba(56,189,248,0.38)"
+          strokeWidth="2.8" fill="none" strokeDasharray="22 13">
+          <animateTransform attributeName="transform" type="rotate"
+            from={`0 ${CX} ${CY}`} to={`360 ${CX} ${CY}`} dur="5s" repeatCount="indefinite" />
+        </circle>
 
-      {/* ── Top-arc highlight — glassy sheen ── */}
-      <path
-        d={`M ${CX - R * 0.72} ${CY - R * 0.68}
-            A ${R} ${R} 0 0 1 ${CX + R * 0.72} ${CY - R * 0.68}`}
-        stroke="rgba(255,255,255,0.45)" strokeWidth="2.2" strokeLinecap="round" fill="none"
-      />
+        {/* Swirl ring 2 — counter-clockwise, medium */}
+        <circle cx={CX} cy={CY} r={R * 0.52} stroke="rgba(186,230,253,0.45)"
+          strokeWidth="2" fill="none" strokeDasharray="15 10">
+          <animateTransform attributeName="transform" type="rotate"
+            from={`360 ${CX} ${CY}`} to={`0 ${CX} ${CY}`} dur="3.6s" repeatCount="indefinite" />
+        </circle>
 
-      {/* ── Water drips hanging from the bottom arc ── */}
-      {drips.map((d, i) => {
-        const p = ringPt(d.angle)
-        // Drip direction: 65 % gravity (down) + 35 % outward from center
-        const gx = 0, gy = 1          // straight down
-        const ox = p.cos, oy = p.sin  // outward from center
-        const dx = gx * 0.65 + ox * 0.35
-        const dy = gy * 0.65 + oy * 0.35
-        const len = Math.sqrt(dx * dx + dy * dy)
-        const nx = dx / len, ny = dy / len
-        const tx = p.x + nx * d.stem
-        const ty = p.y + ny * d.stem
-        const dropX = p.x + nx * (d.stem + d.r * 1.35)
-        const dropY = p.y + ny * (d.stem + d.r * 1.35)
-        return (
-          <g key={i} filter="url(#drop-glow)">
-            <line x1={p.x} y1={p.y} x2={tx} y2={ty}
-              stroke="#38bdf8" strokeWidth="1.4" strokeLinecap="round" opacity="0.72" />
-            <ellipse cx={dropX} cy={dropY} rx={d.r * 0.85} ry={d.r}
-              fill="url(#drop-grad)" />
-          </g>
-        )
-      })}
+        {/* Swirl ring 3 — clockwise, fastest */}
+        <circle cx={CX} cy={CY} r={R * 0.32} stroke="rgba(255,255,255,0.32)"
+          strokeWidth="1.4" fill="none" strokeDasharray="9 7">
+          <animateTransform attributeName="transform" type="rotate"
+            from={`0 ${CX} ${CY}`} to={`360 ${CX} ${CY}`} dur="2.5s" repeatCount="indefinite" />
+        </circle>
 
-      {/* ── Center mini snowflake (the "target") ── */}
-      {flakeArms.map((deg, i) => {
+        {/* Tiny floating bubbles drifting up — staggered with animateMotion */}
+        {[
+          { cx: CX - 10, cy: CY + 15, r: 1.4, dur: '3.2s', delay: '0s'   },
+          { cx: CX + 6,  cy: CY + 18, r: 1.0, dur: '2.8s', delay: '-1.4s' },
+          { cx: CX - 2,  cy: CY + 22, r: 1.6, dur: '3.8s', delay: '-2.1s' },
+        ].map((b, i) => (
+          <circle key={i} cx={b.cx} cy={b.cy} r={b.r} fill="rgba(255,255,255,0.50)">
+            <animate attributeName="cy" values={`${b.cy};${b.cy - 28};${b.cy}`}
+              dur={b.dur} begin={b.delay} repeatCount="indefinite" calcMode="spline"
+              keySplines="0.4 0 0.6 1; 0.4 0 0.6 1" />
+            <animate attributeName="opacity" values="0;0.6;0" dur={b.dur} begin={b.delay}
+              repeatCount="indefinite" />
+          </circle>
+        ))}
+      </g>
+
+      {/* ── Static glassy ring border (on top of water) ── */}
+      <circle cx={CX} cy={CY} r={R} stroke="url(#wr-grad)" strokeWidth="6"
+        fill="none" filter="url(#wr-glow)" />
+
+      {/* Inner edge shimmer */}
+      <circle cx={CX} cy={CY} r={R - 3.5} stroke="rgba(255,255,255,0.24)"
+        strokeWidth="1.4" fill="none" strokeDasharray="7 5" />
+
+      {/* Top-arc glassy highlight */}
+      <path d={`M ${CX - 30} ${CY - 36} A ${R} ${R} 0 0 1 ${CX + 30} ${CY - 36}`}
+        stroke="rgba(255,255,255,0.52)" strokeWidth="2.2" strokeLinecap="round" fill="none" />
+
+      {/* ── Center mini snowflake (the target) ── */}
+      {flakeAngles.map((deg, i) => {
         const rad = (deg - 90) * (Math.PI / 180)
         const ex = CX + FR * Math.cos(rad), ey = CY + FR * Math.sin(rad)
-        // Small crossbar at 58 % of arm
-        const bx = CX + FR * 0.58 * Math.cos(rad), by = CY + FR * 0.58 * Math.sin(rad)
+        const bx = CX + FR * 0.55 * Math.cos(rad), by = CY + FR * 0.55 * Math.sin(rad)
         const pr = rad + Math.PI / 2
-        const bl = 4.5
+        const bl = 4
         return (
           <g key={i}>
             <line x1={CX} y1={CY} x2={ex} y2={ey}
-              stroke="#bae6fd" strokeWidth="1.6" strokeLinecap="round" opacity="0.92" />
+              stroke="#bae6fd" strokeWidth="1.5" strokeLinecap="round" opacity="0.88" />
             <line x1={bx - bl * Math.cos(pr)} y1={by - bl * Math.sin(pr)}
               x2={bx + bl * Math.cos(pr)} y2={by + bl * Math.sin(pr)}
-              stroke="#bae6fd" strokeWidth="1" strokeLinecap="round" opacity="0.72" />
-            <circle cx={ex} cy={ey} r="1.3" fill="#e0f2fe" opacity="0.9" />
+              stroke="#bae6fd" strokeWidth="0.9" strokeLinecap="round" opacity="0.65" />
+            <circle cx={ex} cy={ey} r="1.2" fill="#e0f2fe" opacity="0.90" />
           </g>
         )
       })}
 
       {/* Center gem */}
-      <circle cx={CX} cy={CY} r="4" fill="#e0f2fe" opacity="0.88" filter="url(#drop-glow)" />
-
-      {/* Tiny scatter bubbles near ring */}
-      <circle cx={CX - R - 7} cy={CY - 12} r="1.6" fill="#7dd3fc" opacity="0.45" />
-      <circle cx={CX + R + 6} cy={CY +  8} r="1.1" fill="#7dd3fc" opacity="0.38" />
-      <circle cx={CX -  8}    cy={CY - R - 8} r="1.3" fill="#bae6fd" opacity="0.55" />
+      <circle cx={CX} cy={CY} r="3.5" fill="#e0f2fe" opacity="0.88" filter="url(#wr-soft)" />
     </svg>
   )
 }
@@ -199,16 +188,15 @@ function OceanWave({ darkMode }: { darkMode: boolean }) {
       className="pointer-events-none"
       style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 145, overflow: 'visible' }}
     >
-      {/* ── Water-drip ring with snowflake target ──
-          CSS 3D: perspective(420px) rotateY(42deg) → opening faces left-front,
-          slightly more toward the left so dolphins visually swim through it.
+      {/* ── WaterRing — 96×96 px, centred at 76% ──
+          CSS 3D: perspective(420px) rotateY(42deg) → opening faces left-front.
           rotateX(-10deg) → small upward tilt for depth.
-          Ring SVG is 92×123 px → centre it at left: calc(76% - 46px).
-          bottom: 46 px keeps it above the wave tops and well below any text.
+          Ring SVG is 96×96 → centre it at left: calc(76% - 48px).
+          bottom: 44 px keeps it above the wave tops and well below any text.
       ── */}
       <div style={{
         position: 'absolute',
-        left: 'calc(76% - 46px)',
+        left: 'calc(76% - 48px)',
         bottom: 44,
         zIndex: 3,
         transform: 'perspective(420px) rotateY(42deg) rotateX(-10deg)',
@@ -232,6 +220,52 @@ function OceanWave({ darkMode }: { darkMode: boolean }) {
         style={{ position: 'absolute', bottom: 62, left: 0, zIndex: 4 }}
       >
         <SwimDolphin color="pink" />
+      </div>
+
+      {/* ── "Hi!" speech bubbles — appear while dolphins peek underwater at ~13 vw ──
+          Blue bubble: visible at 12.5–15 % of 13 s cycle (real-time ~1.6–2.0 s).
+          Pink bubble: same keyframe but -6.5 s delay → visible at ~8.1–8.5 s.
+          Both dolphins are near 13 vw at those moments, so we anchor here.
+      ── */}
+      <div
+        className="hi-bubble-blue"
+        style={{
+          position: 'absolute',
+          left: 'calc(13vw + 26px)',
+          bottom: 96,
+          zIndex: 5,
+          background: 'rgba(255,255,255,0.93)',
+          borderRadius: '10px 10px 10px 2px',
+          padding: '3px 7px',
+          fontSize: 11,
+          fontWeight: 700,
+          color: '#1e3a8a',
+          boxShadow: '0 1px 6px rgba(37,99,235,0.22)',
+          pointerEvents: 'none',
+          whiteSpace: 'nowrap',
+        }}
+      >
+        Hi! 👋
+      </div>
+      <div
+        className="hi-bubble-pink"
+        style={{
+          position: 'absolute',
+          left: 'calc(13vw + 26px)',
+          bottom: 96,
+          zIndex: 5,
+          background: 'rgba(255,255,255,0.93)',
+          borderRadius: '10px 10px 10px 2px',
+          padding: '3px 7px',
+          fontSize: 11,
+          fontWeight: 700,
+          color: '#9d174d',
+          boxShadow: '0 1px 6px rgba(236,72,153,0.22)',
+          pointerEvents: 'none',
+          whiteSpace: 'nowrap',
+        }}
+      >
+        Hi! 👋
       </div>
 
       {/* ── 4-layer wave SVG ── */}
