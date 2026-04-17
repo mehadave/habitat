@@ -47,6 +47,7 @@ export interface JournalEntry {
   user_id: string
   content: string
   mood_score?: number
+  category?: string
   created_at: string
   updated_at: string
 }
