@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useHabits, useToggleCompletion, localDateStr } from '../hooks/useHabits'
 import { useUIStore } from '../store/uiStore'
+import { useAuthStore } from '../store/authStore'
 import { DolphinLogo } from '../components/DolphinLogo'
 import { QuoteRotator } from '../components/QuoteRotator'
 import { StreakHero } from '../components/StreakHero'
@@ -136,7 +137,7 @@ function SwimDolphin({ color }: { color: 'blue' | 'pink' }) {
   )
 }
 
-function OceanWave({ darkMode }: { darkMode: boolean }) {
+function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string }) {
   const fill1 = darkMode ? 'rgba(56,189,248,0.14)' : 'rgba(37,99,235,0.12)'
   const fill2 = darkMode ? 'rgba(14,165,233,0.10)' : 'rgba(147,197,253,0.10)'
   const fill3 = darkMode ? 'rgba(99,102,241,0.07)' : 'rgba(37,99,235,0.06)'
@@ -215,7 +216,7 @@ function OceanWave({ darkMode }: { darkMode: boolean }) {
           whiteSpace: 'nowrap',
         }}
       >
-        Hi! 👋
+        Hey {userName}, you got this! 💙
       </div>
       <div
         className="hi-bubble-pink"
@@ -235,7 +236,7 @@ function OceanWave({ darkMode }: { darkMode: boolean }) {
           whiteSpace: 'nowrap',
         }}
       >
-        Hi! 👋
+        Hey {userName}, you got this! 🩷
       </div>
 
       {/* ── 4-layer wave SVG ── */}
@@ -510,9 +511,13 @@ function StreakDashboardModal({ habits, onClose, darkMode }: {
 
 export default function Dashboard() {
   const { darkMode } = useUIStore()
+  const { profile } = useAuthStore()
   const { data: habits = [], isLoading } = useHabits()
   const toggleMutation = useToggleCompletion()
   const [showStreaks, setShowStreaks] = useState(false)
+
+  // First name only, fallback to "friend"
+  const userName = (profile?.display_name ?? '').split(' ')[0] || 'friend'
 
   const t = darkMode ? {
     bg: '#0B1120',
@@ -623,7 +628,7 @@ export default function Dashboard() {
           </button>
         )}
 
-        <OceanWave darkMode={darkMode} />
+        <OceanWave darkMode={darkMode} userName={userName} />
       </div>
 
       {/* Content */}
