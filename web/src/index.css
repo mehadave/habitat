@@ -273,11 +273,11 @@ body.light-mode ::-webkit-scrollbar-thumb { background: rgba(11,20,55,0.15); }
   24%  { transform: translate(25vw,   4px) rotate(360deg); }
 
   /* ── More big waves ── */
-  28%  { transform: translate(29vw, -16px) rotate(356deg); }
-  33%  { transform: translate(34vw,  13px) rotate(360deg); }
-  38%  { transform: translate(39vw, -15px) rotate(356deg); }
-  43%  { transform: translate(43vw,  10px) rotate(360deg); }
-  47%  { transform: translate(47vw,  -9px) rotate(356deg); }
+  28%  { transform: translate(29vw, -16px) rotate(0deg); }
+  33%  { transform: translate(34vw,  13px) rotate(0deg); }
+  38%  { transform: translate(39vw, -15px) rotate(0deg); }
+  43%  { transform: translate(43vw,  10px) rotate(0deg); }
+  47%  { transform: translate(47vw,  -9px) rotate(0deg); }
 
   /* ── Arc climb toward ring ── */
   51%  { transform: translate(52vw, -36px) rotate(340deg); }
@@ -293,13 +293,13 @@ body.light-mode ::-webkit-scrollbar-thumb { background: rgba(11,20,55,0.15); }
   70%  { transform: translate(80vw,  -5px) rotate(240deg); }
   73%  { transform: translate(83vw,  -5px) rotate(360deg); }
 
-  /* ── Land + post-ring waves ── */
-  77%  { transform: translate(87vw,   3px) rotate(357deg); }
-  82%  { transform: translate(91vw, -13px) rotate(360deg); }
-  88%  { transform: translate(95vw,  10px) rotate(357deg); }
+  /* ── Land + post-ring waves — stay upright, no backward rotation ── */
+  77%  { transform: translate(87vw,   3px) rotate(0deg); }
+  82%  { transform: translate(91vw, -13px) rotate(0deg); }
+  88%  { transform: translate(95vw,  10px) rotate(0deg); }
 
   /* ── Exit ── */
-  100% { transform: translate(calc(100vw + 72px), 0px) rotate(360deg); }
+  100% { transform: translate(calc(100vw + 72px), 0px) rotate(0deg); }
 }
 
 /* PINK dolphin (44 × 44 px, center at 62+22=84 px; ring center ≈90 px → translateY≈-6) */
@@ -322,11 +322,11 @@ body.light-mode ::-webkit-scrollbar-thumb { background: rgba(11,20,55,0.15); }
   24%  { transform: translate(24vw,   6px) rotate(360deg); }
 
   /* ── Big waves ── */
-  28%  { transform: translate(28vw, -14px) rotate(356deg); }
-  33%  { transform: translate(33vw,  15px) rotate(360deg); }
-  38%  { transform: translate(38vw, -14px) rotate(356deg); }
-  43%  { transform: translate(42vw,  12px) rotate(360deg); }
-  47%  { transform: translate(46vw,  -7px) rotate(356deg); }
+  28%  { transform: translate(28vw, -14px) rotate(0deg); }
+  33%  { transform: translate(33vw,  15px) rotate(0deg); }
+  38%  { transform: translate(38vw, -14px) rotate(0deg); }
+  43%  { transform: translate(42vw,  12px) rotate(0deg); }
+  47%  { transform: translate(46vw,  -7px) rotate(0deg); }
 
   /* ── Arc climb ── */
   51%  { transform: translate(51vw, -30px) rotate(342deg); }
@@ -342,13 +342,13 @@ body.light-mode ::-webkit-scrollbar-thumb { background: rgba(11,20,55,0.15); }
   70%  { transform: translate(79vw,  -9px) rotate(240deg); }
   73%  { transform: translate(82vw,  -9px) rotate(360deg); }
 
-  /* ── Post-ring waves ── */
-  77%  { transform: translate(85vw,   5px) rotate(357deg); }
-  82%  { transform: translate(89vw, -12px) rotate(360deg); }
-  88%  { transform: translate(94vw,  11px) rotate(357deg); }
+  /* ── Post-ring waves — stay upright, no backward rotation ── */
+  77%  { transform: translate(85vw,   5px) rotate(0deg); }
+  82%  { transform: translate(89vw, -12px) rotate(0deg); }
+  88%  { transform: translate(94vw,  11px) rotate(0deg); }
 
   /* ── Exit ── */
-  100% { transform: translate(calc(100vw + 72px), 3px) rotate(360deg); }
+  100% { transform: translate(calc(100vw + 72px), 3px) rotate(0deg); }
 }
 
 .dolphin-swim-blue {
