@@ -261,9 +261,12 @@ function PodiumSection({ habits, onToggle, darkMode }: {
   darkMode: boolean
 }) {
   const todayStr = localDateStr()
-  const ranked = habits
-    .filter(h => (h.streak?.current_streak ?? 0) >= 1)
-    .sort((a, b) => (b.streak?.current_streak ?? 0) - (a.streak?.current_streak ?? 0))
+  const ranked = [...habits]
+    .sort((a, b) => {
+      const sd = (b.streak?.current_streak ?? 0) - (a.streak?.current_streak ?? 0)
+      if (sd !== 0) return sd
+      return (b.completions?.length ?? 0) - (a.completions?.length ?? 0)
+    })
     .slice(0, 3)
 
   if (ranked.length === 0) return null

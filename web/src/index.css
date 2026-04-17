@@ -265,31 +265,30 @@ body.light-mode ::-webkit-scrollbar-thumb { background: rgba(11,20,55,0.15); }
  *   the loop seam at 0→0 so there is no backward interpolation.
  */
 
-/* ── BLUE position ── gentle sine-like undulation, ~half the old amplitude ── */
+/* ── BLUE position ── very gentle sine undulation, ±3 px only ── */
 @keyframes dolphin-pos-blue {
   0%   { transform: translate(-72px,   0px); }
-  3%   { transform: translate(2vw,    -4px); }
-  5%   { transform: translate(4vw,    -7px); }
-  7%   { transform: translate(6vw,    -5px); }
-  8%   { transform: translate(8vw,     2px); }
-  9%   { transform: translate(9vw,     7px); }
-  11%  { transform: translate(11vw,   10px); }
-  13%  { transform: translate(13vw,    9px); }
-  15%  { transform: translate(16vw,    7px); }
-  17%  { transform: translate(18vw,    4px); }
-  18%  { transform: translate(19vw,    6px); }
-  21%  { transform: translate(22vw,    4px); }
-  24%  { transform: translate(25vw,    2px); }
-  26%  { transform: translate(27vw,   -3px); }
-  28%  { transform: translate(29vw,   -8px); }
-  30%  { transform: translate(31vw,   -4px); }
-  33%  { transform: translate(34vw,    6px); }
-  35%  { transform: translate(36vw,    5px); }
-  38%  { transform: translate(39vw,   -6px); }
-  40%  { transform: translate(41vw,   -4px); }
-  43%  { transform: translate(43vw,    5px); }
-  45%  { transform: translate(45vw,    3px); }
-  47%  { transform: translate(47vw,   -4px); }
+  3%   { transform: translate(2vw,    -1px); }
+  5%   { transform: translate(4vw,    -3px); }
+  7%   { transform: translate(6vw,    -2px); }
+  9%   { transform: translate(9vw,     1px); }
+  11%  { transform: translate(11vw,    3px); }
+  13%  { transform: translate(13vw,    3px); }
+  15%  { transform: translate(16vw,    2px); }
+  17%  { transform: translate(18vw,    1px); }
+  18%  { transform: translate(19vw,    2px); }
+  21%  { transform: translate(22vw,    1px); }
+  24%  { transform: translate(25vw,    0px); }
+  26%  { transform: translate(27vw,   -1px); }
+  28%  { transform: translate(29vw,   -3px); }
+  30%  { transform: translate(31vw,   -1px); }
+  33%  { transform: translate(34vw,    2px); }
+  35%  { transform: translate(36vw,    2px); }
+  38%  { transform: translate(39vw,   -2px); }
+  40%  { transform: translate(41vw,   -1px); }
+  43%  { transform: translate(43vw,    2px); }
+  45%  { transform: translate(45vw,    1px); }
+  47%  { transform: translate(47vw,   -1px); }
   51%  { transform: translate(52vw,  -36px); }
   55%  { transform: translate(57vw,  -54px); }
   60%  { transform: translate(63vw,  -28px); }
@@ -299,11 +298,11 @@ body.light-mode ::-webkit-scrollbar-thumb { background: rgba(11,20,55,0.15); }
   70%  { transform: translate(80vw,   -5px); }
   73%  { transform: translate(83vw,   -5px); }
   76%  { transform: translate(86vw,    1px); }
-  79%  { transform: translate(88vw,   -5px); }
-  82%  { transform: translate(91vw,   -6px); }
-  85%  { transform: translate(93vw,    2px); }
-  88%  { transform: translate(95vw,    5px); }
-  92%  { transform: translate(97vw,    1px); }
+  79%  { transform: translate(88vw,   -2px); }
+  82%  { transform: translate(91vw,   -2px); }
+  85%  { transform: translate(93vw,    1px); }
+  88%  { transform: translate(95vw,    2px); }
+  92%  { transform: translate(97vw,    0px); }
   100% { transform: translate(calc(100vw + 72px), 0px); }
 }
 
@@ -336,29 +335,28 @@ body.light-mode ::-webkit-scrollbar-thumb { background: rgba(11,20,55,0.15); }
 
 /* ── PINK position ── same gentle profile as blue, slightly offset ── */
 @keyframes dolphin-pos-pink {
-  0%   { transform: translate(-72px,   3px); }
-  3%   { transform: translate(1vw,    -3px); }
-  5%   { transform: translate(3vw,    -6px); }
-  7%   { transform: translate(5vw,    -4px); }
-  8%   { transform: translate(7vw,     3px); }
-  9%   { transform: translate(8vw,     8px); }
-  11%  { transform: translate(10vw,   11px); }
-  13%  { transform: translate(12vw,   10px); }
-  15%  { transform: translate(15vw,    8px); }
-  17%  { transform: translate(17vw,    5px); }
-  18%  { transform: translate(18vw,    7px); }
-  21%  { transform: translate(21vw,    5px); }
-  24%  { transform: translate(24vw,    3px); }
-  26%  { transform: translate(26vw,   -2px); }
-  28%  { transform: translate(28vw,   -7px); }
-  30%  { transform: translate(30vw,   -3px); }
-  33%  { transform: translate(33vw,    7px); }
-  35%  { transform: translate(35vw,    6px); }
-  38%  { transform: translate(38vw,   -5px); }
-  40%  { transform: translate(40vw,   -3px); }
-  43%  { transform: translate(42vw,    6px); }
-  45%  { transform: translate(44vw,    4px); }
-  47%  { transform: translate(46vw,   -3px); }
+  0%   { transform: translate(-72px,   1px); }
+  3%   { transform: translate(1vw,    -1px); }
+  5%   { transform: translate(3vw,    -2px); }
+  7%   { transform: translate(5vw,    -1px); }
+  9%   { transform: translate(8vw,     2px); }
+  11%  { transform: translate(10vw,    3px); }
+  13%  { transform: translate(12vw,    3px); }
+  15%  { transform: translate(15vw,    2px); }
+  17%  { transform: translate(17vw,    1px); }
+  18%  { transform: translate(18vw,    2px); }
+  21%  { transform: translate(21vw,    1px); }
+  24%  { transform: translate(24vw,    0px); }
+  26%  { transform: translate(26vw,   -1px); }
+  28%  { transform: translate(28vw,   -3px); }
+  30%  { transform: translate(30vw,   -1px); }
+  33%  { transform: translate(33vw,    2px); }
+  35%  { transform: translate(35vw,    2px); }
+  38%  { transform: translate(38vw,   -2px); }
+  40%  { transform: translate(40vw,   -1px); }
+  43%  { transform: translate(42vw,    2px); }
+  45%  { transform: translate(44vw,    1px); }
+  47%  { transform: translate(46vw,   -1px); }
   51%  { transform: translate(51vw,  -30px); }
   55%  { transform: translate(56vw,  -48px); }
   60%  { transform: translate(62vw,  -24px); }
@@ -367,13 +365,13 @@ body.light-mode ::-webkit-scrollbar-thumb { background: rgba(11,20,55,0.15); }
   67%  { transform: translate(calc(76vw - 22px), -9px); }
   70%  { transform: translate(79vw,   -9px); }
   73%  { transform: translate(82vw,   -9px); }
-  76%  { transform: translate(84vw,    2px); }
-  79%  { transform: translate(87vw,   -4px); }
-  82%  { transform: translate(89vw,   -5px); }
-  85%  { transform: translate(92vw,    3px); }
-  88%  { transform: translate(94vw,    6px); }
-  92%  { transform: translate(96vw,    2px); }
-  100% { transform: translate(calc(100vw + 72px), 3px); }
+  76%  { transform: translate(84vw,    1px); }
+  79%  { transform: translate(87vw,   -1px); }
+  82%  { transform: translate(89vw,   -2px); }
+  85%  { transform: translate(92vw,    1px); }
+  88%  { transform: translate(94vw,    2px); }
+  92%  { transform: translate(96vw,    0px); }
+  100% { transform: translate(calc(100vw + 72px), 1px); }
 }
 
 /* ── PINK rotation — same flip timing as blue ── */
@@ -397,20 +395,20 @@ body.light-mode ::-webkit-scrollbar-thumb { background: rgba(11,20,55,0.15); }
 }
 
 .dolphin-swim-blue {
-  animation: dolphin-pos-blue 13s linear infinite;
+  animation: dolphin-pos-blue 9s linear infinite;
   opacity: 0.92;
 }
 .dolphin-flip-blue {
-  animation: dolphin-rot-blue 13s linear infinite;
+  animation: dolphin-rot-blue 9s linear infinite;
 }
 .dolphin-swim-pink {
-  animation: dolphin-pos-pink 13s linear infinite;
-  animation-delay: -6.5s;
+  animation: dolphin-pos-pink 9s linear infinite;
+  animation-delay: -4.5s;
   opacity: 0.87;
 }
 .dolphin-flip-pink {
-  animation: dolphin-rot-pink 13s linear infinite;
-  animation-delay: -6.5s;
+  animation: dolphin-rot-pink 9s linear infinite;
+  animation-delay: -4.5s;
 }
 
 /* ── "Hi!" speech bubble — synced to each dolphin's underwater peek ── */
@@ -420,8 +418,8 @@ body.light-mode ::-webkit-scrollbar-thumb { background: rgba(11,20,55,0.15); }
   12.5%, 15%  { opacity: 1; transform: translateY(0px) scale(1);    }
   17%,   100% { opacity: 0; transform: translateY(-4px) scale(0.8); }
 }
-.hi-bubble-blue { animation: hi-bubble-pop 13s linear infinite; }
-.hi-bubble-pink { animation: hi-bubble-pop 13s linear infinite; animation-delay: -6.5s; }
+.hi-bubble-blue { animation: hi-bubble-pop 9s linear infinite; }
+.hi-bubble-pink { animation: hi-bubble-pop 9s linear infinite; animation-delay: -4.5s; }
 
 /* ── Water ring inner flow (SVG animateTransform used directly in JSX) ── */
 /* No CSS needed — SVG SMIL handles it */
