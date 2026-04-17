@@ -7,12 +7,12 @@ import type { JournalEntry } from '../lib/types'
 
 /* ── Categories ──────────────────────────────────────────────────────────── */
 const CATEGORIES = [
-  { id: 'brain-dump',   label: 'Brain dump',   emoji: '🧠', color: '#60A5FA', bg: 'rgba(96,165,250,0.15)',   border: 'rgba(96,165,250,0.38)'   },
-  { id: 'journalling',  label: 'Journalling',  emoji: '📖', color: '#93C5FD', bg: 'rgba(147,197,253,0.13)',  border: 'rgba(147,197,253,0.32)'  },
-  { id: 'vent',         label: 'Vent',         emoji: '🌀', color: '#F87171', bg: 'rgba(248,113,113,0.13)', border: 'rgba(248,113,113,0.32)' },
-  { id: 'ideas',        label: 'Ideas',        emoji: '💡', color: '#FBBF24', bg: 'rgba(251,191,36,0.13)',  border: 'rgba(251,191,36,0.32)'  },
-  { id: 'morning-frog', label: 'Morning frog', emoji: '🐸', color: '#34D399', bg: 'rgba(52,211,153,0.13)',  border: 'rgba(52,211,153,0.32)'  },
-  { id: 'to-do',        label: 'To-do',        emoji: '✅', color: '#6EE7B7', bg: 'rgba(110,231,183,0.13)', border: 'rgba(110,231,183,0.32)' },
+  { id: 'brain-dump',   label: 'Dump',    emoji: '🧠', color: '#60A5FA', bg: 'rgba(96,165,250,0.15)',   border: 'rgba(96,165,250,0.38)'   },
+  { id: 'journalling',  label: 'Journal', emoji: '📖', color: '#93C5FD', bg: 'rgba(147,197,253,0.13)',  border: 'rgba(147,197,253,0.32)'  },
+  { id: 'vent',         label: 'Vent',    emoji: '🌀', color: '#F87171', bg: 'rgba(248,113,113,0.13)',  border: 'rgba(248,113,113,0.32)'  },
+  { id: 'ideas',        label: 'Ideas',   emoji: '💡', color: '#FBBF24', bg: 'rgba(251,191,36,0.13)',   border: 'rgba(251,191,36,0.32)'   },
+  { id: 'morning-frog', label: 'Frog',    emoji: '🐸', color: '#34D399', bg: 'rgba(52,211,153,0.13)',   border: 'rgba(52,211,153,0.32)'   },
+  { id: 'to-do',        label: 'To-do',   emoji: '✅', color: '#6EE7B7', bg: 'rgba(110,231,183,0.13)',  border: 'rgba(110,231,183,0.32)'  },
 ] as const
 type CategoryId = typeof CATEGORIES[number]['id']
 
@@ -299,23 +299,25 @@ export default function Journal() {
             transition: 'border-color 0.25s ease',
           }}
         >
-          {/* Category chips */}
-          <div className="flex gap-2 overflow-x-auto pb-2 mb-3 hide-scrollbar">
+          {/* Category chips — all 6 equal-width on one line */}
+          <div className="flex gap-1.5 mb-3">
             {CATEGORIES.map(cat => {
               const sel = category === cat.id
               return (
                 <button
                   key={cat.id}
                   onClick={() => setCategory(cat.id)}
-                  className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all"
+                  className="flex-1 flex flex-col items-center gap-0.5 py-1.5 rounded-xl font-semibold transition-all"
                   style={{
                     background: sel ? cat.bg : t.inputBg,
                     color: sel ? cat.color : t.textSub,
                     border: `1px solid ${sel ? cat.border : 'transparent'}`,
-                    boxShadow: sel ? `0 0 10px ${cat.color}22` : 'none',
+                    boxShadow: sel ? `0 0 8px ${cat.color}33` : 'none',
+                    fontSize: 9,
+                    minWidth: 0,
                   }}
                 >
-                  <span>{cat.emoji}</span>
+                  <span style={{ fontSize: 15 }}>{cat.emoji}</span>
                   <span>{cat.label}</span>
                 </button>
               )
@@ -371,50 +373,50 @@ export default function Journal() {
             </div>
           )}
 
-          {/* How are you feelin'? */}
-          <div className="mt-2">
-            <p className="text-xs mb-2" style={{ color: t.textMuted }}>How are you feelin'?</p>
-            <div className="flex gap-2">
-              {MOODS.map(m => {
-                const sel = mood === m.score
-                return (
-                  <button
-                    key={m.score}
-                    onClick={() => setMood(m.score)}
-                    className="flex-1 flex flex-col items-center gap-1 py-2 rounded-xl transition-all"
-                    style={{
-                      background: sel ? 'rgba(37,99,235,0.18)' : t.inputBg,
-                      border: `1px solid ${sel ? 'rgba(96,165,250,0.45)' : 'transparent'}`,
-                      boxShadow: sel ? '0 0 10px rgba(37,99,235,0.2)' : 'none',
-                    }}
-                  >
-                    <span style={{ fontSize: 20 }}>{m.emoji}</span>
-                    <span className="text-[9px] font-semibold" style={{ color: sel ? '#93C5FD' : t.textSub }}>
-                      {m.label}
-                    </span>
-                  </button>
-                )
-              })}
+          {/* Bottom row: mood left, save right */}
+          <div className="flex items-center justify-between gap-3 mt-3">
+            {/* Mood — compact emoji row */}
+            <div className="flex flex-col gap-1">
+              <p className="text-[9px] font-semibold" style={{ color: t.textMuted }}>How are you feelin'?</p>
+              <div className="flex gap-1">
+                {MOODS.map(m => {
+                  const sel = mood === m.score
+                  return (
+                    <button
+                      key={m.score}
+                      onClick={() => setMood(m.score)}
+                      className="w-8 h-8 rounded-xl flex items-center justify-center transition-all"
+                      style={{
+                        background: sel ? 'rgba(37,99,235,0.20)' : t.inputBg,
+                        border: `1px solid ${sel ? 'rgba(96,165,250,0.45)' : 'transparent'}`,
+                        boxShadow: sel ? '0 0 8px rgba(37,99,235,0.25)' : 'none',
+                        fontSize: 18,
+                      }}
+                      title={m.label}
+                    >
+                      {m.emoji}
+                    </button>
+                  )
+                })}
+              </div>
             </div>
-          </div>
 
-          {/* Save row */}
-          <div className="flex items-center justify-between mt-4">
-            <span className="text-xs" style={{ color: saved ? '#93C5FD' : 'transparent' }}>
-              ✓ Saved!
-            </span>
-            <button
-              onClick={handleSave}
-              disabled={!content.trim() || saving}
-              className="px-5 py-2 rounded-xl text-xs font-semibold transition-all"
-              style={{
-                background: content.trim() ? activeCat.color : t.inputBg,
-                color: content.trim() ? '#fff' : t.textSub,
-                opacity: saving ? 0.6 : 1,
-              }}
-            >
-              {saving ? 'Saving…' : '+ Save entry'}
-            </button>
+            {/* Save */}
+            <div className="flex flex-col items-end gap-1 flex-shrink-0">
+              <span className="text-[9px]" style={{ color: saved ? '#93C5FD' : 'transparent' }}>✓ Saved!</span>
+              <button
+                onClick={handleSave}
+                disabled={!content.trim() || saving}
+                className="px-4 py-2 rounded-xl text-xs font-semibold transition-all"
+                style={{
+                  background: content.trim() ? activeCat.color : t.inputBg,
+                  color: content.trim() ? '#fff' : t.textSub,
+                  opacity: saving ? 0.6 : 1,
+                }}
+              >
+                {saving ? 'Saving…' : '+ Save entry'}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -536,21 +538,24 @@ export default function Journal() {
               </div>
 
               {/* Category */}
-              <div className="flex gap-2 overflow-x-auto pb-2 mb-3 hide-scrollbar">
+              <div className="flex gap-1.5 mb-3">
                 {CATEGORIES.map(cat => {
                   const sel = editingEntry.category === cat.id
                   return (
                     <button
                       key={cat.id}
                       onClick={() => setEditingEntry({ ...editingEntry, category: cat.id })}
-                      className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
+                      className="flex-1 flex flex-col items-center gap-0.5 py-1.5 rounded-xl font-semibold transition-all"
                       style={{
                         background: sel ? cat.bg : t.inputBg,
                         color: sel ? cat.color : t.textSub,
                         border: `1px solid ${sel ? cat.border : 'transparent'}`,
+                        fontSize: 9,
+                        minWidth: 0,
                       }}
                     >
-                      {cat.emoji} {cat.label}
+                      <span style={{ fontSize: 14 }}>{cat.emoji}</span>
+                      <span>{cat.label}</span>
                     </button>
                   )
                 })}
