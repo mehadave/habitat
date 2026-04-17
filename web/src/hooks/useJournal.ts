@@ -32,7 +32,7 @@ export function useUpsertJournal() {
       if (entry.id) {
         const { error } = await supabase
           .from('journal_entries')
-          .update({ content: entry.content, mood_score: entry.mood_score, updated_at: new Date().toISOString() })
+          .update({ content: entry.content, mood_score: entry.mood_score, category: entry.category, updated_at: new Date().toISOString() })
           .eq('id', entry.id)
         if (error) throw error
       } else {
