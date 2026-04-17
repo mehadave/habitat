@@ -9,7 +9,7 @@ import type { JournalEntry } from '../lib/types'
 const CATEGORIES = [
   { id: 'brain-dump',   label: 'Dump',    emoji: '🧠', color: '#60A5FA', bg: 'rgba(96,165,250,0.15)',   border: 'rgba(96,165,250,0.38)'   },
   { id: 'journalling',  label: 'Journal', emoji: '📖', color: '#93C5FD', bg: 'rgba(147,197,253,0.13)',  border: 'rgba(147,197,253,0.32)'  },
-  { id: 'vent',         label: 'Vent',    emoji: '🌀', color: '#F87171', bg: 'rgba(248,113,113,0.13)',  border: 'rgba(248,113,113,0.32)'  },
+  { id: 'vent',         label: 'Vent',    emoji: '🌀', color: '#A78BFA', bg: 'rgba(167,139,250,0.13)',  border: 'rgba(167,139,250,0.32)'  },
   { id: 'ideas',        label: 'Ideas',   emoji: '💡', color: '#FBBF24', bg: 'rgba(251,191,36,0.13)',   border: 'rgba(251,191,36,0.32)'   },
   { id: 'morning-frog', label: 'Frog',    emoji: '🐸', color: '#34D399', bg: 'rgba(52,211,153,0.13)',   border: 'rgba(52,211,153,0.32)'   },
   { id: 'to-do',        label: 'To-do',   emoji: '✅', color: '#6EE7B7', bg: 'rgba(110,231,183,0.13)',  border: 'rgba(110,231,183,0.32)'  },
