@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { useUIStore } from '../store/uiStore'
 import { localDateStr } from '../hooks/useHabits'
 import type { HabitWithStreak } from '../lib/types'
-import { motion, AnimatePresence } from 'framer-motion'
 
 const HABIT_COLORS = [
   '#F87171','#FB923C','#FBBF24','#4ADE80','#22D3EE',
@@ -210,29 +209,12 @@ export function MonthlyHabitTracker({ habits, onToggle }: Props) {
             </tr>
           </thead>
           <tbody>
-            {/* Always show current week */}
-            {weekDays.map(day => renderRow(day))}
-
-            {/* Expanded: show rest of month */}
-            <AnimatePresence>
-              {expanded && (
-                <motion.tr
-                  key="expanded-rows"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                  style={{ display: 'contents' }}
-                >
-                  {/* Render as a React fragment trick — we need multiple TRs */}
-                </motion.tr>
-              )}
-            </AnimatePresence>
-            {expanded && Array.from({ length: daysInMonth }).map((_, i) => {
-              const day = i + 1
-              if (weekDays.includes(day)) return null
-              return renderRow(day)
-            })}
+            {expanded
+              ? /* Full month 1 → N in strict chronological order */
+                Array.from({ length: daysInMonth }).map((_, i) => renderRow(i + 1))
+              : /* Collapsed: current week only */
+                weekDays.map(day => renderRow(day))
+            }
           </tbody>
         </table>
       </div>
