@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { DolphinLogo } from './DolphinLogo'
 import { useAuthStore } from '../store/authStore'
@@ -6,12 +6,62 @@ import { useUIStore } from '../store/uiStore'
 import { supabase } from '../lib/supabase'
 
 const NAV_ITEMS = [
-  { to: '/dashboard', label: 'Home', icon: '🏠' },
-  { to: '/habits', label: 'Habits', icon: '✅' },
-  { to: '/calendar', label: 'Calendar', icon: '📅' },
-  { to: '/journal', label: 'Journal', icon: '📓' },
-  { to: '/profile', label: 'Me', icon: '👤' },
+  { to: '/dashboard', label: 'Home',     icon: 'home'     },
+  { to: '/habits',    label: 'Habits',   icon: 'habits'   },
+  { to: '/calendar',  label: 'Calendar', icon: 'calendar' },
+  { to: '/journal',   label: 'Journal',  icon: 'journal'  },
+  { to: '/profile',   label: 'Me',       icon: 'profile'  },
 ]
+
+function NavIcon({ name, size = 22 }: { name: string; size?: number }) {
+  const s: React.SVGProps<SVGSVGElement> = {
+    width: size, height: size, viewBox: '0 0 24 24',
+    fill: 'none', stroke: 'currentColor',
+    strokeWidth: 1.75, strokeLinecap: 'round', strokeLinejoin: 'round',
+  }
+  switch (name) {
+    case 'home':
+      return (
+        <svg {...s}>
+          <path d="M3 12L12 3l9 9" />
+          <path d="M5 10v11h5v-5h4v5h5V10" />
+        </svg>
+      )
+    case 'habits':
+      return (
+        <svg {...s}>
+          <path d="M12 2C8 8 5 10 5 14a7 7 0 0014 0c0-4-3-6-7-12z" />
+          <path d="M9 17c.5 1.5 1.5 2 3 2s2.5-.5 3-2" />
+        </svg>
+      )
+    case 'calendar':
+      return (
+        <svg {...s}>
+          <rect x="3" y="4" width="18" height="18" rx="2.5" />
+          <path d="M16 2v4M8 2v4M3 10h18" />
+          <circle cx="8"  cy="15" r="1" fill="currentColor" stroke="none" />
+          <circle cx="12" cy="15" r="1" fill="currentColor" stroke="none" />
+          <circle cx="16" cy="15" r="1" fill="currentColor" stroke="none" />
+        </svg>
+      )
+    case 'journal':
+      return (
+        <svg {...s}>
+          <path d="M12 20h9" />
+          <path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4 12.5-12.5z" />
+        </svg>
+      )
+    case 'profile':
+      return (
+        <svg {...s}>
+          <circle cx="12" cy="8" r="4" />
+          <path d="M4 20c0-3.87 3.58-7 8-7s8 3.13 8 7" />
+        </svg>
+      )
+    default:
+      return null
+  }
+}
 
 function ProfileDropdown({ onClose, darkMode }: { onClose: () => void; darkMode: boolean }) {
   const { profile, logout } = useAuthStore()
@@ -134,7 +184,7 @@ export function NavBar() {
                   color: active ? tabActiveText : tabInactiveText,
                 }}
               >
-                <span style={{ fontSize: 14 }}>{icon}</span>
+                <NavIcon name={icon} size={15} />
                 <span>{label}</span>
               </Link>
             )
@@ -181,7 +231,7 @@ export function NavBar() {
               className="flex-1 flex flex-col items-center py-3 gap-0.5 transition-all"
               style={{ color: active ? '#38BDF8' : darkMode ? 'rgba(255,255,255,0.35)' : 'rgba(11,20,55,0.35)' }}
             >
-              <span style={{ fontSize: 20 }}>{icon}</span>
+              <NavIcon name={icon} size={22} />
               <span style={{ fontSize: 11, fontWeight: active ? 600 : 400 }}>{label}</span>
             </Link>
           )
