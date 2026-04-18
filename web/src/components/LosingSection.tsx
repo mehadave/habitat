@@ -18,10 +18,10 @@ export function LosingSection({ habits, onToggle }: Props) {
   if (losing.length === 0) return null
 
   const headingColor = darkMode ? 'rgba(255,255,255,0.85)' : 'rgba(11,20,55,0.85)'
-  const badgeBg = darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(11,20,55,0.07)'
-  const badgeText = darkMode ? 'rgba(255,255,255,0.5)' : 'rgba(11,20,55,0.5)'
+  const badgeBg = darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(11,20,55,0.13)'
+  const badgeText = darkMode ? 'rgba(255,255,255,0.5)' : 'rgba(11,20,55,0.70)'
   const nameColor = darkMode ? 'white' : '#0B1437'
-  const mutedColor = darkMode ? 'rgba(255,255,255,0.35)' : 'rgba(11,20,55,0.4)'
+  const mutedColor = darkMode ? 'rgba(255,255,255,0.35)' : 'rgba(11,20,55,0.62)'
 
   return (
     <div className="mb-6">

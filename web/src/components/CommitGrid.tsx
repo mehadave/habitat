@@ -84,17 +84,17 @@ export function CommitGrid({ habitName, completions, onToggle, isLoading }: Comm
   })()
 
   // Colours
-  const emptyBg = darkMode ? 'rgba(255,255,255,0.07)' : 'rgba(11,20,55,0.07)'
-  const emptyBorder = darkMode ? '1px solid rgba(255,255,255,0.12)' : '1px solid rgba(11,20,55,0.12)'
+  const emptyBg = darkMode ? 'rgba(255,255,255,0.07)' : 'rgba(11,20,55,0.13)'
+  const emptyBorder = darkMode ? '1px solid rgba(255,255,255,0.12)' : '1px solid rgba(11,20,55,0.20)'
   const sheetBg = darkMode ? '#0F1B45' : '#E8EFFF'
-  const sheetBorder = darkMode ? '1px solid rgba(255,255,255,0.12)' : '1px solid rgba(11,20,55,0.12)'
+  const sheetBorder = darkMode ? '1px solid rgba(255,255,255,0.12)' : '1px solid rgba(11,20,55,0.20)'
   const textColor = darkMode ? 'white' : '#0B1437'
-  const textMuted = darkMode ? 'rgba(255,255,255,0.55)' : 'rgba(11,20,55,0.55)'
-  const statsMuted = darkMode ? 'rgba(255,255,255,0.4)' : 'rgba(11,20,55,0.4)'
-  const cancelBg = darkMode ? 'rgba(255,255,255,0.07)' : 'rgba(11,20,55,0.07)'
-  const cancelColor = darkMode ? 'rgba(255,255,255,0.55)' : 'rgba(11,20,55,0.55)'
+  const textMuted = darkMode ? 'rgba(255,255,255,0.55)' : 'rgba(11,20,55,0.72)'
+  const statsMuted = darkMode ? 'rgba(255,255,255,0.4)' : 'rgba(11,20,55,0.62)'
+  const cancelBg = darkMode ? 'rgba(255,255,255,0.07)' : 'rgba(11,20,55,0.13)'
+  const cancelColor = darkMode ? 'rgba(255,255,255,0.55)' : 'rgba(11,20,55,0.72)'
   const labelColor = darkMode ? 'rgba(255,255,255,0.3)' : 'rgba(11,20,55,0.3)'
-  const navBg = darkMode ? 'rgba(255,255,255,0.06)' : 'rgba(11,20,55,0.06)'
+  const navBg = darkMode ? 'rgba(255,255,255,0.06)' : 'rgba(11,20,55,0.11)'
 
   function getCellColor(dateStr: string): string {
     return completions.includes(dateStr) ? '#2563EB' : emptyBg

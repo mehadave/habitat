@@ -45,19 +45,19 @@ export function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCardProps)
   const isPrivate = habit.is_private && !revealed
 
   const cardBg = darkMode ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.9)'
-  const cardShadow = darkMode ? 'none' : '0 2px 12px rgba(11,20,55,0.07)'
+  const cardShadow = darkMode ? 'none' : '0 2px 12px rgba(11,20,55,0.13)'
   const cardBorder = streak < 3 && streak > 0
     ? '1px solid rgba(248,113,113,0.2)'
-    : darkMode ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(11,20,55,0.08)'
+    : darkMode ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(11,20,55,0.14)'
   const textColor = darkMode ? '#ffffff' : '#0B1437'
   const textMuted = darkMode ? 'rgba(255,255,255,0.4)' : 'rgba(11,20,55,0.45)'
   const descBg = darkMode ? 'rgba(255,255,255,0.04)' : 'rgba(11,20,55,0.03)'
-  const descBorder = darkMode ? '1px solid rgba(255,255,255,0.07)' : '1px solid rgba(11,20,55,0.07)'
+  const descBorder = darkMode ? '1px solid rgba(255,255,255,0.07)' : '1px solid rgba(11,20,55,0.13)'
   const swipeActionsBg = darkMode ? '#0F1B45' : '#E8EFFF'
-  const badgeBg = darkMode ? 'rgba(255,255,255,0.07)' : 'rgba(11,20,55,0.06)'
-  const badgeColor = darkMode ? 'rgba(255,255,255,0.45)' : 'rgba(11,20,55,0.5)'
-  const editBtnBg = darkMode ? 'rgba(255,255,255,0.06)' : 'rgba(11,20,55,0.05)'
-  const editBtnColor = darkMode ? 'rgba(255,255,255,0.4)' : 'rgba(11,20,55,0.4)'
+  const badgeBg = darkMode ? 'rgba(255,255,255,0.07)' : 'rgba(11,20,55,0.11)'
+  const badgeColor = darkMode ? 'rgba(255,255,255,0.45)' : 'rgba(11,20,55,0.70)'
+  const editBtnBg = darkMode ? 'rgba(255,255,255,0.06)' : 'rgba(11,20,55,0.09)'
+  const editBtnColor = darkMode ? 'rgba(255,255,255,0.4)' : 'rgba(11,20,55,0.62)'
 
   return (
     <div className="relative rounded-2xl" style={{ isolation: 'isolate' }}>

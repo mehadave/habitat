@@ -60,10 +60,10 @@ export function OnboardingModal({ onClose }: Props) {
     dotInactive: 'rgba(255,255,255,0.2)',
   } : {
     sheetBg: '#E8EFFF',
-    cardBorder: 'rgba(11,20,55,0.12)',
+    cardBorder: 'rgba(11,20,55,0.20)',
     text: '#0B1437',
     textMuted: 'rgba(11,20,55,0.65)',
-    textSub: 'rgba(11,20,55,0.4)',
+    textSub: 'rgba(11,20,55,0.62)',
     tipBg: 'rgba(37,99,235,0.08)',
     tipBorder: 'rgba(37,99,235,0.2)',
     dotInactive: 'rgba(11,20,55,0.15)',

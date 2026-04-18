@@ -65,6 +65,7 @@ function NavIcon({ name, size = 22 }: { name: string; size?: number }) {
 
 function ProfileDropdown({ onClose, darkMode }: { onClose: () => void; darkMode: boolean }) {
   const { profile, logout } = useAuthStore()
+  const { toggleDarkMode } = useUIStore()
   const navigate = useNavigate()
 
   const t = darkMode ? {
@@ -77,10 +78,10 @@ function ProfileDropdown({ onClose, darkMode }: { onClose: () => void; darkMode:
     borderColor: 'rgba(255,255,255,0.06)',
   } : {
     sheetBg: '#E8EFFF',
-    cardBorder: 'rgba(11,20,55,0.12)',
+    cardBorder: 'rgba(11,20,55,0.20)',
     text: '#0B1437',
-    textMuted: 'rgba(11,20,55,0.5)',
-    divider: 'rgba(11,20,55,0.08)',
+    textMuted: 'rgba(11,20,55,0.70)',
+    divider: 'rgba(11,20,55,0.14)',
     linkColor: 'rgba(11,20,55,0.75)',
     borderColor: 'rgba(11,20,55,0.1)',
   }
@@ -101,6 +102,44 @@ function ProfileDropdown({ onClose, darkMode }: { onClose: () => void; darkMode:
         <p className="text-sm font-medium truncate" style={{ color: t.text }}>{profile?.display_name ?? 'Your profile'}</p>
         <p className="text-xs truncate" style={{ color: t.textMuted }}>{profile?.email ?? ''}</p>
       </div>
+      {/* Dark mode toggle */}
+      <button
+        onClick={toggleDarkMode}
+        className="w-full flex items-center justify-between px-4 py-3 text-sm border-b"
+        style={{ color: t.linkColor, borderColor: t.divider }}
+      >
+        <div className="flex items-center gap-2">
+          <span>{darkMode ? '🌙' : '☀️'}</span>
+          <span>{darkMode ? 'Dark mode' : 'Light mode'}</span>
+        </div>
+        {/* iOS-style pill toggle */}
+        <div
+          style={{
+            width: 36,
+            height: 20,
+            borderRadius: 10,
+            background: darkMode ? '#2563EB' : 'rgba(11,20,55,0.18)',
+            position: 'relative',
+            transition: 'background 0.2s ease',
+            flexShrink: 0,
+          }}
+        >
+          <div
+            style={{
+              width: 16,
+              height: 16,
+              borderRadius: '50%',
+              background: '#fff',
+              position: 'absolute',
+              top: 2,
+              left: darkMode ? 18 : 2,
+              transition: 'left 0.2s ease',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.3)',
+            }}
+          />
+        </div>
+      </button>
+
       <Link
         to="/profile"
         onClick={onClose}
@@ -142,10 +181,10 @@ export function NavBar() {
 
   const topBarBg = darkMode ? 'rgba(11,17,32,0.88)' : 'rgba(240,244,255,0.92)'
   const topBarBorder = darkMode ? 'rgba(255,255,255,0.06)' : 'rgba(11,20,55,0.1)'
-  const tabBg = darkMode ? 'rgba(255,255,255,0.06)' : 'rgba(11,20,55,0.06)'
+  const tabBg = darkMode ? 'rgba(255,255,255,0.06)' : 'rgba(11,20,55,0.11)'
   const tabActiveBg = darkMode ? 'rgba(56,189,248,0.15)' : 'rgba(37,99,235,0.12)'
   const tabActiveText = darkMode ? '#38BDF8' : '#2563EB'
-  const tabInactiveText = darkMode ? 'rgba(255,255,255,0.4)' : 'rgba(11,20,55,0.4)'
+  const tabInactiveText = darkMode ? 'rgba(255,255,255,0.4)' : 'rgba(11,20,55,0.62)'
   const brandColor = darkMode ? 'white' : '#0B1437'
 
   return (
@@ -229,7 +268,7 @@ export function NavBar() {
               key={to}
               to={to}
               className="flex-1 flex flex-col items-center py-3 gap-0.5 transition-all"
-              style={{ color: active ? '#38BDF8' : darkMode ? 'rgba(255,255,255,0.35)' : 'rgba(11,20,55,0.35)' }}
+              style={{ color: active ? '#38BDF8' : darkMode ? 'rgba(255,255,255,0.35)' : 'rgba(11,20,55,0.62)' }}
             >
               <NavIcon name={icon} size={22} />
               <span style={{ fontSize: 11, fontWeight: active ? 600 : 400 }}>{label}</span>

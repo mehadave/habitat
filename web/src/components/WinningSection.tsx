@@ -18,12 +18,12 @@ export function WinningSection({ habits, onToggle }: Props) {
   if (winning.length === 0) return null
 
   const headingColor = darkMode ? 'rgba(255,255,255,0.88)' : 'rgba(11,20,55,0.85)'
-  const badgeBg = darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(11,20,55,0.07)'
-  const badgeText = darkMode ? 'rgba(255,255,255,0.5)' : 'rgba(11,20,55,0.5)'
+  const badgeBg = darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(11,20,55,0.13)'
+  const badgeText = darkMode ? 'rgba(255,255,255,0.5)' : 'rgba(11,20,55,0.70)'
   const cardBg = darkMode ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.85)'
-  const cardBorder = darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(11,20,55,0.09)'
+  const cardBorder = darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(11,20,55,0.18)'
   const nameColor = darkMode ? 'white' : '#0B1437'
-  const mutedColor = darkMode ? 'rgba(255,255,255,0.4)' : 'rgba(11,20,55,0.4)'
+  const mutedColor = darkMode ? 'rgba(255,255,255,0.4)' : 'rgba(11,20,55,0.62)'
 
   return (
     <div className="mb-6">

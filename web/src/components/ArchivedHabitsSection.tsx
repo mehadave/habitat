@@ -22,11 +22,11 @@ export function ArchivedHabitsSection() {
     divider: 'rgba(255,255,255,0.08)',
   } : {
     text: '#0B1437',
-    textMuted: 'rgba(11,20,55,0.55)',
-    textSub: 'rgba(11,20,55,0.35)',
+    textMuted: 'rgba(11,20,55,0.72)',
+    textSub: 'rgba(11,20,55,0.62)',
     cardBg: 'rgba(255,255,255,0.6)',
-    cardBorder: 'rgba(11,20,55,0.08)',
-    divider: 'rgba(11,20,55,0.08)',
+    cardBorder: 'rgba(11,20,55,0.14)',
+    divider: 'rgba(11,20,55,0.14)',
   }
 
   return (

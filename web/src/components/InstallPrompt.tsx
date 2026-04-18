@@ -61,7 +61,7 @@ export function InstallPrompt() {
 
   const t = darkMode
     ? { bg: '#0F1B45', text: '#ffffff', muted: 'rgba(255,255,255,0.55)', border: 'rgba(255,255,255,0.1)' }
-    : { bg: '#ffffff', text: '#0B1437', muted: 'rgba(11,20,55,0.55)', border: 'rgba(11,20,55,0.12)' }
+    : { bg: '#ffffff', text: '#0B1437', muted: 'rgba(11,20,55,0.72)', border: 'rgba(11,20,55,0.20)' }
 
   return (
     <div

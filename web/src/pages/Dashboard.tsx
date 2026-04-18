@@ -272,8 +272,8 @@ function PodiumSection({ habits, onToggle, darkMode }: {
   if (ranked.length === 0) return null
 
   const textColor = darkMode ? '#fff' : '#0B1437'
-  const mutedColor = darkMode ? 'rgba(255,255,255,0.5)' : 'rgba(11,20,55,0.5)'
-  const cardBorder = darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(11,20,55,0.09)'
+  const mutedColor = darkMode ? 'rgba(255,255,255,0.5)' : 'rgba(11,20,55,0.70)'
+  const cardBorder = darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(11,20,55,0.18)'
 
   // Podium order: 2nd | 1st | 3rd
   const podiumOrder = ranked.length >= 3
@@ -365,8 +365,8 @@ function NeedsAttentionSection({ habits, onToggle, darkMode }: {
   if (struggling.length === 0) return null
 
   const textColor = darkMode ? '#fff' : '#0B1437'
-  const mutedColor = darkMode ? 'rgba(255,255,255,0.4)' : 'rgba(11,20,55,0.4)'
-  const divider = darkMode ? 'rgba(255,255,255,0.06)' : 'rgba(11,20,55,0.06)'
+  const mutedColor = darkMode ? 'rgba(255,255,255,0.4)' : 'rgba(11,20,55,0.62)'
+  const divider = darkMode ? 'rgba(255,255,255,0.06)' : 'rgba(11,20,55,0.11)'
 
   return (
     <div className="mb-6">
@@ -417,10 +417,10 @@ function StreakDashboardModal({ habits, onClose, darkMode }: {
   darkMode: boolean
 }) {
   const textColor = darkMode ? '#fff' : '#0B1437'
-  const mutedColor = darkMode ? 'rgba(255,255,255,0.5)' : 'rgba(11,20,55,0.5)'
+  const mutedColor = darkMode ? 'rgba(255,255,255,0.5)' : 'rgba(11,20,55,0.70)'
   const sheetBg = darkMode ? '#0F1B45' : '#EEF3FF'
   const cardBorder = darkMode ? 'rgba(255,255,255,0.1)' : 'rgba(11,20,55,0.1)'
-  const barTrack = darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(11,20,55,0.08)'
+  const barTrack = darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(11,20,55,0.14)'
 
   const sorted = [...habits].sort(
     (a, b) => (b.streak?.current_streak ?? 0) - (a.streak?.current_streak ?? 0)
@@ -533,11 +533,11 @@ export default function Dashboard() {
   } : {
     bg: '#F0F4FF',
     text: '#0B1437',
-    textMuted: 'rgba(11,20,55,0.55)',
-    textSub: 'rgba(11,20,55,0.35)',
+    textMuted: 'rgba(11,20,55,0.72)',
+    textSub: 'rgba(11,20,55,0.62)',
     cardBg: 'rgba(255,255,255,0.8)',
-    cardBorder: 'rgba(11,20,55,0.09)',
-    inputBg: 'rgba(11,20,55,0.05)',
+    cardBorder: 'rgba(11,20,55,0.18)',
+    inputBg: 'rgba(11,20,55,0.09)',
   }
 
   const todayStr = localDateStr()
