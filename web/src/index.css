@@ -417,11 +417,11 @@ body.light-mode ::-webkit-scrollbar-thumb { background: rgba(11,20,55,0.15); }
 }
 
 /* ── "Hi!" speech bubble — synced to each dolphin's underwater peek ── */
-/* Appears during keyframe 11-16 % of the 13 s cycle = 1.43–2.08 s in */
+/* Visible 12.5%–18.75% of 9 s cycle = 1.125 s–1.688 s → 563 ms readable (2.5× original) */
 @keyframes hi-bubble-pop {
-  0%,   10.9% { opacity: 0; transform: translateY(6px) scale(0.55); }
-  12.5%, 15%  { opacity: 1; transform: translateY(0px) scale(1);    }
-  17%,   100% { opacity: 0; transform: translateY(-4px) scale(0.8); }
+  0%,    10.9%  { opacity: 0; transform: translateY(6px) scale(0.55); }
+  12.5%, 18.75% { opacity: 1; transform: translateY(0px) scale(1);    }
+  21%,   100%   { opacity: 0; transform: translateY(-4px) scale(0.8); }
 }
 .hi-bubble-blue { animation: hi-bubble-pop 9s linear infinite; }
 .hi-bubble-pink { animation: hi-bubble-pop 9s linear infinite; animation-delay: -4.5s; }
