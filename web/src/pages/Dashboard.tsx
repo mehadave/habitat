@@ -275,22 +275,22 @@ function PodiumSection({ habits, onToggle, darkMode }: {
   const mutedColor = darkMode ? 'rgba(255,255,255,0.5)' : 'rgba(11,20,55,0.70)'
   const cardBorder = darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(11,20,55,0.18)'
 
-  // Podium order: 2nd | 1st | 3rd
+  // Podium layout: Silver (left) | Gold (center) | Bronze (right)
+  // Position i directly maps to the correct medal/height — no remapping needed.
   const podiumOrder = ranked.length >= 3
     ? [ranked[1], ranked[0], ranked[2]]
     : ranked.length === 2
       ? [ranked[1], ranked[0]]
       : [ranked[0]]
 
-  const medals = ['🥈', '🥇', '🥉']
-  const podiumHeights = [72, 96, 56]
+  // Index 0 = left (2nd place) · 1 = center (1st place) · 2 = right (3rd place)
+  const medals      = ['🥈', '🥇', '🥉']
+  const podiumHeights = [72,   96,   56  ]
   const podiumColors = [
-    'linear-gradient(180deg, rgba(192,192,192,0.2), rgba(192,192,192,0.05))',
-    'linear-gradient(180deg, rgba(255,215,0,0.2), rgba(255,215,0,0.05))',
-    'linear-gradient(180deg, rgba(205,127,50,0.15), rgba(205,127,50,0.03))',
+    'linear-gradient(180deg, rgba(192,192,192,0.22), rgba(192,192,192,0.04))', // silver
+    'linear-gradient(180deg, rgba(255,215,0,0.25),   rgba(255,215,0,0.05))',   // gold
+    'linear-gradient(180deg, rgba(205,127,50,0.18),  rgba(205,127,50,0.03))',  // bronze
   ]
-
-  const orderMap = ranked.length >= 3 ? [1, 0, 2] : ranked.length === 2 ? [1, 0] : [0]
 
   return (
     <div className="mb-6">
@@ -302,8 +302,7 @@ function PodiumSection({ habits, onToggle, darkMode }: {
         {podiumOrder.map((habit, i) => {
           const streak = habit.streak?.current_streak ?? 0
           const doneToday = habit.completions?.includes(todayStr)
-          const medalIdx = orderMap[i]
-          const height = podiumHeights[medalIdx] ?? 56
+          const height = podiumHeights[i] ?? 56
 
           return (
             <motion.div
@@ -332,12 +331,12 @@ function PodiumSection({ habits, onToggle, darkMode }: {
                 className="w-full rounded-t-xl flex items-start justify-center pt-2"
                 style={{
                   height,
-                  background: podiumColors[medalIdx],
+                  background: podiumColors[i],
                   border: `1px solid ${cardBorder}`,
                   borderBottom: 'none',
                 }}
               >
-                <span className="text-2xl">{medals[medalIdx]}</span>
+                <span className="text-2xl">{medals[i]}</span>
               </div>
             </motion.div>
           )
