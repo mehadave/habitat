@@ -239,6 +239,9 @@ export default function Journal() {
   /* edit modal */
   const [editingEntry, setEditingEntry] = useState<JournalEntry | null>(null)
 
+  /* delete confirm */
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null)
+
   /* voice blob */
   const { recording, start: startRec, stop: stopRec } = useVoiceBlob((text) => {
     typewriterAppend(content, text, setContent)
@@ -501,7 +504,7 @@ export default function Journal() {
                   key={entry.id}
                   entry={entry}
                   isFirst={i === 0}
-                  onDelete={id => deleteMutation.mutate(id)}
+                  onDelete={id => setDeleteConfirmId(id)}
                   onEdit={e => setEditingEntry({ ...e })}
                   t={t}
                 />
@@ -510,6 +513,55 @@ export default function Journal() {
           </div>
         )}
       </div>
+
+      {/* ── Delete confirm modal ── */}
+      <AnimatePresence>
+        {deleteConfirmId && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center px-6"
+            style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
+            onClick={() => setDeleteConfirmId(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.88, y: 16, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.88, y: 16, opacity: 0 }}
+              transition={{ type: 'spring', damping: 22, stiffness: 320 }}
+              className="w-full max-w-xs rounded-3xl p-6"
+              style={{ background: t.sheetBg, border: '1px solid rgba(248,113,113,0.25)', boxShadow: '0 24px 64px rgba(0,0,0,0.5)' }}
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="flex flex-col items-center text-center gap-2 mb-5">
+                <span style={{ fontSize: 36 }}>🗑️</span>
+                <p className="text-base font-bold" style={{ color: t.text }}>Delete this entry?</p>
+                <p className="text-xs" style={{ color: t.textMuted }}>This can't be undone. Gone for good.</p>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setDeleteConfirmId(null)}
+                  className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+                  style={{ background: t.inputBg, color: t.textMuted }}
+                >
+                  Nope, keep it
+                </button>
+                <button
+                  onClick={() => {
+                    deleteMutation.mutate(deleteConfirmId)
+                    setDeleteConfirmId(null)
+                  }}
+                  className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white"
+                  style={{ background: 'linear-gradient(135deg, #dc2626, #b91c1c)' }}
+                >
+                  Yes, delete
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── Edit modal ── */}
       <AnimatePresence>
