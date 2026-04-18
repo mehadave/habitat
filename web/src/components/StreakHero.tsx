@@ -16,8 +16,8 @@ export function StreakHero({ streak, startDate, darkMode = true, label, sublabel
     : null
 
   const numColor = darkMode ? '#ffffff' : '#0B1437'
-  const labelColor = darkMode ? 'rgba(255,255,255,0.5)' : 'rgba(11,20,55,0.5)'
-  const subColor = darkMode ? 'rgba(255,255,255,0.35)' : 'rgba(11,20,55,0.35)'
+  const labelColor = darkMode ? 'rgba(255,255,255,0.5)' : 'rgba(11,20,55,0.70)'
+  const subColor = darkMode ? 'rgba(255,255,255,0.35)' : 'rgba(11,20,55,0.62)'
 
   return (
     <div className="flex flex-col items-center py-6">

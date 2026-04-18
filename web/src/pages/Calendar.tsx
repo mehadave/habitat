@@ -43,19 +43,19 @@ export default function Calendar() {
   } : {
     bg: '#F0F4FF',
     text: '#0B1437',
-    textMuted: 'rgba(11,20,55,0.55)',
-    textSub: 'rgba(11,20,55,0.35)',
+    textMuted: 'rgba(11,20,55,0.72)',
+    textSub: 'rgba(11,20,55,0.62)',
     cardBg: 'rgba(255,255,255,0.75)',
-    cardBorder: 'rgba(11,20,55,0.09)',
-    inputBg: 'rgba(11,20,55,0.05)',
+    cardBorder: 'rgba(11,20,55,0.18)',
+    inputBg: 'rgba(11,20,55,0.09)',
     inputBorder: '1px solid rgba(11,20,55,0.15)',
     inputColor: '#0B1437',
-    divider: 'rgba(11,20,55,0.12)',
+    divider: 'rgba(11,20,55,0.20)',
     navBg: 'rgba(239,244,255,0.92)',
     navBorder: 'rgba(11,20,55,0.1)',
     sheetBg: '#E8EFFF',
-    badgeBg: 'rgba(11,20,55,0.07)',
-    badgeText: 'rgba(11,20,55,0.5)',
+    badgeBg: 'rgba(11,20,55,0.13)',
+    badgeText: 'rgba(11,20,55,0.70)',
   }
 
   const daysInMonth = getDaysInMonth(year, month)
@@ -102,7 +102,7 @@ export default function Calendar() {
   const maxCount = Math.max(...heatmapCells.map(c => c.count), 1)
 
   function heatmapColor(count: number): string {
-    if (count === 0) return darkMode ? 'rgba(255,255,255,0.05)' : 'rgba(11,20,55,0.06)'
+    if (count === 0) return darkMode ? 'rgba(255,255,255,0.05)' : 'rgba(11,20,55,0.11)'
     const ratio = count / maxCount
     if (ratio < 0.33) return '#1e3a8a'
     if (ratio < 0.66) return '#2563EB'

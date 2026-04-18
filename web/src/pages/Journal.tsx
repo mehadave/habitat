@@ -85,12 +85,14 @@ function TimelineEntry({
   onDelete,
   onEdit,
   isFirst,
+  darkMode,
   t,
 }: {
   entry: JournalEntry
   onDelete: (id: string) => void
   onEdit: (entry: JournalEntry) => void
   isFirst: boolean
+  darkMode: boolean
   t: Record<string, string>
 }) {
   const [expanded, setExpanded] = useState(false)
@@ -131,11 +133,11 @@ function TimelineEntry({
           <div className="flex items-center gap-2">
             <span
               className="text-[9px] font-bold uppercase tracking-widest"
-              style={{ color: isFirst ? cat.color : 'rgba(255,255,255,0.28)' }}
+              style={{ color: isFirst ? cat.color : t.textMuted }}
             >
               {isFirst ? `Today · ${dateLabel}` : dateLabel}
             </span>
-            <span className="text-[9px]" style={{ color: 'rgba(255,255,255,0.2)' }}>{timeLabel}</span>
+            <span className="text-[9px]" style={{ color: t.textSub }}>{timeLabel}</span>
           </div>
           <div className="flex items-center gap-1.5">
             {/* Category chip */}
@@ -212,11 +214,11 @@ export default function Journal() {
   } : {
     bg: '#F0F4FF',
     text: '#0B1437',
-    textMuted: 'rgba(11,20,55,0.55)',
-    textSub: 'rgba(11,20,55,0.35)',
+    textMuted: 'rgba(11,20,55,0.72)',
+    textSub: 'rgba(11,20,55,0.62)',
     cardBg: 'rgba(255,255,255,0.75)',
-    cardBorder: 'rgba(11,20,55,0.09)',
-    inputBg: 'rgba(11,20,55,0.05)',
+    cardBorder: 'rgba(11,20,55,0.18)',
+    inputBg: 'rgba(11,20,55,0.09)',
     inputBorder: '1px solid rgba(11,20,55,0.15)',
     inputColor: '#0B1437',
     sheetBg: '#E8EFFF',
@@ -506,6 +508,7 @@ export default function Journal() {
                   isFirst={i === 0}
                   onDelete={id => setDeleteConfirmId(id)}
                   onEdit={e => setEditingEntry({ ...e })}
+                  darkMode={darkMode}
                   t={t}
                 />
               ))}

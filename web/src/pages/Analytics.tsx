@@ -35,17 +35,17 @@ export default function Analytics() {
   } : {
     bg: '#F0F4FF',
     text: '#0B1437',
-    textMuted: 'rgba(11,20,55,0.55)',
-    textSub: 'rgba(11,20,55,0.35)',
+    textMuted: 'rgba(11,20,55,0.72)',
+    textSub: 'rgba(11,20,55,0.62)',
     cardBg: 'rgba(255,255,255,0.85)',
-    cardBorder: 'rgba(11,20,55,0.09)',
-    inputBg: 'rgba(11,20,55,0.06)',
-    btnText: 'rgba(11,20,55,0.55)',
-    barTrack: 'rgba(11,20,55,0.08)',
+    cardBorder: 'rgba(11,20,55,0.18)',
+    inputBg: 'rgba(11,20,55,0.11)',
+    btnText: 'rgba(11,20,55,0.72)',
+    barTrack: 'rgba(11,20,55,0.14)',
     tooltipBg: '#E8EFFF',
-    tooltipBorder: 'rgba(11,20,55,0.12)',
+    tooltipBorder: 'rgba(11,20,55,0.20)',
     tooltipText: '#0B1437',
-    axisTick: 'rgba(11,20,55,0.35)',
+    axisTick: 'rgba(11,20,55,0.62)',
   }
 
   const rangeStart = range === '7d' ? daysAgo(7)
@@ -127,7 +127,7 @@ export default function Analytics() {
           style={{
             background: t.cardBg,
             border: `1px solid ${t.cardBorder}`,
-            boxShadow: darkMode ? 'none' : '0 2px 12px rgba(11,20,55,0.06)',
+            boxShadow: darkMode ? 'none' : '0 2px 12px rgba(11,20,55,0.11)',
           }}>
           <p className="text-xs font-medium mb-3" style={{ color: t.textMuted }}>Daily completions</p>
           <ResponsiveContainer width="100%" height={160}>
@@ -166,7 +166,7 @@ export default function Analytics() {
                 style={{
                   background: t.cardBg,
                   border: `1px solid ${t.cardBorder}`,
-                  boxShadow: darkMode ? 'none' : '0 2px 8px rgba(11,20,55,0.05)',
+                  boxShadow: darkMode ? 'none' : '0 2px 8px rgba(11,20,55,0.09)',
                 }}
               >
                 <div className="flex items-center justify-between mb-2">

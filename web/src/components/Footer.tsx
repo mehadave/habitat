@@ -8,9 +8,9 @@ export function Footer({ forceDark }: FooterProps) {
   const { darkMode: storeDark } = useUIStore()
   const darkMode = forceDark ?? storeDark
 
-  const color = darkMode ? 'rgba(255,255,255,0.28)' : 'rgba(11,20,55,0.35)'
+  const color = darkMode ? 'rgba(255,255,255,0.28)' : 'rgba(11,20,55,0.62)'
   const hoverColor = darkMode ? 'rgba(255,255,255,0.75)' : 'rgba(11,20,55,0.8)'
-  const borderColor = darkMode ? 'rgba(255,255,255,0.06)' : 'rgba(11,20,55,0.08)'
+  const borderColor = darkMode ? 'rgba(255,255,255,0.06)' : 'rgba(11,20,55,0.14)'
 
   return (
     <footer

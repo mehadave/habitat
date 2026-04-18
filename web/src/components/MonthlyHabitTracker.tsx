@@ -53,14 +53,14 @@ export function MonthlyHabitTracker({ habits, onToggle }: Props) {
     expandText: 'rgba(255,255,255,0.5)',
   } : {
     text: '#0B1437',
-    textSub: 'rgba(11,20,55,0.35)',
-    textMuted: 'rgba(11,20,55,0.55)',
+    textSub: 'rgba(11,20,55,0.62)',
+    textMuted: 'rgba(11,20,55,0.72)',
     cardBg: 'rgba(255,255,255,0.85)',
-    cardBorder: 'rgba(11,20,55,0.09)',
-    divider: 'rgba(11,20,55,0.07)',
-    inputBg: 'rgba(11,20,55,0.05)',
-    expandBg: 'rgba(11,20,55,0.05)',
-    expandText: 'rgba(11,20,55,0.5)',
+    cardBorder: 'rgba(11,20,55,0.18)',
+    divider: 'rgba(11,20,55,0.13)',
+    inputBg: 'rgba(11,20,55,0.09)',
+    expandBg: 'rgba(11,20,55,0.09)',
+    expandText: 'rgba(11,20,55,0.70)',
   }
 
   function dateStr(day: number) {
@@ -181,7 +181,7 @@ export function MonthlyHabitTracker({ habits, onToggle }: Props) {
         style={{
           background: t.cardBg,
           border: `1px solid ${t.cardBorder}`,
-          boxShadow: darkMode ? 'none' : '0 2px 12px rgba(11,20,55,0.06)',
+          boxShadow: darkMode ? 'none' : '0 2px 12px rgba(11,20,55,0.11)',
         }}
       >
         <table className="w-full" style={{ borderCollapse: 'collapse', minWidth: 'max-content' }}>
