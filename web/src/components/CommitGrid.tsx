@@ -122,25 +122,26 @@ export function CommitGrid({ habitName, completions, onToggle, isLoading }: Comm
 
   return (
     <div style={{ opacity: isLoading ? 0.5 : 1 }}>
-      {/* Month nav header */}
-      <div className="flex items-center justify-between mb-1.5">
+      {/* Month nav header — sits tight above the grid, left-aligned */}
+      <div className="flex items-center gap-1 mb-1.5">
         <button
           onClick={prevMonth}
-          className="w-5 h-5 rounded flex items-center justify-center text-xs"
-          style={{ background: navBg, color: textMuted }}
+          className="w-4 h-4 rounded flex items-center justify-center"
+          style={{ background: navBg, color: textMuted, fontSize: 11 }}
         >
           ‹
         </button>
-        <span className="text-[10px] font-semibold" style={{ color: labelColor }}>
+        <span style={{ fontSize: 9, fontWeight: 600, color: labelColor, letterSpacing: '0.04em' }}>
           {monthLabel}
         </span>
         <button
           onClick={nextMonth}
-          className="w-5 h-5 rounded flex items-center justify-center text-xs"
+          className="w-4 h-4 rounded flex items-center justify-center"
           style={{
             background: navBg,
             color: isCurrentMonth ? 'rgba(255,255,255,0.15)' : textMuted,
             cursor: isCurrentMonth ? 'not-allowed' : 'pointer',
+            fontSize: 11,
           }}
         >
           ›
