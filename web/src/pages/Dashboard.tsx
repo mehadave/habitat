@@ -203,7 +203,7 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
         style={{
           position: 'absolute',
           left: 'calc(13vw + 26px)',
-          bottom: 96,
+          bottom: 48,
           zIndex: 5,
           background: 'rgba(255,255,255,0.93)',
           borderRadius: '10px 10px 10px 2px',
@@ -223,7 +223,7 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
         style={{
           position: 'absolute',
           left: 'calc(13vw + 26px)',
-          bottom: 96,
+          bottom: 48,
           zIndex: 5,
           background: 'rgba(255,255,255,0.93)',
           borderRadius: '10px 10px 10px 2px',
