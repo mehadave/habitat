@@ -28,3 +28,6 @@ npm-debug.log*
 
 # Supabase local
 .supabase/
+
+# Claude Code project files (not for version control)
+.claude/
