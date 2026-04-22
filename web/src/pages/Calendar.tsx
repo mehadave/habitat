@@ -115,7 +115,7 @@ export default function Calendar() {
 
   return (
     <div className="app-bg min-h-screen" style={{ paddingTop: 76, paddingBottom: 80 }}>
-      <div className="px-4 pt-4">
+      <div className="px-4 pt-8">
         <h1 className="text-2xl font-bold mb-4" style={{ color: t.text }}>Calendar</h1>
         {/* Month nav */}
         <div className="flex items-center justify-between mb-4">
