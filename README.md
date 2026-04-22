@@ -12,7 +12,6 @@ A habit tracker built around consistency, not guilt. Track your habits, journal 
 - **Dashboard** — Streak hero, quick-complete chips, winning/losing habit podium, and animated dolphins that swim across your screen
 - **Journal** — Brain dump without filter. Categories (Dump, Journal, Vent, Ideas, Frog, To-do), mood tracking, voice dictation, timeline view with draft auto-save
 - **Calendar** — Monthly view with per-day completion dots and streak visualization
-- **Gamification** — XP system, level progression, streak shields, milestone celebrations
 - **Dark/light mode** — Persisted per user, toggle from the profile menu
 - **PWA** — Installable on mobile, works offline for cached content
 
