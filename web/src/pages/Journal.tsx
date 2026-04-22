@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import { useJournalEntries, useUpsertJournal, useDeleteJournalEntry } from '../hooks/useJournal'
 import { useUIStore } from '../store/uiStore'
 import { DolphinLogo } from '../components/DolphinLogo'
@@ -28,6 +28,9 @@ const MOODS = [
   { emoji: '😊', label: 'Good',  score: 8 },
   { emoji: '🤩', label: 'Great', score: 10 },
 ]
+
+/* ── Draft persistence key ───────────────────────────────────────────────── */
+const DRAFT_KEY = 'habitat-journal-draft'
 
 /* ── Voice blob hook ─────────────────────────────────────────────────────── */
 function useVoiceBlob(onText: (text: string) => void) {
@@ -230,6 +233,55 @@ export default function Journal() {
   const [currentId, setCurrentId] = useState<string | undefined>()
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [autoSaved, setAutoSaved] = useState(false)
+  const [draftRestored, setDraftRestored] = useState(false)
+  const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  /* ── Draft restore on mount ── */
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY)
+      if (raw) {
+        const { content: c, mood: m, category: cat, currentId: id } = JSON.parse(raw)
+        if (c && c.trim()) {
+          setContent(c)
+          setMood(m ?? 6)
+          setCategory((cat as CategoryId) ?? 'brain-dump')
+          setCurrentId(id)
+          setDraftRestored(true)
+          setTimeout(() => setDraftRestored(false), 3000)
+        }
+      }
+    } catch { /* ignore corrupt storage */ }
+  }, [])
+
+  /* ── Persist draft to localStorage + Supabase auto-save on change ── */
+  useEffect(() => {
+    // Save to localStorage immediately
+    if (content.trim()) {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ content, mood, category, currentId }))
+    } else {
+      localStorage.removeItem(DRAFT_KEY)
+    }
+
+    // Debounce Supabase auto-save (2 s after last keystroke)
+    if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current)
+    if (!content.trim()) return
+    autoSaveTimerRef.current = setTimeout(async () => {
+      try {
+        const result = await upsertMutation.mutateAsync({ id: currentId, content, mood_score: mood, category })
+        if (result?.id && !currentId) {
+          setCurrentId(result.id)
+          localStorage.setItem(DRAFT_KEY, JSON.stringify({ content, mood, category, currentId: result.id }))
+        }
+        setAutoSaved(true)
+        setTimeout(() => setAutoSaved(false), 2000)
+      } catch { /* silently ignore auto-save failures */ }
+    }, 2000)
+
+    return () => { if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current) }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [content, mood, category])
 
   /* search */
   const [search, setSearch] = useState('')
@@ -253,8 +305,10 @@ export default function Journal() {
   /* save / new */
   async function handleSave() {
     if (!content.trim()) return
+    if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current)
     setSaving(true)
     await upsertMutation.mutateAsync({ id: currentId, content, mood_score: mood, category })
+    localStorage.removeItem(DRAFT_KEY)
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
     setSaving(false)
@@ -290,8 +344,24 @@ export default function Journal() {
         {/* Header */}
         <div className="flex flex-col items-center mb-5">
           <DolphinLogo size={44} color="pink" />
-          <h1 className="text-2xl font-bold mt-3" style={{ color: t.text }}>brain dump. no filter.</h1>
+          <h1 className="text-4xl font-bold mt-3" style={{ color: t.text }}>brain dump. no filter.</h1>
         </div>
+
+        {/* ── Draft restored banner ── */}
+        <AnimatePresence>
+          {draftRestored && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              className="flex items-center gap-2 px-3 py-2 rounded-xl mb-3 text-xs font-semibold"
+              style={{ background: 'rgba(96,165,250,0.15)', color: '#93C5FD', border: '1px solid rgba(96,165,250,0.3)' }}
+            >
+              <span>☁</span>
+              <span>Draft restored — pick up where you left off</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* ── Editor card ── */}
         <div
@@ -406,7 +476,11 @@ export default function Journal() {
 
             {/* Save */}
             <div className="flex flex-col items-end gap-1 flex-shrink-0">
-              <span className="text-[9px]" style={{ color: saved ? '#93C5FD' : 'transparent' }}>✓ Saved!</span>
+              <span className="text-[9px] transition-all" style={{
+                color: saved ? '#93C5FD' : autoSaved ? t.textMuted : 'transparent',
+              }}>
+                {saved ? '✓ Saved!' : autoSaved ? '☁ Draft saved' : '·'}
+              </span>
               <button
                 onClick={handleSave}
                 disabled={!content.trim() || saving}
