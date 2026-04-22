@@ -338,13 +338,13 @@ export default function Journal() {
   const activeCat = catById(category)
 
   return (
-    <div className="app-bg min-h-screen" style={{ paddingTop: 60, paddingBottom: 80 }}>
+    <div className="app-bg min-h-screen" style={{ paddingTop: 76, paddingBottom: 80 }}>
       <div className="px-4 pt-4">
 
         {/* Header */}
         <div className="flex flex-col items-center mb-5">
           <DolphinLogo size={44} color="pink" />
-          <h1 className="text-4xl font-bold mt-3" style={{ color: t.text }}>brain dump. no filter.</h1>
+          <h1 className="text-2xl font-bold mt-3" style={{ color: t.text }}>brain dump. no filter.</h1>
         </div>
 
         {/* ── Draft restored banner ── */}

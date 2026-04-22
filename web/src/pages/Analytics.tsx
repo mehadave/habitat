@@ -100,7 +100,7 @@ export default function Analytics() {
   }
 
   return (
-    <div className="app-bg min-h-screen" style={{ paddingTop: 60, paddingBottom: 80 }}>
+    <div className="app-bg min-h-screen" style={{ paddingTop: 76, paddingBottom: 80 }}>
       <div className="px-4 pt-4">
         <h1 className="text-2xl font-bold mb-5" style={{ color: t.text }}>Analytics</h1>
 

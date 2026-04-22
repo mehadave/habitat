@@ -191,7 +191,7 @@ export function NavBar() {
     <>
       {/* Top bar */}
       <div
-        className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4 py-3"
+        className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-5 py-4"
         style={{
           background: topBarBg,
           backdropFilter: 'blur(16px)',
@@ -199,16 +199,16 @@ export function NavBar() {
         }}
       >
         {/* Left: Logo */}
-        <Link to="/dashboard" className="flex items-center gap-2">
-          <DolphinLogo size={32} />
-          <span className="text-sm font-bold" style={{ color: brandColor }}>
+        <Link to="/dashboard" className="flex items-center gap-2.5">
+          <DolphinLogo size={40} />
+          <span className="text-base font-bold" style={{ color: brandColor }}>
             Habit<span style={{ color: '#38BDF8' }}>·</span>at
           </span>
         </Link>
 
         {/* Center: Desktop nav tabs */}
         <div
-          className="desktop-nav-tabs items-center gap-1 rounded-2xl px-1.5 py-1"
+          className="desktop-nav-tabs items-center gap-1 rounded-2xl px-2 py-1.5"
           style={{ background: tabBg, display: 'none' }}
         >
           {NAV_ITEMS.map(({ to, label, icon }) => {
@@ -217,13 +217,13 @@ export function NavBar() {
               <Link
                 key={to}
                 to={to}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold transition-all"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all"
                 style={{
                   background: active ? tabActiveBg : 'transparent',
                   color: active ? tabActiveText : tabInactiveText,
                 }}
               >
-                <NavIcon name={icon} size={15} />
+                <NavIcon name={icon} size={17} />
                 <span>{label}</span>
               </Link>
             )
@@ -234,7 +234,7 @@ export function NavBar() {
         <div className="relative" ref={dropdownRef}>
           <button
             onClick={() => setShowDropdown((v) => !v)}
-            className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-medium text-white transition-all"
+            className="w-11 h-11 rounded-full flex items-center justify-center text-sm font-medium text-white transition-all"
             style={{
               background: profile?.avatar_url ? 'transparent' : '#2563EB',
               border: showDropdown ? '2px solid #60A5FA' : '2px solid transparent',
