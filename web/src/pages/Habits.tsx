@@ -349,7 +349,7 @@ export default function Habits() {
 
   return (
     <div className="app-bg min-h-screen" style={{ paddingTop: 76, paddingBottom: 80 }}>
-      <div className="px-4 pt-4">
+      <div className="px-4 pt-8">
 
         {/* Header */}
         <div className="flex items-center justify-between mb-5">
