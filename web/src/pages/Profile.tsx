@@ -139,7 +139,7 @@ export default function Profile() {
 
   return (
     <div className="app-bg min-h-screen" style={{ paddingTop: 76, paddingBottom: 80 }}>
-      <div className="px-4 pt-4 max-w-lg mx-auto">
+      <div className="px-4 pt-8 max-w-lg mx-auto">
         <h1 className="text-2xl font-bold mb-5" style={{ color: t.text }}>Profile</h1>
 
         {/* Avatar */}
