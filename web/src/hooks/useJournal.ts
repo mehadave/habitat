@@ -27,7 +27,7 @@ export function useUpsertJournal() {
   const { session } = useAuthStore()
 
   return useMutation({
-    mutationFn: async (entry: Partial<JournalEntry> & { id?: string }) => {
+    mutationFn: async (entry: Partial<JournalEntry> & { id?: string }): Promise<{ id: string } | null> => {
       const userId = session!.user.id
       if (entry.id) {
         const { error } = await supabase
@@ -35,11 +35,15 @@ export function useUpsertJournal() {
           .update({ content: entry.content, mood_score: entry.mood_score, category: entry.category, updated_at: new Date().toISOString() })
           .eq('id', entry.id)
         if (error) throw error
+        return { id: entry.id }
       } else {
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('journal_entries')
           .insert({ ...entry, user_id: userId })
+          .select('id')
+          .single()
         if (error) throw error
+        return data
       }
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['journal'] }),
