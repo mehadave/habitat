@@ -203,8 +203,8 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
         style={{
           position: 'absolute',
           left: 'calc(13vw + 26px)',
-          bottom: 48,
-          zIndex: 5,
+          bottom: 78,
+          zIndex: 2,
           background: 'rgba(255,255,255,0.93)',
           borderRadius: '10px 10px 10px 2px',
           padding: '3px 7px',
@@ -223,8 +223,8 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
         style={{
           position: 'absolute',
           left: 'calc(13vw + 26px)',
-          bottom: 48,
-          zIndex: 5,
+          bottom: 78,
+          zIndex: 2,
           background: 'rgba(255,255,255,0.93)',
           borderRadius: '10px 10px 10px 2px',
           padding: '3px 7px',
@@ -623,7 +623,7 @@ export default function Dashboard() {
               background: 'rgba(56,189,248,0.12)',
               border: '1px solid rgba(56,189,248,0.25)',
               color: '#38BDF8',
-              zIndex: 10,
+              zIndex: 20,
             }}
           >
             See all streaks →
