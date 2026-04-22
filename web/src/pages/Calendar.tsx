@@ -114,7 +114,7 @@ export default function Calendar() {
   const isNextDisabled = year === now.getFullYear() && month === now.getMonth()
 
   return (
-    <div className="app-bg min-h-screen" style={{ paddingTop: 60, paddingBottom: 80 }}>
+    <div className="app-bg min-h-screen" style={{ paddingTop: 76, paddingBottom: 80 }}>
       <div className="px-4 pt-4">
         <h1 className="text-2xl font-bold mb-4" style={{ color: t.text }}>Calendar</h1>
         {/* Month nav */}
