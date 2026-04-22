@@ -147,11 +147,11 @@ export function CommitGrid({ habitName, completions, onToggle, isLoading }: Comm
         </button>
       </div>
 
-      {/* Unified grid — DOW header + all week rows share the same 7-col grid */}
-      <div className="grid grid-cols-7 gap-[3px]">
+      {/* Unified grid — fixed 12px columns so it stays compact on any screen */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 12px)', gap: 3 }}>
         {/* Day-of-week labels */}
         {DOW_LABELS.map(l => (
-          <div key={l} className="flex items-center justify-center pb-[3px]" style={{ fontSize: 8, color: labelColor, lineHeight: '10px' }}>
+          <div key={l} style={{ width: 12, fontSize: 7, color: labelColor, textAlign: 'center', lineHeight: '10px', paddingBottom: 2 }}>
             {l}
           </div>
         ))}
@@ -159,20 +159,23 @@ export function CommitGrid({ habitName, completions, onToggle, isLoading }: Comm
         {/* All cells — flat list, grid wraps into rows of 7 automatically */}
         {weeks.flat().map((dateStr, idx) => {
           if (!dateStr) {
-            return <div key={`pad-${idx}`} className="aspect-square rounded-sm" />
+            return <div key={`pad-${idx}`} style={{ width: 12, height: 12, borderRadius: 2 }} />
           }
           const isFuture = dateStr > todayStr
           const isBursting = burstCell === dateStr
           return (
             <motion.div
               key={dateStr}
-              className="commit-cell aspect-square"
+              className="commit-cell"
               style={{
-                borderRadius: 3,
+                width: 12,
+                height: 12,
+                borderRadius: 2,
                 background: getCellColor(dateStr),
                 border: getCellBorder(dateStr),
                 opacity: isFuture ? 0.25 : 1,
                 cursor: isFuture ? 'not-allowed' : 'pointer',
+                flexShrink: 0,
               }}
               animate={isBursting ? { scale: [1, 1.4, 1] } : { scale: 1 }}
               transition={{ duration: 0.3 }}
