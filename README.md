@@ -90,4 +90,4 @@ habitat/
 
 ## License
 
-All rights reserved. This project is not open source.
+© 2026 Meha Dave. All rights reserved.
