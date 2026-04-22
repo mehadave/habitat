@@ -208,7 +208,7 @@ export function NavBar() {
 
         {/* Center: Desktop nav tabs */}
         <div
-          className="desktop-nav-tabs items-center gap-1 rounded-2xl px-2 py-1.5"
+          className="desktop-nav-tabs items-center gap-1 rounded-full px-2 py-1.5"
           style={{ background: tabBg, display: 'none' }}
         >
           {NAV_ITEMS.map(({ to, label, icon }) => {
@@ -217,7 +217,7 @@ export function NavBar() {
               <Link
                 key={to}
                 to={to}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all"
                 style={{
                   background: active ? tabActiveBg : 'transparent',
                   color: active ? tabActiveText : tabInactiveText,
