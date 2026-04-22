@@ -90,4 +90,4 @@ habitat/
 
 ## License
 
-MIT
+All rights reserved. This project is not open source.
