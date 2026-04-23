@@ -290,18 +290,6 @@ export function NavBar() {
               className="flex-1 flex flex-col items-center py-3 gap-1 transition-all relative"
               style={{ color: active ? tabActiveText : tabInactiveText }}
             >
-              {/* Active indicator dot */}
-              {active && (
-                <div style={{
-                  position: 'absolute',
-                  top: 6,
-                  width: 4,
-                  height: 4,
-                  borderRadius: '50%',
-                  background: '#38BDF8',
-                  boxShadow: '0 0 6px rgba(56,189,248,0.7)',
-                }} />
-              )}
               <NavIcon name={icon} size={21} />
               <span style={{ fontSize: 10, fontWeight: active ? 600 : 400, letterSpacing: '0.02em' }}>{label}</span>
             </Link>

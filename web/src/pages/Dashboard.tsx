@@ -202,7 +202,7 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
         className="hi-bubble-blue"
         style={{
           position: 'absolute',
-          left: 20,
+          left: 'clamp(20px, 62vw, calc(100% - 240px))',
           bottom: 118,
           zIndex: 6,
           background: 'rgba(255,255,255,0.96)',
@@ -226,7 +226,7 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
         className="hi-bubble-pink"
         style={{
           position: 'absolute',
-          left: 20,
+          left: 'clamp(20px, 62vw, calc(100% - 240px))',
           bottom: 118,
           zIndex: 6,
           background: 'rgba(255,255,255,0.96)',
