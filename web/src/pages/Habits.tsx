@@ -65,12 +65,14 @@ function AddEditSheet({
   onSave,
   onClose,
   t,
+  isSaving,
 }: {
   habitId?: string
   initial?: Partial<FormWithNotif>
   onSave: (data: FormWithNotif) => void
   onClose: () => void
   t: ReturnType<typeof buildTokens>
+  isSaving?: boolean
 }) {
   const existingPref = habitId ? getHabitPref(habitId) : { enabled: false, time: '09:00', days: [] }
 
@@ -280,15 +282,15 @@ function AddEditSheet({
         </div>
 
         <button
-          onClick={() => { if (form.name.trim()) onSave(form) }}
-          disabled={!form.name.trim()}
+          onClick={() => { if (form.name.trim() && !isSaving) onSave(form) }}
+          disabled={!form.name.trim() || isSaving}
           className="w-full py-3 rounded-xl text-sm font-semibold text-white transition-all"
           style={{
-            background: form.name.trim() ? '#2563EB' : t.inputBg,
-            opacity: form.name.trim() ? 1 : 0.5,
+            background: form.name.trim() && !isSaving ? '#2563EB' : t.inputBg,
+            opacity: form.name.trim() && !isSaving ? 1 : 0.5,
           }}
         >
-          {initial?.name ? 'Save changes' : 'Add habit'}
+          {isSaving ? 'Saving…' : initial?.name ? 'Save changes' : 'Add habit'}
         </button>
       </motion.div>
     </motion.div>
@@ -422,7 +424,7 @@ export default function Habits() {
       {/* Add sheet */}
       <AnimatePresence>
         {showAdd && (
-          <AddEditSheet onSave={handleAdd} onClose={() => setShowAdd(false)} t={t} />
+          <AddEditSheet onSave={handleAdd} onClose={() => setShowAdd(false)} t={t} isSaving={addMutation.isPending} />
         )}
       </AnimatePresence>
 
