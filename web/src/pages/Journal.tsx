@@ -91,23 +91,6 @@ function useVoiceBlob(onText: (text: string) => void) {
   return { recording, micBlocked, setMicBlocked, start, stop }
 }
 
-/* ── Typewriter append ───────────────────────────────────────────────────── */
-function typewriterAppend(
-  existing: string,
-  incoming: string,
-  setter: (v: string) => void,
-  delay = 22,
-) {
-  const prefix = existing ? existing + ' ' : ''
-  let i = 0
-  const tick = () => {
-    i++
-    setter(prefix + incoming.slice(0, i))
-    if (i < incoming.length) setTimeout(tick, delay)
-  }
-  tick()
-}
-
 /* ── Timeline entry card ─────────────────────────────────────────────────── */
 function TimelineEntry({
   entry,
