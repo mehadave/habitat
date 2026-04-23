@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useHabits, useAddHabit, useUpdateHabit, useDeleteHabit, useToggleCompletion } from '../hooks/useHabits'
 import { useUIStore } from '../store/uiStore'
@@ -86,6 +86,7 @@ function AddEditSheet({
     notifTime: initial?.notifTime ?? existingPref.time,
     notifDays: initial?.notifDays ?? existingPref.days,
   })
+  const emojiInputRef = useRef<HTMLInputElement>(null)
 
   function toggleDay(d: number) {
     setForm(f => ({
@@ -158,6 +159,33 @@ function AddEditSheet({
               {e}
             </button>
           ))}
+          {/* Custom emoji — tapping opens native emoji keyboard */}
+          <button
+            onClick={() => emojiInputRef.current?.focus()}
+            className="text-xl flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-all font-semibold"
+            style={{
+              background: !EMOJIS.includes(form.emoji as typeof EMOJIS[number]) ? 'rgba(37,99,235,0.25)' : t.inputBg,
+              border: !EMOJIS.includes(form.emoji as typeof EMOJIS[number]) ? '1.5px solid #2563EB' : t.inputBorder,
+              color: t.textMuted,
+            }}
+            title="Choose any emoji"
+          >
+            {!EMOJIS.includes(form.emoji as typeof EMOJIS[number]) ? form.emoji : '+'}
+          </button>
+          {/* Hidden input that receives the emoji from the OS keyboard */}
+          <input
+            ref={emojiInputRef}
+            type="text"
+            inputMode="text"
+            value=""
+            onChange={(e) => {
+              const val = [...e.target.value].find(c => c.trim())
+              if (val) setForm(f => ({ ...f, emoji: val }))
+              e.target.value = ''
+            }}
+            className="absolute opacity-0 pointer-events-none w-0 h-0"
+            aria-hidden="true"
+          />
         </div>
 
         <input
