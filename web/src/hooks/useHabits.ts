@@ -106,9 +106,9 @@ export function useToggleCompletion() {
       qc.setQueryData<HabitWithStreak[]>(['habits', userId], (old = []) =>
         old.map((h) => {
           if (h.id !== habit.id) return h
-          const exists = h.completions?.includes(date)
+          const exists = (h.completions ?? []).includes(date)
           const newCompletions = exists
-            ? h.completions.filter((d) => d !== date)
+            ? (h.completions ?? []).filter((d) => d !== date)
             : [...(h.completions ?? []), date].sort()
           const newStreak = calcCurrentStreak(newCompletions)
           const newLongest = Math.max(calcLongestStreak(newCompletions), h.streak?.longest_streak ?? 0)
