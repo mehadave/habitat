@@ -46,20 +46,25 @@ export async function requestNotificationPermission(): Promise<boolean> {
 }
 
 /** Send scheduled notifications to the service worker. Call on app load and when prefs change. */
-export function syncNotificationsToSW(habits: HabitWithStreak[]) {
-  const sw = navigator.serviceWorker?.controller
-  if (!sw) return
-  const all = getAll()
-  const toSchedule = habits
-    .filter((h) => all[h.id]?.enabled)
-    .map((h) => ({
-      id: h.id,
-      name: h.name,
-      emoji: h.emoji ?? '⭐',
-      time: all[h.id].time,
-      days: all[h.id].days,
-    }))
-  sw.postMessage({ type: 'SCHEDULE_NOTIFICATIONS', habits: toSchedule })
+export async function syncNotificationsToSW(habits: HabitWithStreak[]) {
+  if (!('serviceWorker' in navigator)) return
+  try {
+    // Wait for the SW to be active — controller can be null on first load
+    const reg = await navigator.serviceWorker.ready
+    const target = reg.active
+    if (!target) return
+    const all = getAll()
+    const toSchedule = habits
+      .filter((h) => all[h.id]?.enabled)
+      .map((h) => ({
+        id: h.id,
+        name: h.name,
+        emoji: h.emoji ?? '⭐',
+        time: all[h.id].time,
+        days: all[h.id].days,
+      }))
+    target.postMessage({ type: 'SCHEDULE_NOTIFICATIONS', habits: toSchedule })
+  } catch { /* SW not available */ }
 }
 
 // ─── Weekly summary ─────────────────────────────────────────────────────────
@@ -115,18 +120,19 @@ function computeWeekStats(habits: HabitWithStreak[]) {
 }
 
 /** Schedule a weekly summary notification for Sunday at 9:00 AM local time. */
-export function scheduleWeeklySummary(habits: HabitWithStreak[]) {
-  const sw = navigator.serviceWorker?.controller
-  if (!sw) return
+export async function scheduleWeeklySummary(habits: HabitWithStreak[]) {
+  if (!('serviceWorker' in navigator)) return
+  try {
+    const reg = await navigator.serviceWorker.ready
+    const target = reg.active
+    if (!target) return
 
-  if (!isWeeklySummaryEnabled()) {
-    sw.postMessage({ type: 'CANCEL_WEEKLY_SUMMARY' })
-    return
-  }
+    if (!isWeeklySummaryEnabled()) {
+      target.postMessage({ type: 'CANCEL_WEEKLY_SUMMARY' })
+      return
+    }
 
-  const stats = computeWeekStats(habits)
-  sw.postMessage({
-    type: 'SCHEDULE_WEEKLY_SUMMARY',
-    stats,
-  })
+    const stats = computeWeekStats(habits)
+    target.postMessage({ type: 'SCHEDULE_WEEKLY_SUMMARY', stats })
+  } catch { /* SW not available */ }
 }

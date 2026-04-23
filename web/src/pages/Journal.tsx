@@ -35,26 +35,52 @@ const DRAFT_KEY = 'habitat-journal-draft'
 /* ── Voice blob hook ─────────────────────────────────────────────────────── */
 function useVoiceBlob(onText: (text: string) => void) {
   const [recording, setRecording] = useState(false)
+  const [micBlocked, setMicBlocked] = useState(false)
   const recognitionRef = useRef<any>(null)
+  const onTextRef = useRef(onText)
+  onTextRef.current = onText
 
-  const start = useCallback(() => {
+  const start = useCallback(async () => {
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
     if (!SR) return
+
+    // Check permission state if API is available
+    if (navigator.permissions) {
+      try {
+        const perm = await navigator.permissions.query({ name: 'microphone' as PermissionName })
+        if (perm.state === 'denied') {
+          setMicBlocked(true)
+          return
+        }
+      } catch { /* browser may not support mic permission query */ }
+    }
+
+    setMicBlocked(false)
     const r = new SR()
     r.continuous = true
     r.interimResults = true
     r.lang = 'en-US'
+
     r.onresult = (e: any) => {
       let final = ''
       for (let i = e.resultIndex; i < e.results.length; i++) {
         if (e.results[i].isFinal) final += e.results[i][0].transcript
       }
-      if (final) onText(final)
+      if (final) onTextRef.current(final)
     }
+
+    r.onerror = (e: any) => {
+      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+        setMicBlocked(true)
+      }
+      setRecording(false)
+      recognitionRef.current = null
+    }
+
     r.start()
     recognitionRef.current = r
     setRecording(true)
-  }, [onText])
+  }, [])
 
   const stop = useCallback(() => {
     recognitionRef.current?.stop()
@@ -62,7 +88,7 @@ function useVoiceBlob(onText: (text: string) => void) {
     setRecording(false)
   }, [])
 
-  return { recording, start, stop }
+  return { recording, micBlocked, setMicBlocked, start, stop }
 }
 
 /* ── Typewriter append ───────────────────────────────────────────────────── */
@@ -295,8 +321,12 @@ export default function Journal() {
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null)
 
   /* voice blob */
-  const { recording, start: startRec, stop: stopRec } = useVoiceBlob((text) => {
-    typewriterAppend(content, text, setContent)
+  const { recording, micBlocked, setMicBlocked, start: startRec, stop: stopRec } = useVoiceBlob((text) => {
+    // Functional update avoids stale closure — always appends to latest content
+    setContent(prev => {
+      const trimmed = prev.trimEnd()
+      return trimmed ? trimmed + ' ' + text : text
+    })
   })
   const voiceSupported = !!(
     (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
@@ -386,16 +416,31 @@ export default function Journal() {
                     color: sel ? cat.color : t.textSub,
                     border: `1px solid ${sel ? cat.border : 'transparent'}`,
                     boxShadow: sel ? `0 0 8px ${cat.color}33` : 'none',
-                    fontSize: 9,
                     minWidth: 0,
                   }}
                 >
-                  <span style={{ fontSize: 15 }}>{cat.emoji}</span>
-                  <span>{cat.label}</span>
+                  <span className="text-base md:text-xl">{cat.emoji}</span>
+                  <span className="text-[9px] md:text-xs">{cat.label}</span>
                 </button>
               )
             })}
           </div>
+
+          {/* Mic blocked banner */}
+          <AnimatePresence>
+            {micBlocked && (
+              <motion.div
+                initial={{ opacity: 0, y: -6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                className="flex items-center justify-between gap-2 px-3 py-2 rounded-xl mb-3 text-xs"
+                style={{ background: 'rgba(248,113,113,0.12)', border: '1px solid rgba(248,113,113,0.28)', color: '#F87171' }}
+              >
+                <span>🎙 Mic access blocked. Enable it in your browser/phone settings, then try again.</span>
+                <button onClick={() => setMicBlocked(false)} style={{ flexShrink: 0, opacity: 0.6 }}>✕</button>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Textarea */}
           <textarea
@@ -458,27 +503,32 @@ export default function Journal() {
               <div className="flex items-center gap-2">
                 {voiceSupported && (
                   <button
-                    onMouseDown={startRec}
-                    onMouseUp={stopRec}
-                    onTouchStart={startRec}
-                    onTouchEnd={stopRec}
+                    onMouseDown={micBlocked ? undefined : startRec}
+                    onMouseUp={micBlocked ? undefined : stopRec}
+                    onTouchStart={micBlocked ? undefined : startRec}
+                    onTouchEnd={micBlocked ? undefined : stopRec}
+                    onClick={micBlocked ? () => { setMicBlocked(false); startRec() } : undefined}
                     className="w-9 h-9 rounded-xl flex items-center justify-center text-base select-none flex-shrink-0"
                     style={{
-                      background: recording
-                        ? 'rgba(248,113,113,0.20)'
-                        : t.inputBg,
-                      border: recording
-                        ? '1px solid rgba(248,113,113,0.45)'
-                        : `1px solid transparent`,
-                      color: recording ? '#F87171' : t.textMuted,
+                      background: micBlocked
+                        ? 'rgba(248,113,113,0.10)'
+                        : recording
+                          ? 'rgba(248,113,113,0.20)'
+                          : t.inputBg,
+                      border: micBlocked
+                        ? '1px solid rgba(248,113,113,0.30)'
+                        : recording
+                          ? '1px solid rgba(248,113,113,0.45)'
+                          : `1px solid transparent`,
+                      color: micBlocked ? 'rgba(248,113,113,0.5)' : recording ? '#F87171' : t.textMuted,
                       cursor: 'pointer',
                       userSelect: 'none',
                       WebkitUserSelect: 'none',
                       transition: 'all 0.15s ease',
                     }}
-                    title="Hold to dictate"
+                    title={micBlocked ? 'Mic blocked — tap to retry' : 'Hold to dictate'}
                   >
-                    {recording ? '⏹' : '🎙'}
+                    {micBlocked ? '🚫' : recording ? '⏹' : '🎙'}
                   </button>
                 )}
                 <button
