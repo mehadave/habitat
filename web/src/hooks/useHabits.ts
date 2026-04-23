@@ -82,7 +82,7 @@ export function useHabits() {
             user_id: userId!,
             current_streak: dynamicCurrent,
             longest_streak: Math.max(dynamicLongest, dynamicCurrent),
-            last_completed_date: habitDates.length > 0 ? habitDates[habitDates.length - 1] : null,
+            last_completed_date: habitDates.length > 0 ? habitDates[habitDates.length - 1] : undefined,
           },
           completions: habitDates,
         }
@@ -116,10 +116,11 @@ export function useToggleCompletion() {
             ...h,
             completions: newCompletions,
             streak: {
-              ...h.streak,
+              habit_id: h.id,
+              user_id: h.streak?.user_id ?? '',
               current_streak: newStreak,
               longest_streak: newLongest,
-              last_completed_date: newCompletions.length > 0 ? newCompletions[newCompletions.length - 1] : null,
+              last_completed_date: newCompletions.length > 0 ? newCompletions[newCompletions.length - 1] : undefined,
             },
           }
         })
