@@ -68,7 +68,7 @@ export function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCardProps)
           background: swipeActionsBg,
           opacity: showActions ? 1 : 0,
           transition: 'opacity 0.2s ease',
-          width: 140,
+          width: 160,
           zIndex: 0,
         }}
       >
@@ -90,12 +90,12 @@ export function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCardProps)
 
       <motion.div
         drag="x"
-        dragConstraints={{ left: -140, right: 0 }}
+        dragConstraints={{ left: -160, right: 0 }}
         dragElastic={0.05}
-        animate={{ x: showActions ? -140 : 0 }}
+        animate={{ x: showActions ? -160 : 0 }}
         transition={{ type: 'spring', damping: 28, stiffness: 320 }}
         onDragEnd={(_, info) => {
-          setShowActions(info.offset.x < -60 || info.velocity.x < -300)
+          setShowActions(info.offset.x < -70 || info.velocity.x < -300)
         }}
         className="p-4 relative"
         style={{
