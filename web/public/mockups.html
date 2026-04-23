@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Journal UX Mockups</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+    background: #060d24;
+    color: #fff;
+    min-height: 100vh;
+  }
+
+  /* ── Layout: 3 phones per row ── */
+  .page { padding: 40px 32px; }
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(147,197,253,0.7);
+    margin-bottom: 28px;
+  }
+  .row {
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+    margin-bottom: 56px;
+  }
+
+  /* ── Phone frame ── */
+  .phone {
+    width: 280px;
+    background: #0b1437;
+    border-radius: 36px;
+    border: 1.5px solid rgba(255,255,255,0.10);
+    box-shadow:
+      0 0 0 6px #080f2a,
+      0 0 0 7px rgba(255,255,255,0.07),
+      0 32px 64px rgba(0,0,0,0.6);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .phone-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.4);
+    margin-top: 12px;
+    text-align: center;
+    letter-spacing: 0.04em;
+  }
+  .phone-inner {
+    padding: 20px 16px 24px;
+  }
+
+  /* ── Status bar ── */
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.55);
+  }
+
+  /* ── Shared typography ── */
+  .page-title { font-size: 22px; font-weight: 800; color: #fff; line-height: 1.2; }
+  .page-sub { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 3px; }
+  .label { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.45); margin-bottom: 8px; }
+  .card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 16px;
+    padding: 14px;
+    margin-bottom: 10px;
+  }
+
+  /* ─────────────────────────────────────────
+     MOCKUP A — Guided Prompt Card
+  ───────────────────────────────────────── */
+  .prompt-card {
+    background: linear-gradient(135deg, rgba(37,99,235,0.25) 0%, rgba(14,165,233,0.15) 100%);
+    border: 1px solid rgba(96,165,250,0.35);
+    border-radius: 18px;
+    padding: 16px;
+    margin-bottom: 10px;
+    position: relative;
+  }
+  .prompt-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #60A5FA;
+    background: rgba(96,165,250,0.12);
+    border: 1px solid rgba(96,165,250,0.25);
+    border-radius: 20px;
+    padding: 3px 8px;
+    margin-bottom: 8px;
+  }
+  .prompt-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.5;
+  }
+  .prompt-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .btn-use {
+    flex: 1;
+    background: rgba(37,99,235,0.7);
+    border: none;
+    border-radius: 10px;
+    padding: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+  }
+  .btn-skip {
+    background: rgba(255,255,255,0.07);
+    border: none;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.45);
+    cursor: pointer;
+  }
+  .textarea-mock {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    padding: 12px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.35);
+    line-height: 1.6;
+    min-height: 80px;
+    font-style: italic;
+  }
+  .textarea-active {
+    color: rgba(255,255,255,0.75);
+    font-style: normal;
+    border-color: rgba(96,165,250,0.4);
+  }
+
+  /* ─────────────────────────────────────────
+     MOCKUP B — Mood Emoji Tap Grid
+  ───────────────────────────────────────── */
+  .mood-grid {
+    display: flex;
+    gap: 6px;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .mood-chip {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 14px;
+    padding: 10px 4px 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .mood-chip.selected {
+    background: rgba(37,99,235,0.2);
+    border-color: rgba(96,165,250,0.5);
+    box-shadow: 0 0 12px rgba(37,99,235,0.25);
+  }
+  .mood-chip .emoji { font-size: 22px; line-height: 1; }
+  .mood-chip .word { font-size: 8px; font-weight: 600; color: rgba(255,255,255,0.4); }
+  .mood-chip.selected .word { color: #93C5FD; }
+
+  /* ─────────────────────────────────────────
+     MOCKUP C — Feeling Word Tags
+  ───────────────────────────────────────── */
+  .tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-bottom: 10px;
+  }
+  .feeling-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 11px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.55);
+    cursor: pointer;
+  }
+  .feeling-tag.sel-blue {
+    background: rgba(37,99,235,0.2);
+    border-color: rgba(96,165,250,0.45);
+    color: #93C5FD;
+  }
+  .feeling-tag.sel-green {
+    background: rgba(34,197,94,0.14);
+    border-color: rgba(34,197,94,0.35);
+    color: #86efac;
+  }
+  .feeling-tag.sel-amber {
+    background: rgba(251,191,36,0.14);
+    border-color: rgba(251,191,36,0.35);
+    color: #FCD34D;
+  }
+  .feeling-tag.sel-red {
+    background: rgba(248,113,113,0.14);
+    border-color: rgba(248,113,113,0.35);
+    color: #FCA5A5;
+  }
+
+  /* ─────────────────────────────────────────
+     MOCKUP D — Inline Prompt Timeline
+  ───────────────────────────────────────── */
+  .timeline {
+    position: relative;
+    padding-left: 20px;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 0;
+    bottom: 0;
+    width: 1.5px;
+    background: linear-gradient(to bottom, rgba(37,99,235,0.5), rgba(37,99,235,0.05));
+    border-radius: 2px;
+  }
+  .tl-item {
+    position: relative;
+    margin-bottom: 14px;
+  }
+  .tl-dot {
+    position: absolute;
+    left: -17px;
+    top: 4px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #2563EB;
+    border: 2px solid #0b1437;
+    box-shadow: 0 0 8px rgba(37,99,235,0.6);
+  }
+  .tl-dot.dim { background: rgba(255,255,255,0.15); box-shadow: none; }
+  .tl-date { font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.3); margin-bottom: 4px; letter-spacing: 0.05em; }
+  .tl-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 10px 12px;
+  }
+  .tl-card.active {
+    background: rgba(37,99,235,0.1);
+    border-color: rgba(96,165,250,0.25);
+  }
+  .tl-text { font-size: 11px; color: rgba(255,255,255,0.6); line-height: 1.55; }
+  .tl-mood { display: inline-flex; align-items: center; gap: 4px; margin-top: 6px; }
+  .tl-mood-dot { width: 7px; height: 7px; border-radius: 50%; }
+
+  /* ─────────────────────────────────────────
+     MOCKUP E — Scratch vs Reflect tabs
+  ───────────────────────────────────────── */
+  .tab-row {
+    display: flex;
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 3px;
+    margin-bottom: 12px;
+    gap: 3px;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 7px;
+    border-radius: 9px;
+    border: none;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+  }
+  .tab-btn.active { background: #1d4ed8; color: #fff; }
+  .tab-btn.inactive { background: transparent; color: rgba(255,255,255,0.35); }
+  .reflect-row {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+  }
+  .reflect-label {
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #60A5FA;
+    margin-bottom: 5px;
+  }
+  .reflect-input {
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.5;
+    font-style: italic;
+  }
+
+  /* ─────────────────────────────────────────
+     MOCKUP F — Color Energy Picker (mood alt)
+  ───────────────────────────────────────── */
+  .energy-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .energy-swatch {
+    flex: 1;
+    height: 48px;
+    border-radius: 12px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 5px;
+    font-size: 8px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.0);
+    transition: all 0.2s;
+  }
+  .energy-swatch.sel { border-color: rgba(255,255,255,0.6); color: rgba(255,255,255,0.9); }
+  .e1 { background: linear-gradient(160deg, #ef4444, #dc2626); }
+  .e2 { background: linear-gradient(160deg, #f97316, #ea580c); }
+  .e3 { background: linear-gradient(160deg, #eab308, #ca8a04); }
+  .e4 { background: linear-gradient(160deg, #22c55e, #16a34a); }
+  .e5 { background: linear-gradient(160deg, #3b82f6, #1d4ed8); }
+  .e6 { background: linear-gradient(160deg, #8b5cf6, #7c3aed); }
+  .energy-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    color: rgba(255,255,255,0.3);
+    margin-top: -4px;
+    margin-bottom: 10px;
+    padding: 0 2px;
+  }
+
+  /* Save button */
+  .save-btn {
+    width: 100%;
+    background: linear-gradient(90deg, #1d4ed8, #2563eb);
+    border: none;
+    border-radius: 12px;
+    padding: 11px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(37,99,235,0.35);
+    margin-top: 4px;
+  }
+  .char-count {
+    font-size: 9px;
+    color: rgba(255,255,255,0.25);
+    text-align: right;
+    margin-top: 4px;
+  }
+
+  /* ── Notch ── */
+  .notch {
+    width: 90px;
+    height: 22px;
+    background: #060d24;
+    border-radius: 0 0 14px 14px;
+    margin: 0 auto;
+  }
+
+  /* nav bar placeholder */
+  .nav-bar {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0 16px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    margin-top: 8px;
+  }
+  .nav-item { font-size: 18px; opacity: 0.3; }
+  .nav-item.active-nav { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="page">
+  <p class="section-title">Journal Entry — UX Concept Screens</p>
+
+  <div class="row">
+
+    <!-- ── CARD A: Guided Prompt ── -->
+    <div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="status-bar"><span>9:41</span><span>●●● 100%</span></div>
+        <div class="phone-inner">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+            <span style="font-size:24px">🐬</span>
+            <div>
+              <div class="page-title" style="font-size:18px">brain dump.</div>
+              <div class="page-sub">no filter.</div>
+            </div>
+          </div>
+
+          <!-- Prompt card -->
+          <div class="prompt-card">
+            <div class="prompt-tag">✦ Today's prompt</div>
+            <div class="prompt-text">"What's one thing you're proud of yourself for this week?"</div>
+            <div class="prompt-actions">
+              <button class="btn-use">Use this prompt</button>
+              <button class="btn-skip">Skip ›</button>
+            </div>
+          </div>
+
+          <!-- Textarea with cursor -->
+          <div class="textarea-mock textarea-active" style="min-height:90px">
+            I finally stuck to my morning routine for 5 days straight. It felt hard at first but…<span style="display:inline-block;width:1.5px;height:13px;background:#60A5FA;margin-left:1px;vertical-align:middle;border-radius:1px"></span>
+          </div>
+          <div class="char-count">128 / ∞</div>
+
+          <!-- Mood -->
+          <div style="margin-top:10px">
+            <div class="label">How are you feeling?</div>
+            <div class="mood-grid">
+              <div class="mood-chip"><span class="emoji">😔</span><span class="word">Low</span></div>
+              <div class="mood-chip"><span class="emoji">😐</span><span class="word">Meh</span></div>
+              <div class="mood-chip selected"><span class="emoji">🙂</span><span class="word">Okay</span></div>
+              <div class="mood-chip"><span class="emoji">😊</span><span class="word">Good</span></div>
+              <div class="mood-chip"><span class="emoji">🤩</span><span class="word">Great</span></div>
+            </div>
+          </div>
+
+          <button class="save-btn">Save entry</button>
+        </div>
+        <div class="nav-bar">
+          <span class="nav-item">🏠</span><span class="nav-item">✅</span>
+          <span class="nav-item active-nav">📖</span>
+          <span class="nav-item">📅</span><span class="nav-item">👤</span>
+        </div>
+      </div>
+      <div class="phone-label">A — Guided Prompt + Emoji Mood</div>
+    </div>
+
+    <!-- ── CARD B: Feeling Word Tags ── -->
+    <div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="status-bar"><span>9:41</span><span>●●● 100%</span></div>
+        <div class="phone-inner">
+          <div style="margin-bottom:14px">
+            <div class="page-title" style="font-size:18px">brain dump.</div>
+            <div class="page-sub">Thursday, Apr 17</div>
+          </div>
+
+          <div class="textarea-mock textarea-active" style="min-height:95px">
+            Honestly just relieved the week is almost over. Had that big meeting and it went better than expected…<span style="display:inline-block;width:1.5px;height:13px;background:#60A5FA;margin-left:1px;vertical-align:middle;border-radius:1px"></span>
+          </div>
+          <div class="char-count">103 / ∞</div>
+
+          <div style="margin-top:12px">
+            <div class="label">Tag your feelings (pick any)</div>
+            <div class="tag-cloud">
+              <span class="feeling-tag sel-green">😌 Calm</span>
+              <span class="feeling-tag sel-blue">💙 Grateful</span>
+              <span class="feeling-tag">😤 Frustrated</span>
+              <span class="feeling-tag sel-amber">⚡ Energised</span>
+              <span class="feeling-tag">😰 Anxious</span>
+              <span class="feeling-tag">😴 Tired</span>
+              <span class="feeling-tag sel-blue">🎯 Focused</span>
+              <span class="feeling-tag">🌀 Overwhelmed</span>
+              <span class="feeling-tag sel-green">✨ Proud</span>
+            </div>
+          </div>
+
+          <button class="save-btn">Save entry</button>
+        </div>
+        <div class="nav-bar">
+          <span class="nav-item">🏠</span><span class="nav-item">✅</span>
+          <span class="nav-item active-nav">📖</span>
+          <span class="nav-item">📅</span><span class="nav-item">👤</span>
+        </div>
+      </div>
+      <div class="phone-label">B — Feeling Word Tag Cloud</div>
+    </div>
+
+    <!-- ── CARD C: Scratch vs Reflect ── -->
+    <div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="status-bar"><span>9:41</span><span>●●● 100%</span></div>
+        <div class="phone-inner">
+          <div style="margin-bottom:12px">
+            <div class="page-title" style="font-size:18px">brain dump.</div>
+          </div>
+
+          <!-- Tabs -->
+          <div class="tab-row">
+            <button class="tab-btn inactive">✏️ Scratch</button>
+            <button class="tab-btn active">🔮 Reflect</button>
+          </div>
+
+          <!-- Reflect mode -->
+          <div class="reflect-row">
+            <div class="reflect-label">🏆 Wins</div>
+            <div class="reflect-input">Finished the project ahead of deadline. Actually slept 8 hrs.</div>
+          </div>
+          <div class="reflect-row" style="border-color:rgba(248,113,113,0.2);background:rgba(248,113,113,0.04)">
+            <div class="reflect-label" style="color:#F87171">⚡ Challenges</div>
+            <div class="reflect-input" style="color:rgba(255,255,255,0.4);font-style:italic">What felt hard today?…</div>
+          </div>
+          <div class="reflect-row" style="border-color:rgba(251,191,36,0.2);background:rgba(251,191,36,0.04)">
+            <div class="reflect-label" style="color:#FBBF24">🌅 Tomorrow's intention</div>
+            <div class="reflect-input" style="color:rgba(255,255,255,0.4);font-style:italic">One thing I'll focus on…</div>
+          </div>
+
+          <!-- Mood tags inline -->
+          <div style="margin-top:8px">
+            <div class="label">Vibe check</div>
+            <div class="mood-grid">
+              <div class="mood-chip"><span class="emoji">😔</span></div>
+              <div class="mood-chip"><span class="emoji">😐</span></div>
+              <div class="mood-chip"><span class="emoji">🙂</span></div>
+              <div class="mood-chip selected"><span class="emoji">😊</span></div>
+              <div class="mood-chip"><span class="emoji">🤩</span></div>
+            </div>
+          </div>
+
+          <button class="save-btn">Save reflection</button>
+        </div>
+        <div class="nav-bar">
+          <span class="nav-item">🏠</span><span class="nav-item">✅</span>
+          <span class="nav-item active-nav">📖</span>
+          <span class="nav-item">📅</span><span class="nav-item">👤</span>
+        </div>
+      </div>
+      <div class="phone-label">C — Scratch vs Reflect Tabs</div>
+    </div>
+
+  </div>
+
+  <!-- Row 2 -->
+  <div class="row">
+
+    <!-- ── CARD D: Timeline view ── -->
+    <div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="status-bar"><span>9:41</span><span>●●● 100%</span></div>
+        <div class="phone-inner">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+            <div>
+              <div class="page-title" style="font-size:18px">Journal</div>
+              <div class="page-sub">4 entries this week</div>
+            </div>
+            <button style="background:rgba(37,99,235,0.7);border:none;border-radius:10px;padding:7px 12px;font-size:11px;font-weight:700;color:#fff">+ New</button>
+          </div>
+
+          <!-- Timeline -->
+          <div class="timeline">
+            <div class="tl-item">
+              <div class="tl-dot"></div>
+              <div class="tl-date">TODAY · THU APR 17</div>
+              <div class="tl-card active">
+                <div class="textarea-mock textarea-active" style="background:transparent;border:none;padding:0;min-height:50px;font-size:11px">
+                  Week is almost done, feeling way better than Monday…<span style="display:inline-block;width:1.5px;height:11px;background:#60A5FA;margin-left:1px;vertical-align:middle;border-radius:1px"></span>
+                </div>
+                <div class="tl-mood">
+                  <div class="tl-mood-dot" style="background:#22c55e"></div>
+                  <span style="font-size:9px;color:rgba(255,255,255,0.35)">Calm · Grateful</span>
+                </div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot dim"></div>
+              <div class="tl-date">WED APR 16</div>
+              <div class="tl-card">
+                <div class="tl-text">Big presentation went well. The team was super supportive, which I didn't expect…</div>
+                <div class="tl-mood">
+                  <div class="tl-mood-dot" style="background:#3b82f6"></div>
+                  <span style="font-size:9px;color:rgba(255,255,255,0.35)">Proud · Energised</span>
+                </div>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot dim"></div>
+              <div class="tl-date">TUE APR 15</div>
+              <div class="tl-card">
+                <div class="tl-text">Didn't sleep well. Felt scattered most of the day…</div>
+                <div class="tl-mood">
+                  <div class="tl-mood-dot" style="background:#ef4444"></div>
+                  <span style="font-size:9px;color:rgba(255,255,255,0.35)">Tired · Anxious</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="nav-bar">
+          <span class="nav-item">🏠</span><span class="nav-item">✅</span>
+          <span class="nav-item active-nav">📖</span>
+          <span class="nav-item">📅</span><span class="nav-item">👤</span>
+        </div>
+      </div>
+      <div class="phone-label">D — Inline Timeline View</div>
+    </div>
+
+    <!-- ── CARD E: Color Energy (mood alt) ── -->
+    <div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="status-bar"><span>9:41</span><span>●●● 100%</span></div>
+        <div class="phone-inner">
+          <div style="margin-bottom:14px">
+            <div class="page-title" style="font-size:18px">brain dump.</div>
+            <div class="page-sub">no filter.</div>
+          </div>
+
+          <div class="textarea-mock textarea-active" style="min-height:100px">
+            Feeling really grounded today. Took a walk at lunch and it made all the difference. Noticing I'm more patient when I…<span style="display:inline-block;width:1.5px;height:13px;background:#60A5FA;margin-left:1px;vertical-align:middle;border-radius:1px"></span>
+          </div>
+          <div class="char-count">117 / ∞</div>
+
+          <!-- Color energy picker -->
+          <div style="margin-top:12px">
+            <div class="label">Your energy right now</div>
+            <div class="energy-row">
+              <div class="energy-swatch e1">🔥</div>
+              <div class="energy-swatch e2">⚡</div>
+              <div class="energy-swatch e3">☀️</div>
+              <div class="energy-swatch e4 sel">🌿</div>
+              <div class="energy-swatch e5">🌊</div>
+              <div class="energy-swatch e6">🌙</div>
+            </div>
+            <div class="energy-labels">
+              <span>Fired up</span>
+              <span style="margin-left:8px">Wired</span>
+              <span>Bright</span>
+              <span>Grounded ✓</span>
+              <span>Calm</span>
+              <span>Low</span>
+            </div>
+          </div>
+
+          <button class="save-btn">Save entry</button>
+        </div>
+        <div class="nav-bar">
+          <span class="nav-item">🏠</span><span class="nav-item">✅</span>
+          <span class="nav-item active-nav">📖</span>
+          <span class="nav-item">📅</span><span class="nav-item">👤</span>
+        </div>
+      </div>
+      <div class="phone-label">E — Color Energy Picker (mood alt)</div>
+    </div>
+
+    <!-- ── CARD F: 1-tap Quick Capture ── -->
+    <div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="status-bar"><span>9:41</span><span>●●● 100%</span></div>
+        <div class="phone-inner">
+          <div style="margin-bottom:12px">
+            <div class="page-title" style="font-size:18px">brain dump.</div>
+          </div>
+
+          <!-- Quick capture row -->
+          <div style="display:flex;gap:7px;margin-bottom:12px">
+            <div style="flex:1;background:rgba(37,99,235,0.15);border:1px solid rgba(96,165,250,0.3);border-radius:14px;padding:10px;text-align:center">
+              <div style="font-size:20px;margin-bottom:4px">🏆</div>
+              <div style="font-size:9px;font-weight:700;color:#93C5FD">Quick win</div>
+            </div>
+            <div style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:10px;text-align:center">
+              <div style="font-size:20px;margin-bottom:4px">🌀</div>
+              <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.35)">Vent</div>
+            </div>
+            <div style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:10px;text-align:center">
+              <div style="font-size:20px;margin-bottom:4px">💡</div>
+              <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.35)">Idea</div>
+            </div>
+            <div style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:10px;text-align:center">
+              <div style="font-size:20px;margin-bottom:4px">🙏</div>
+              <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.35)">Grateful</div>
+            </div>
+          </div>
+
+          <div class="textarea-mock textarea-active" style="min-height:80px;border-color:rgba(37,99,235,0.4);background:rgba(37,99,235,0.06)">
+            🏆  Shipped the feature without any bugs. Team was stoked.<span style="display:inline-block;width:1.5px;height:13px;background:#60A5FA;margin-left:1px;vertical-align:middle;border-radius:1px"></span>
+          </div>
+          <div class="char-count">51 / ∞</div>
+
+          <div style="margin-top:10px">
+            <div class="label">Feeling</div>
+            <div class="mood-grid">
+              <div class="mood-chip"><span class="emoji">😔</span></div>
+              <div class="mood-chip"><span class="emoji">😐</span></div>
+              <div class="mood-chip"><span class="emoji">🙂</span></div>
+              <div class="mood-chip selected"><span class="emoji">😊</span></div>
+              <div class="mood-chip"><span class="emoji">🤩</span></div>
+            </div>
+          </div>
+          <button class="save-btn">Save entry</button>
+        </div>
+        <div class="nav-bar">
+          <span class="nav-item">🏠</span><span class="nav-item">✅</span>
+          <span class="nav-item active-nav">📖</span>
+          <span class="nav-item">📅</span><span class="nav-item">👤</span>
+        </div>
+      </div>
+      <div class="phone-label">F — Quick Capture Mode Selector</div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

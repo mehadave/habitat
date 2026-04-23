@@ -69,21 +69,23 @@ function ProfileDropdown({ onClose, darkMode }: { onClose: () => void; darkMode:
   const navigate = useNavigate()
 
   const t = darkMode ? {
-    sheetBg: '#0F1B45',
-    cardBorder: 'rgba(255,255,255,0.12)',
+    sheetBg: 'rgba(10,16,38,0.97)',
+    cardBorder: 'rgba(255,255,255,0.10)',
     text: '#ffffff',
     textMuted: 'rgba(255,255,255,0.4)',
-    divider: 'rgba(255,255,255,0.08)',
+    divider: 'rgba(255,255,255,0.07)',
     linkColor: 'rgba(255,255,255,0.75)',
-    borderColor: 'rgba(255,255,255,0.06)',
+    borderColor: 'rgba(255,255,255,0.07)',
+    rowHover: 'rgba(255,255,255,0.04)',
   } : {
-    sheetBg: '#E8EFFF',
-    cardBorder: 'rgba(11,20,55,0.20)',
+    sheetBg: 'rgba(248,250,255,0.97)',
+    cardBorder: 'rgba(11,20,55,0.15)',
     text: '#0B1437',
-    textMuted: 'rgba(11,20,55,0.70)',
-    divider: 'rgba(11,20,55,0.14)',
-    linkColor: 'rgba(11,20,55,0.75)',
-    borderColor: 'rgba(11,20,55,0.1)',
+    textMuted: 'rgba(11,20,55,0.60)',
+    divider: 'rgba(11,20,55,0.10)',
+    linkColor: 'rgba(11,20,55,0.80)',
+    borderColor: 'rgba(11,20,55,0.08)',
+    rowHover: 'rgba(11,20,55,0.03)',
   }
 
   async function handleLogout() {
@@ -95,65 +97,72 @@ function ProfileDropdown({ onClose, darkMode }: { onClose: () => void; darkMode:
 
   return (
     <div
-      className="absolute right-0 top-full mt-2 rounded-2xl overflow-hidden z-50 min-w-[180px]"
-      style={{ background: t.sheetBg, border: `1px solid ${t.cardBorder}`, boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}
+      className="absolute right-0 top-full mt-2 rounded-2xl overflow-hidden z-50 min-w-[200px]"
+      style={{
+        background: t.sheetBg,
+        border: `1px solid ${t.cardBorder}`,
+        boxShadow: '0 16px 48px rgba(0,0,0,0.36), 0 4px 16px rgba(0,0,0,0.18)',
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
+      }}
     >
-      <div className="px-4 py-3 border-b" style={{ borderColor: t.divider }}>
-        <p className="text-sm font-medium truncate" style={{ color: t.text }}>{profile?.display_name ?? 'Your profile'}</p>
-        <p className="text-xs truncate" style={{ color: t.textMuted }}>{profile?.email ?? ''}</p>
+      {/* Profile header */}
+      <div className="px-4 py-3.5" style={{ borderBottom: `1px solid ${t.divider}` }}>
+        <p className="text-sm font-semibold truncate" style={{ color: t.text }}>{profile?.display_name ?? 'Your profile'}</p>
+        <p className="text-xs mt-0.5 truncate" style={{ color: t.textMuted }}>{profile?.email ?? ''}</p>
       </div>
+
       {/* Dark mode toggle */}
       <button
         onClick={toggleDarkMode}
-        className="w-full flex items-center justify-between px-4 py-3 text-sm border-b"
-        style={{ color: t.linkColor, borderColor: t.divider }}
+        className="w-full flex items-center justify-between px-4 py-3 text-sm"
+        style={{ color: t.linkColor, borderBottom: `1px solid ${t.divider}` }}
       >
-        <div className="flex items-center gap-2">
-          <span>{darkMode ? '🌙' : '☀️'}</span>
+        <div className="flex items-center gap-2.5">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            {darkMode
+              ? <><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></>
+              : <><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></>
+            }
+          </svg>
           <span>{darkMode ? 'Dark mode' : 'Light mode'}</span>
         </div>
-        {/* iOS-style pill toggle */}
-        <div
-          style={{
-            width: 36,
-            height: 20,
-            borderRadius: 10,
-            background: darkMode ? '#2563EB' : 'rgba(11,20,55,0.18)',
-            position: 'relative',
-            transition: 'background 0.2s ease',
-            flexShrink: 0,
-          }}
-        >
-          <div
-            style={{
-              width: 16,
-              height: 16,
-              borderRadius: '50%',
-              background: '#fff',
-              position: 'absolute',
-              top: 2,
-              left: darkMode ? 18 : 2,
-              transition: 'left 0.2s ease',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.3)',
-            }}
-          />
+        <div style={{
+          width: 36, height: 20, borderRadius: 10,
+          background: darkMode ? '#2563EB' : 'rgba(11,20,55,0.18)',
+          position: 'relative', transition: 'background 0.2s ease', flexShrink: 0,
+        }}>
+          <div style={{
+            width: 16, height: 16, borderRadius: '50%', background: '#fff',
+            position: 'absolute', top: 2,
+            left: darkMode ? 18 : 2,
+            transition: 'left 0.2s ease',
+            boxShadow: '0 1px 4px rgba(0,0,0,0.25)',
+          }} />
         </div>
       </button>
 
       <Link
         to="/profile"
         onClick={onClose}
-        className="flex items-center gap-2 px-4 py-3 text-sm transition-colors"
-        style={{ color: t.linkColor }}
+        className="flex items-center gap-2.5 px-4 py-3 text-sm"
+        style={{ color: t.linkColor, borderBottom: `1px solid ${t.divider}` }}
       >
-        <span>⚙️</span> Settings
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="3"/><path d="M19.07 4.93A10 10 0 015.07 19.07M4.93 4.93A10 10 0 0019.07 19.07"/>
+        </svg>
+        Settings
       </Link>
+
       <button
         onClick={handleLogout}
-        className="w-full flex items-center gap-2 px-4 py-3 text-sm transition-colors border-t"
-        style={{ color: '#F87171', borderColor: t.borderColor }}
+        className="w-full flex items-center gap-2.5 px-4 py-3 text-sm"
+        style={{ color: '#F87171' }}
       >
-        <span>🚪</span> Sign out
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>
+        </svg>
+        Sign out
       </button>
     </div>
   )
@@ -179,37 +188,40 @@ export function NavBar() {
     return () => document.removeEventListener('mousedown', handler)
   }, [])
 
-  const topBarBg = darkMode ? 'rgba(11,17,32,0.88)' : 'rgba(240,244,255,0.92)'
-  const topBarBorder = darkMode ? 'rgba(255,255,255,0.06)' : 'rgba(11,20,55,0.1)'
-  const tabBg = darkMode ? 'rgba(255,255,255,0.06)' : 'rgba(11,20,55,0.11)'
-  const tabActiveBg = darkMode ? 'rgba(56,189,248,0.15)' : 'rgba(37,99,235,0.12)'
+  const topBarBg = darkMode
+    ? 'linear-gradient(180deg, rgba(8,14,28,0.96) 0%, rgba(8,14,28,0.88) 100%)'
+    : 'linear-gradient(180deg, rgba(248,250,255,0.97) 0%, rgba(240,244,255,0.92) 100%)'
+  const topBarBorder = darkMode ? 'rgba(255,255,255,0.07)' : 'rgba(11,20,55,0.09)'
+  const tabActiveBg  = darkMode ? 'rgba(56,189,248,0.13)' : 'rgba(37,99,235,0.10)'
   const tabActiveText = darkMode ? '#38BDF8' : '#2563EB'
-  const tabInactiveText = darkMode ? 'rgba(255,255,255,0.4)' : 'rgba(11,20,55,0.62)'
+  const tabInactiveText = darkMode ? 'rgba(255,255,255,0.38)' : 'rgba(11,20,55,0.55)'
+  const pillBg = darkMode ? 'rgba(255,255,255,0.05)' : 'rgba(11,20,55,0.07)'
   const brandColor = darkMode ? 'white' : '#0B1437'
 
   return (
     <>
-      {/* Top bar */}
+      {/* ── Top bar ── */}
       <div
-        className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-5 py-4"
+        className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-5 py-4 nav-bar-top"
         style={{
           background: topBarBg,
-          backdropFilter: 'blur(16px)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
           borderBottom: `1px solid ${topBarBorder}`,
         }}
       >
-        {/* Left: Logo */}
-        <Link to="/dashboard" className="flex items-center gap-2.5">
-          <DolphinLogo size={40} />
-          <span className="text-base font-bold" style={{ color: brandColor }}>
+        {/* Logo */}
+        <Link to="/dashboard" className="flex items-center gap-2.5 flex-shrink-0">
+          <DolphinLogo size={38} />
+          <span className="text-base font-bold tracking-tight" style={{ color: brandColor, letterSpacing: '-0.01em' }}>
             Habit<span style={{ color: '#38BDF8' }}>·</span>at
           </span>
         </Link>
 
-        {/* Center: Desktop nav tabs */}
+        {/* Desktop tabs — pill container */}
         <div
-          className="desktop-nav-tabs items-center gap-1 rounded-full px-2 py-1.5"
-          style={{ background: tabBg, display: 'none' }}
+          className="desktop-nav-tabs items-center gap-0.5 rounded-full px-1.5 py-1.5"
+          style={{ background: pillBg, display: 'none', border: `1px solid ${topBarBorder}` }}
         >
           {NAV_ITEMS.map(({ to, label, icon }) => {
             const active = location.pathname === to
@@ -217,48 +229,56 @@ export function NavBar() {
               <Link
                 key={to}
                 to={to}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all"
+                className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all"
                 style={{
                   background: active ? tabActiveBg : 'transparent',
                   color: active ? tabActiveText : tabInactiveText,
+                  letterSpacing: '-0.01em',
                 }}
               >
-                <NavIcon name={icon} size={17} />
+                <NavIcon name={icon} size={16} />
                 <span>{label}</span>
               </Link>
             )
           })}
         </div>
 
-        {/* Right: Profile button */}
-        <div className="relative" ref={dropdownRef}>
+        {/* Profile button */}
+        <div className="relative flex-shrink-0" ref={dropdownRef}>
           <button
             onClick={() => setShowDropdown((v) => !v)}
-            className="w-11 h-11 rounded-full flex items-center justify-center text-sm font-medium text-white transition-all"
+            className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold text-white transition-all"
             style={{
-              background: profile?.avatar_url ? 'transparent' : '#2563EB',
-              border: showDropdown ? '2px solid #60A5FA' : '2px solid transparent',
+              background: profile?.avatar_url
+                ? 'transparent'
+                : 'linear-gradient(135deg, #2563EB 0%, #1d4ed8 100%)',
+              border: showDropdown
+                ? '2px solid #38BDF8'
+                : `2px solid ${darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(11,20,55,0.12)'}`,
               overflow: 'hidden',
+              boxShadow: showDropdown ? '0 0 0 4px rgba(56,189,248,0.15)' : 'none',
+              transition: 'all 0.2s ease',
             }}
           >
             {profile?.avatar_url ? (
               <img src={profile.avatar_url} alt="avatar" className="w-full h-full object-cover" />
-            ) : (
-              initials
-            )}
+            ) : initials}
           </button>
           {showDropdown && <ProfileDropdown onClose={() => setShowDropdown(false)} darkMode={darkMode} />}
         </div>
       </div>
 
-      {/* Bottom nav — mobile only */}
+      {/* ── Bottom nav — mobile only ── */}
       <nav
-        className="bottom-nav-mobile fixed bottom-0 left-0 right-0 z-40 flex items-center"
+        className="bottom-nav-mobile fixed bottom-0 left-0 right-0 z-40 nav-bar-bottom"
         style={{
-          background: darkMode ? 'rgba(11,17,32,0.94)' : 'rgba(240,244,255,0.94)',
-          backdropFilter: 'blur(16px)',
-          borderTop: `1px solid ${darkMode ? 'rgba(255,255,255,0.07)' : 'rgba(11,20,55,0.1)'}`,
+          background: darkMode ? 'rgba(8,14,28,0.95)' : 'rgba(248,250,255,0.96)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          borderTop: `1px solid ${darkMode ? 'rgba(255,255,255,0.07)' : 'rgba(11,20,55,0.09)'}`,
           paddingBottom: 'env(safe-area-inset-bottom)',
+          display: 'flex',
+          alignItems: 'center',
         }}
       >
         {NAV_ITEMS.map(({ to, label, icon }) => {
@@ -267,11 +287,23 @@ export function NavBar() {
             <Link
               key={to}
               to={to}
-              className="flex-1 flex flex-col items-center py-3 gap-0.5 transition-all"
-              style={{ color: active ? '#38BDF8' : darkMode ? 'rgba(255,255,255,0.35)' : 'rgba(11,20,55,0.62)' }}
+              className="flex-1 flex flex-col items-center py-3 gap-1 transition-all relative"
+              style={{ color: active ? tabActiveText : tabInactiveText }}
             >
-              <NavIcon name={icon} size={22} />
-              <span style={{ fontSize: 11, fontWeight: active ? 600 : 400 }}>{label}</span>
+              {/* Active indicator dot */}
+              {active && (
+                <div style={{
+                  position: 'absolute',
+                  top: 6,
+                  width: 4,
+                  height: 4,
+                  borderRadius: '50%',
+                  background: '#38BDF8',
+                  boxShadow: '0 0 6px rgba(56,189,248,0.7)',
+                }} />
+              )}
+              <NavIcon name={icon} size={21} />
+              <span style={{ fontSize: 10, fontWeight: active ? 600 : 400, letterSpacing: '0.02em' }}>{label}</span>
             </Link>
           )
         })}
