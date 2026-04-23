@@ -86,6 +86,7 @@ function AddEditSheet({
     notifTime: initial?.notifTime ?? existingPref.time,
     notifDays: initial?.notifDays ?? existingPref.days,
   })
+  const [showEmojiInput, setShowEmojiInput] = useState(false)
   const emojiInputRef = useRef<HTMLInputElement>(null)
 
   function toggleDay(d: number) {
@@ -159,34 +160,48 @@ function AddEditSheet({
               {e}
             </button>
           ))}
-          {/* Custom emoji — tapping opens native emoji keyboard */}
+          {/* Custom emoji — toggles visible input */}
           <button
-            onClick={() => emojiInputRef.current?.focus()}
+            onClick={() => setShowEmojiInput(v => !v)}
             className="text-xl flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-all font-semibold"
             style={{
-              background: !EMOJIS.includes(form.emoji as typeof EMOJIS[number]) ? 'rgba(37,99,235,0.25)' : t.inputBg,
-              border: !EMOJIS.includes(form.emoji as typeof EMOJIS[number]) ? '1.5px solid #2563EB' : t.inputBorder,
+              background: !EMOJIS.includes(form.emoji as typeof EMOJIS[number]) ? 'rgba(37,99,235,0.25)' : showEmojiInput ? 'rgba(37,99,235,0.15)' : t.inputBg,
+              border: !EMOJIS.includes(form.emoji as typeof EMOJIS[number]) ? '1.5px solid #2563EB' : showEmojiInput ? '1.5px solid rgba(37,99,235,0.5)' : t.inputBorder,
               color: t.textMuted,
             }}
-            title="Choose any emoji"
+            title="Type any emoji"
           >
             {!EMOJIS.includes(form.emoji as typeof EMOJIS[number]) ? form.emoji : '+'}
           </button>
-          {/* Hidden input that receives the emoji from the OS keyboard */}
-          <input
-            ref={emojiInputRef}
-            type="text"
-            inputMode="text"
-            value=""
-            onChange={(e) => {
-              const val = [...e.target.value].find(c => c.trim())
-              if (val) setForm(f => ({ ...f, emoji: val }))
-              e.target.value = ''
-            }}
-            className="absolute opacity-0 pointer-events-none w-0 h-0"
-            aria-hidden="true"
-          />
         </div>
+
+        {/* Inline emoji input — visible on desktop & mobile */}
+        {showEmojiInput && (
+          <div className="mb-4 rounded-xl p-3" style={{ background: t.inputBg, border: t.inputBorder }}>
+            <p className="text-xs mb-2" style={{ color: t.textMuted }}>
+              Type or paste an emoji below.
+              <span className="ml-1 opacity-60">Mac: ⌘ + Ctrl + Space &nbsp;·&nbsp; Windows: Win + .</span>
+            </p>
+            <input
+              ref={emojiInputRef}
+              autoFocus
+              type="text"
+              inputMode="text"
+              placeholder="😀"
+              value={form.emoji && !EMOJIS.includes(form.emoji as typeof EMOJIS[number]) ? form.emoji : ''}
+              onChange={(e) => {
+                const chars = [...e.target.value]
+                const emoji = chars.find(c => c.trim())
+                if (emoji) {
+                  setForm(f => ({ ...f, emoji }))
+                  setShowEmojiInput(false)
+                }
+              }}
+              className="w-full px-3 py-2 rounded-lg text-2xl text-center outline-none"
+              style={{ background: t.cardBg, border: t.inputBorder, color: t.inputColor, letterSpacing: '0.05em' }}
+            />
+          </div>
+        )}
 
         <input
           placeholder="Habit name"

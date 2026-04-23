@@ -202,7 +202,7 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
         className="hi-bubble-blue"
         style={{
           position: 'absolute',
-          left: 'calc(13vw + 30px)',
+          left: 20,
           bottom: 118,
           zIndex: 6,
           background: 'rgba(255,255,255,0.96)',
@@ -211,7 +211,7 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
           borderRadius: '14px 14px 14px 4px',
           padding: '6px 12px',
           fontSize: 12,
-          fontWeight: 600,
+          fontWeight: 500,
           color: '#1e3a8a',
           border: '1px solid rgba(37,99,235,0.15)',
           boxShadow: '0 4px 16px rgba(0,0,0,0.14), 0 1px 4px rgba(37,99,235,0.12)',
@@ -220,13 +220,13 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
           letterSpacing: '-0.01em',
         }}
       >
-        Hey {userName}, you got this! 💙
+        Hey <span style={{ color: '#2563EB', fontWeight: 700 }}>{userName}</span>, you got this! 💙
       </div>
       <div
         className="hi-bubble-pink"
         style={{
           position: 'absolute',
-          left: 'calc(13vw + 30px)',
+          left: 20,
           bottom: 118,
           zIndex: 6,
           background: 'rgba(255,255,255,0.96)',
@@ -235,8 +235,8 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
           borderRadius: '14px 14px 14px 4px',
           padding: '6px 12px',
           fontSize: 12,
-          fontWeight: 600,
-          color: '#9d174d',
+          fontWeight: 500,
+          color: '#1e3a8a',
           border: '1px solid rgba(236,72,153,0.15)',
           boxShadow: '0 4px 16px rgba(0,0,0,0.14), 0 1px 4px rgba(236,72,153,0.12)',
           pointerEvents: 'none',
@@ -244,7 +244,7 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
           letterSpacing: '-0.01em',
         }}
       >
-        Hey {userName}, you got this! 🩷
+        Hey <span style={{ color: '#ec4899', fontWeight: 700 }}>{userName}</span>, you got this! 🩷
       </div>
 
       {/* ── 4-layer wave SVG ── */}
@@ -611,7 +611,7 @@ export default function Dashboard() {
   return (
     <div className="app-bg min-h-screen" style={{ paddingTop: 76, paddingBottom: 80 }}>
       {/* Hero section — overflow-x:clip prevents horizontal scroll while allowing dolphins to arc vertically */}
-      <div className="flex flex-col items-center px-4 pt-8 pb-20 relative page-inner" style={{ overflowX: 'clip' }}>
+      <div className="flex flex-col items-center px-4 pt-8 pb-20 relative" style={{ overflowX: 'clip' }}>
         <div className="dolphin-glow rounded-full p-3 mb-3" style={{ background: darkMode ? 'rgba(56,189,248,0.08)' : 'rgba(37,99,235,0.08)' }}>
           <DolphinLogo size={56} />
         </div>
