@@ -6,8 +6,6 @@ export interface User {
   avatar_url?: string
   created_at: string
   dark_mode: boolean
-  level: number
-  total_xp: number
 }
 
 export interface Habit {
@@ -16,7 +14,6 @@ export interface Habit {
   name: string
   emoji?: string
   description?: string
-  color?: string
   is_private: boolean
   is_active: boolean
   created_at: string
@@ -52,14 +49,6 @@ export interface JournalEntry {
   updated_at: string
 }
 
-export interface XPEvent {
-  id: string
-  user_id: string
-  habit_id?: string
-  event_type: string
-  xp_gained: number
-  created_at: string
-}
 
 export type HabitWithStreak = Habit & {
   streak?: Streak
