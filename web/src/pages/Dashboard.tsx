@@ -202,18 +202,22 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
         className="hi-bubble-blue"
         style={{
           position: 'absolute',
-          left: 'calc(13vw + 26px)',
-          bottom: 115,
+          left: 'calc(13vw + 30px)',
+          bottom: 118,
           zIndex: 6,
-          background: 'rgba(255,255,255,0.93)',
-          borderRadius: '10px 10px 10px 2px',
-          padding: '3px 7px',
-          fontSize: 11,
-          fontWeight: 700,
+          background: 'rgba(255,255,255,0.96)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          borderRadius: '14px 14px 14px 4px',
+          padding: '6px 12px',
+          fontSize: 12,
+          fontWeight: 600,
           color: '#1e3a8a',
-          boxShadow: '0 1px 6px rgba(37,99,235,0.22)',
+          border: '1px solid rgba(37,99,235,0.15)',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.14), 0 1px 4px rgba(37,99,235,0.12)',
           pointerEvents: 'none',
           whiteSpace: 'nowrap',
+          letterSpacing: '-0.01em',
         }}
       >
         Hey {userName}, you got this! 💙
@@ -222,18 +226,22 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
         className="hi-bubble-pink"
         style={{
           position: 'absolute',
-          left: 'calc(13vw + 26px)',
-          bottom: 115,
+          left: 'calc(13vw + 30px)',
+          bottom: 118,
           zIndex: 6,
-          background: 'rgba(255,255,255,0.93)',
-          borderRadius: '10px 10px 10px 2px',
-          padding: '3px 7px',
-          fontSize: 11,
-          fontWeight: 700,
+          background: 'rgba(255,255,255,0.96)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          borderRadius: '14px 14px 14px 4px',
+          padding: '6px 12px',
+          fontSize: 12,
+          fontWeight: 600,
           color: '#9d174d',
-          boxShadow: '0 1px 6px rgba(236,72,153,0.22)',
+          border: '1px solid rgba(236,72,153,0.15)',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.14), 0 1px 4px rgba(236,72,153,0.12)',
           pointerEvents: 'none',
           whiteSpace: 'nowrap',
+          letterSpacing: '-0.01em',
         }}
       >
         Hey {userName}, you got this! 🩷
