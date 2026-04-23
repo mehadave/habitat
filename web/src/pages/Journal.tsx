@@ -397,48 +397,22 @@ export default function Journal() {
             })}
           </div>
 
-          {/* Textarea + voice blob row */}
-          <div className="relative">
-            <textarea
-              value={content}
-              onChange={e => setContent(e.target.value)}
-              placeholder={`${activeCat.emoji}  ${
-                category === 'vent' ? "Let it all out…" :
-                category === 'ideas' ? "What's the idea?" :
-                category === 'morning-frog' ? "What's the one thing?" :
-                category === 'to-do' ? "What needs doing?" :
-                category === 'journalling' ? "Write it out…" :
-                "What's on your mind?"
-              }`}
-              rows={5}
-              className="w-full bg-transparent outline-none text-sm leading-relaxed resize-none pr-14"
-              style={{ color: t.text }}
-            />
-            {/* Voice blob — absolute top-right of textarea */}
-            {voiceSupported && (
-              <button
-                onMouseDown={startRec}
-                onMouseUp={stopRec}
-                onTouchStart={startRec}
-                onTouchEnd={stopRec}
-                className={`absolute top-0 right-0 w-10 h-10 rounded-full flex items-center justify-center text-lg select-none ${
-                  recording ? 'voice-blob-recording' : 'voice-blob-idle'
-                }`}
-                style={{
-                  background: recording
-                    ? 'radial-gradient(circle at 35% 35%, #f87171, #dc2626)'
-                    : 'radial-gradient(circle at 35% 35%, #3b82f6, #1d4ed8)',
-                  border: 'none',
-                  cursor: 'pointer',
-                  userSelect: 'none',
-                  WebkitUserSelect: 'none',
-                }}
-                title="Hold to dictate"
-              >
-                {recording ? '⏹' : '🎙'}
-              </button>
-            )}
-          </div>
+          {/* Textarea */}
+          <textarea
+            value={content}
+            onChange={e => setContent(e.target.value)}
+            placeholder={`${activeCat.emoji}  ${
+              category === 'vent' ? "Let it all out…" :
+              category === 'ideas' ? "What's the idea?" :
+              category === 'morning-frog' ? "What's the one thing?" :
+              category === 'to-do' ? "What needs doing?" :
+              category === 'journalling' ? "Write it out…" :
+              "What's on your mind?"
+            }`}
+            rows={5}
+            className="w-full bg-transparent outline-none text-sm leading-relaxed resize-none"
+            style={{ color: t.text }}
+          />
 
           {content.trim() && (
             <div className="text-right mb-1">
@@ -474,25 +448,52 @@ export default function Journal() {
               </div>
             </div>
 
-            {/* Save */}
+            {/* Mic + Save */}
             <div className="flex flex-col items-end gap-1 flex-shrink-0">
               <span className="text-[9px] transition-all" style={{
                 color: saved ? '#93C5FD' : autoSaved ? t.textMuted : 'transparent',
               }}>
                 {saved ? '✓ Saved!' : autoSaved ? '☁ Draft saved' : '·'}
               </span>
-              <button
-                onClick={handleSave}
-                disabled={!content.trim() || saving}
-                className="px-4 py-2 rounded-xl text-xs font-semibold transition-all"
-                style={{
-                  background: content.trim() ? activeCat.color : t.inputBg,
-                  color: content.trim() ? '#fff' : t.textSub,
-                  opacity: saving ? 0.6 : 1,
-                }}
-              >
-                {saving ? 'Saving…' : '+ Save entry'}
-              </button>
+              <div className="flex items-center gap-2">
+                {voiceSupported && (
+                  <button
+                    onMouseDown={startRec}
+                    onMouseUp={stopRec}
+                    onTouchStart={startRec}
+                    onTouchEnd={stopRec}
+                    className="w-9 h-9 rounded-xl flex items-center justify-center text-base select-none flex-shrink-0"
+                    style={{
+                      background: recording
+                        ? 'rgba(248,113,113,0.20)'
+                        : t.inputBg,
+                      border: recording
+                        ? '1px solid rgba(248,113,113,0.45)'
+                        : `1px solid transparent`,
+                      color: recording ? '#F87171' : t.textMuted,
+                      cursor: 'pointer',
+                      userSelect: 'none',
+                      WebkitUserSelect: 'none',
+                      transition: 'all 0.15s ease',
+                    }}
+                    title="Hold to dictate"
+                  >
+                    {recording ? '⏹' : '🎙'}
+                  </button>
+                )}
+                <button
+                  onClick={handleSave}
+                  disabled={!content.trim() || saving}
+                  className="px-4 py-2 rounded-xl text-xs font-semibold transition-all"
+                  style={{
+                    background: content.trim() ? activeCat.color : t.inputBg,
+                    color: content.trim() ? '#fff' : t.textSub,
+                    opacity: saving ? 0.6 : 1,
+                  }}
+                >
+                  {saving ? 'Saving…' : '+ Save entry'}
+                </button>
+              </div>
             </div>
           </div>
         </div>
