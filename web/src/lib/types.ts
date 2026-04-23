@@ -30,7 +30,7 @@ export interface HabitCompletion {
 }
 
 export interface Streak {
-  id: string
+  id?: string
   habit_id: string
   user_id: string
   current_streak: number
