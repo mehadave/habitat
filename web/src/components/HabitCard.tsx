@@ -63,7 +63,7 @@ export function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCardProps)
     <div className="relative rounded-2xl" style={{ isolation: 'isolate' }}>
       {/* Swipe actions — positioned behind the card, revealed as card slides left */}
       <div
-        className="absolute inset-y-0 right-0 flex items-center gap-2 pr-4 pointer-events-none rounded-2xl"
+        className="absolute inset-y-0 right-0 flex items-center gap-2 px-4 pointer-events-none rounded-2xl"
         style={{
           background: swipeActionsBg,
           opacity: showActions ? 1 : 0,
