@@ -13,7 +13,94 @@ import {
 } from '../hooks/useNotifications'
 import type { HabitWithStreak } from '../lib/types'
 
-const EMOJIS = ['⭐','🏃','📚','💧','🧘','💪','🍎','😴','🎯','✍️','🎸','🌱','🧹','💊','☀️','🐬','🌊','🏊','🦋','🔥']
+// Quick-access emojis shown in the horizontal strip
+const QUICK_EMOJIS = ['⭐','🏃','📚','💧','🧘','💪','🍎','😴','🎯','✍️','🎸','🌱','🧹','💊','☀️','🐬','🌊','🏊','🦋','🔥']
+
+// Full emoji grid picker data — supports flags, ZWJ sequences, everything
+const EMOJI_CATS: { icon: string; name: string; emojis: string[] }[] = [
+  { icon: '😀', name: 'Smileys', emojis: ['😀','😃','😄','😁','😆','😅','🤣','😂','🙂','🙃','😉','😊','😇','🥰','😍','🤩','😘','😗','😚','😙','😋','😛','😜','🤪','😝','🤑','🤗','🤭','🤫','🤔','🤐','🤨','😐','😑','😶','😏','😒','🙄','😬','🤥','😌','😔','😪','🤤','😴','😷','🤒','🤕','🤢','🤧','🥵','🥶','🥴','😵','🤯','🤠','🥳','🥸','😎','🤓','🧐','😕','😟','🙁','☹️','😮','😯','😲','😳','🥺','😦','😧','😨','😰','😥','😢','😭','😱','😖','😣','😞','😓','😩','😫','🥱','😤','😡','😠','🤬','😈','👿','💀','☠️','💩','🤡','👹','👺','👻','👽','👾','🤖'] },
+  { icon: '🏃', name: 'People', emojis: ['👋','🤚','🖐️','✋','🖖','👌','🤌','🤏','✌️','🤞','🤟','🤘','🤙','👈','👉','👆','🖕','👇','☝️','👍','👎','✊','👊','🤛','🤜','👏','🙌','👐','🤲','🤝','🙏','✍️','💅','🤳','💪','🦾','👀','💪','🏃','🏃‍♀️','🏃‍♂️','🚶','🚶‍♀️','🚶‍♂️','🧍','🧍‍♀️','🧍‍♂️','🧎','🧎‍♀️','🧎‍♂️','🧑‍🦯','👫','👬','👭','💏','💑','👨‍👩‍👦','👨‍👩‍👧','👪','👶','👧','🧒','👦','👩','👱‍♀️','👱','👨','🧔','👩‍🦱','👩‍🦰','👩‍🦳','👩‍🦲','👨‍🦱','👨‍🦰','👨‍🦳','👨‍🦲','🧓','👴','👵','👮','🕵️','💂','🥷','👷','🤴','👸','👳','🧕','🤵','👰','🤰','🤱','👼','🎅','🤶','🦸','🦹','🧙','🧝','🧛','🧟','🧞','🧜','🧚','🧑‍⚕️','🧑‍🎓','🧑‍🏫','🧑‍⚖️','🧑‍🌾','🧑‍🍳','🧑‍🔧','🧑‍🏭','🧑‍💼','🧑‍🔬','🧑‍🎨','🧑‍✈️','🧑‍🚀','🧑‍🚒','🧑‍💻'] },
+  { icon: '🐶', name: 'Animals', emojis: ['🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐨','🐯','🦁','🐮','🐷','🐸','🐵','🙈','🙉','🙊','🐔','🐧','🐦','🐤','🦆','🦅','🦉','🦇','🐺','🐗','🐴','🦄','🐝','🪱','🐛','🦋','🐌','🐞','🐜','🦟','🦗','🕷','🦂','🐢','🐍','🦎','🐙','🦑','🦐','🦞','🦀','🐡','🐠','🐟','🐬','🐳','🐋','🦈','🐊','🐅','🐆','🦓','🦍','🦧','🦣','🐘','🦛','🦏','🐪','🐫','🦒','🦘','🦬','🐃','🐂','🐄','🐎','🐖','🐏','🐑','🦙','🐐','🦌','🐕','🐩','🐈','🐓','🦃','🦚','🦜','🦢','🦩','🕊','🐇','🦝','🦨','🦡','🦫','🦦','🦥','🐁','🐀','🐿','🦔'] },
+  { icon: '🍔', name: 'Food', emojis: ['🍎','🍊','🍋','🍇','🍓','🫐','🍈','🍉','🍌','🍍','🥭','🍑','🍒','🍐','🥝','🍅','🫒','🥥','🥑','🍆','🥔','🥕','🌽','🌶','🫑','🥒','🥬','🥦','🧄','🧅','🍄','🥜','🌰','🍞','🥐','🥖','🫓','🥨','🧀','🥚','🍳','🧈','🥞','🧇','🥓','🥩','🍗','🍖','🌭','🍔','🍟','🍕','🫔','🌮','🌯','🥙','🧆','🍜','🍝','🍛','🍲','🫕','🍣','🍱','🥟','🍤','🍙','🍚','🍘','🍥','🥮','🍢','🧁','🍰','🎂','🍮','🍭','🍬','🍫','🍿','🍩','🍪','☕','🫖','🍵','🧃','🥤','🧋','🍺','🍷','🥂','🍾','🥃','🍸','🍹','🧊','🧂'] },
+  { icon: '⚽', name: 'Sports', emojis: ['⚽','🏀','🏈','⚾','🥎','🎾','🏐','🏉','🥏','🎱','🏓','🏸','🏒','🏑','🥍','🏏','🪃','🥅','⛳','🪁','🏹','🎣','🤿','🥊','🥋','🎽','🛹','🛼','🛷','⛸','🥌','🎿','⛷','🏂','🪂','🏋️','🤼','🤸','⛹️','🤺','🏇','🧘','🏄','🏊','🚣','🧗','🚵','🚴','🏆','🥇','🥈','🥉','🎖','🏅','🎗','🎪','🎭','🎨','🎬','🎤','🎧','🎼','🎵','🎶','🎹','🥁','🪘','🎷','🎺','🪗','🎸','🪕','🎻','🎲','♟','🎯','🎳','🎮','🎰','🧩','🎠','🎡','🎢'] },
+  { icon: '❤️', name: 'Symbols', emojis: ['❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','❣️','💕','💞','💓','💗','💖','💘','💝','⭐','🌟','✨','💫','🔥','💧','🌊','🌈','⚡','❄️','🌙','☀️','🌸','🌺','🌻','🌹','🌷','🍀','🌿','🍃','🍂','🍁','🌱','🌾','🎁','🎀','🎊','🎉','🎈','🎆','🎇','✅','❌','❓','❗','💯','🔴','🟡','🟢','🔵','⚫','⚪','🏆','🎯','🔮','💎','🔑','🗝','🔐','🔒','🔓','⚙️','🔧','🔨','⚒️','🛠','⛏','🪚','🔩','🧲','💡','🔦','🕯','🪔','🧨','🎤','📱','💻','🖥','⌨️','🖨','🖱','💾','💿','📀','📸','📷','🎥','📞','☎️','📟','📠','📺','📻','🧭','⏰','⌚','📡','🔭','🔬','💊','🩺','🩹','🧪','🧫','🧬'] },
+  { icon: '🇺🇸', name: 'Flags', emojis: ['🇦🇫','🇦🇱','🇩🇿','🇦🇩','🇦🇴','🇦🇬','🇦🇷','🇦🇲','🇦🇺','🇦🇹','🇦🇿','🇧🇸','🇧🇭','🇧🇩','🇧🇧','🇧🇾','🇧🇪','🇧🇿','🇧🇯','🇧🇹','🇧🇴','🇧🇦','🇧🇼','🇧🇷','🇧🇳','🇧🇬','🇧🇫','🇧🇮','🇨🇻','🇰🇭','🇨🇲','🇨🇦','🇨🇫','🇹🇩','🇨🇱','🇨🇳','🇨🇴','🇰🇲','🇨🇬','🇨🇩','🇨🇷','🇨🇮','🇭🇷','🇨🇺','🇨🇾','🇨🇿','🇩🇰','🇩🇯','🇩🇲','🇩🇴','🇪🇨','🇪🇬','🇸🇻','🇬🇶','🇪🇷','🇪🇪','🇸🇿','🇪🇹','🇫🇯','🇫🇮','🇫🇷','🇬🇦','🇬🇲','🇬🇪','🇩🇪','🇬🇭','🇬🇷','🇬🇩','🇬🇹','🇬🇳','🇬🇼','🇬🇾','🇭🇹','🇭🇳','🇭🇺','🇮🇸','🇮🇳','🇮🇩','🇮🇷','🇮🇶','🇮🇪','🇮🇱','🇮🇹','🇯🇲','🇯🇵','🇯🇴','🇰🇿','🇰🇪','🇰🇮','🇰🇼','🇰🇬','🇱🇦','🇱🇻','🇱🇧','🇱🇸','🇱🇷','🇱🇾','🇱🇮','🇱🇹','🇱🇺','🇲🇬','🇲🇼','🇲🇾','🇲🇻','🇲🇱','🇲🇹','🇲🇭','🇲🇷','🇲🇺','🇲🇽','🇫🇲','🇲🇩','🇲🇨','🇲🇳','🇲🇪','🇲🇦','🇲🇿','🇲🇲','🇳🇦','🇳🇷','🇳🇵','🇳🇱','🇳🇿','🇳🇮','🇳🇪','🇳🇬','🇲🇰','🇳🇴','🇴🇲','🇵🇰','🇵🇼','🇵🇸','🇵🇦','🇵🇬','🇵🇾','🇵🇪','🇵🇭','🇵🇱','🇵🇹','🇶🇦','🇷🇴','🇷🇺','🇷🇼','🇰🇳','🇱🇨','🇻🇨','🇼🇸','🇸🇲','🇸🇹','🇸🇦','🇸🇳','🇷🇸','🇸🇨','🇸🇱','🇸🇬','🇸🇰','🇸🇮','🇸🇧','🇸🇴','🇿🇦','🇸🇸','🇪🇸','🇱🇰','🇸🇩','🇸🇷','🇸🇪','🇨🇭','🇸🇾','🇹🇼','🇹🇯','🇹🇿','🇹🇭','🇹🇱','🇹🇬','🇹🇴','🇹🇹','🇹🇳','🇹🇷','🇹🇲','🇹🇻','🇺🇬','🇺🇦','🇦🇪','🇬🇧','🇺🇸','🇺🇾','🇺🇿','🇻🇺','🇻🇪','🇻🇳','🇾🇪','🇿🇲','🇿🇼'] },
+]
+
+function EmojiPicker({ t, onSelect, onClose }: {
+  t: ReturnType<typeof buildTokens>
+  onSelect: (e: string) => void
+  onClose: () => void
+}) {
+  const [activeCat, setActiveCat] = useState(0)
+  const [search, setSearch] = useState('')
+  const searchRef = useRef<HTMLInputElement>(null)
+
+  const displayEmojis = search.trim()
+    ? EMOJI_CATS.flatMap(c => c.emojis).filter(e => {
+        // simple unicode match — search by typing an emoji or partial name
+        return e.includes(search.trim())
+      })
+    : EMOJI_CATS[activeCat].emojis
+
+  return (
+    <div className="mb-4 rounded-2xl overflow-hidden" style={{ border: `1px solid ${t.cardBorder}`, background: t.sheetBg }}>
+      {/* Search bar */}
+      <div className="px-3 pt-3 pb-2" style={{ borderBottom: `1px solid ${t.divider}` }}>
+        <input
+          ref={searchRef}
+          type="text"
+          placeholder="🔍  Search emoji…"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          className="w-full px-3 py-2 rounded-xl text-sm outline-none"
+          style={{ background: t.inputBg, border: t.inputBorder, color: t.inputColor }}
+        />
+      </div>
+
+      {/* Category tabs */}
+      {!search.trim() && (
+        <div className="flex gap-1 overflow-x-auto no-scrollbar px-2 py-2" style={{ borderBottom: `1px solid ${t.divider}` }}>
+          {EMOJI_CATS.map((cat, i) => (
+            <button
+              key={cat.name}
+              onClick={() => setActiveCat(i)}
+              className="flex-shrink-0 text-lg w-9 h-9 rounded-xl flex items-center justify-center transition-all"
+              style={{
+                background: activeCat === i ? 'rgba(37,99,235,0.25)' : t.inputBg,
+                border: activeCat === i ? '1.5px solid #2563EB' : t.inputBorder,
+              }}
+              title={cat.name}
+            >
+              {cat.icon}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Emoji grid */}
+      <div
+        className="grid overflow-y-auto px-2 py-2"
+        style={{ gridTemplateColumns: 'repeat(8, 1fr)', gap: 4, maxHeight: 200 }}
+      >
+        {displayEmojis.length === 0 ? (
+          <p className="col-span-8 text-center text-xs py-4" style={{ color: t.textMuted }}>No results</p>
+        ) : displayEmojis.map((e, i) => (
+          <button
+            key={`${e}-${i}`}
+            onClick={() => { onSelect(e); onClose() }}
+            className="text-2xl flex items-center justify-center rounded-xl transition-all"
+            style={{ height: 40, background: 'transparent' }}
+            onMouseEnter={ev => { (ev.currentTarget as HTMLButtonElement).style.background = t.inputBg }}
+            onMouseLeave={ev => { (ev.currentTarget as HTMLButtonElement).style.background = 'transparent' }}
+          >
+            {e}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
 
 const DAY_LABELS = ['Su','Mo','Tu','We','Th','Fr','Sa']
 
@@ -86,8 +173,7 @@ function AddEditSheet({
     notifTime: initial?.notifTime ?? existingPref.time,
     notifDays: initial?.notifDays ?? existingPref.days,
   })
-  const [showEmojiInput, setShowEmojiInput] = useState(false)
-  const emojiInputRef = useRef<HTMLInputElement>(null)
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
 
   function toggleDay(d: number) {
     setForm(f => ({
@@ -144,12 +230,12 @@ function AddEditSheet({
           </button>
         </div>
 
-        {/* Emoji picker — py-2 px-1 ensures the scale(1.1) border isn't clipped */}
-        <div className="flex gap-2 overflow-x-auto no-scrollbar mb-4 py-2 px-1">
-          {EMOJIS.map((e) => (
+        {/* Quick emoji strip + picker toggle */}
+        <div className="flex gap-2 overflow-x-auto no-scrollbar mb-3 py-2 px-1">
+          {QUICK_EMOJIS.map((e) => (
             <button
               key={e}
-              onClick={() => setForm({ ...form, emoji: e })}
+              onClick={() => { setForm(f => ({ ...f, emoji: e })); setShowEmojiPicker(false) }}
               className="text-2xl flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-all"
               style={{
                 background: form.emoji === e ? 'rgba(37,99,235,0.25)' : t.inputBg,
@@ -160,47 +246,28 @@ function AddEditSheet({
               {e}
             </button>
           ))}
-          {/* Custom emoji — toggles visible input */}
+          {/* More button — opens full emoji grid */}
           <button
-            onClick={() => setShowEmojiInput(v => !v)}
-            className="text-xl flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-all font-semibold"
+            onClick={() => setShowEmojiPicker(v => !v)}
+            className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-all font-semibold text-lg"
             style={{
-              background: !EMOJIS.includes(form.emoji as typeof EMOJIS[number]) ? 'rgba(37,99,235,0.25)' : showEmojiInput ? 'rgba(37,99,235,0.15)' : t.inputBg,
-              border: !EMOJIS.includes(form.emoji as typeof EMOJIS[number]) ? '1.5px solid #2563EB' : showEmojiInput ? '1.5px solid rgba(37,99,235,0.5)' : t.inputBorder,
+              background: !QUICK_EMOJIS.includes(form.emoji) ? 'rgba(37,99,235,0.25)' : showEmojiPicker ? 'rgba(37,99,235,0.15)' : t.inputBg,
+              border: !QUICK_EMOJIS.includes(form.emoji) ? '1.5px solid #2563EB' : showEmojiPicker ? '1.5px solid rgba(37,99,235,0.5)' : t.inputBorder,
               color: t.textMuted,
             }}
-            title="Type any emoji"
+            title="Browse all emoji"
           >
-            {!EMOJIS.includes(form.emoji as typeof EMOJIS[number]) ? form.emoji : '+'}
+            {!QUICK_EMOJIS.includes(form.emoji) ? form.emoji : '＋'}
           </button>
         </div>
 
-        {/* Inline emoji input — visible on desktop & mobile */}
-        {showEmojiInput && (
-          <div className="mb-4 rounded-xl p-3" style={{ background: t.inputBg, border: t.inputBorder }}>
-            <p className="text-xs mb-2" style={{ color: t.textMuted }}>
-              Type or paste an emoji below.
-              <span className="ml-1 opacity-60">Mac: ⌘ + Ctrl + Space &nbsp;·&nbsp; Windows: Win + .</span>
-            </p>
-            <input
-              ref={emojiInputRef}
-              autoFocus
-              type="text"
-              inputMode="text"
-              placeholder="😀"
-              value={form.emoji && !EMOJIS.includes(form.emoji as typeof EMOJIS[number]) ? form.emoji : ''}
-              onChange={(e) => {
-                const chars = [...e.target.value]
-                const emoji = chars.find(c => c.trim())
-                if (emoji) {
-                  setForm(f => ({ ...f, emoji }))
-                  setShowEmojiInput(false)
-                }
-              }}
-              className="w-full px-3 py-2 rounded-lg text-2xl text-center outline-none"
-              style={{ background: t.cardBg, border: t.inputBorder, color: t.inputColor, letterSpacing: '0.05em' }}
-            />
-          </div>
+        {/* Full emoji grid picker */}
+        {showEmojiPicker && (
+          <EmojiPicker
+            t={t}
+            onSelect={(e) => setForm(f => ({ ...f, emoji: e }))}
+            onClose={() => setShowEmojiPicker(false)}
+          />
         )}
 
         <input
