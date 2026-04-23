@@ -5,7 +5,7 @@ import { useUIStore } from '../store/uiStore'
 
 export function useAuthInit() {
   const { setSession, setProfile, setLoading } = useAuthStore()
-  const { setDarkMode } = useUIStore()
+  const { setDarkMode, isManualOverrideActive } = useUIStore()
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -39,7 +39,10 @@ export function useAuthInit() {
       .single()
     if (data) {
       setProfile(data)
-      setDarkMode(data.dark_mode ?? true)
+      // Only sync DB preference if user hasn't manually toggled within the last hour
+      if (!isManualOverrideActive()) {
+        setDarkMode(data.dark_mode ?? true)
+      }
     }
     setLoading(false)
   }

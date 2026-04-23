@@ -202,7 +202,7 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
         className="hi-bubble-blue"
         style={{
           position: 'absolute',
-          left: 'clamp(20px, 62vw, calc(100% - 240px))',
+          left: 'calc(22vw + 10px)',
           bottom: 118,
           zIndex: 6,
           background: 'rgba(255,255,255,0.96)',
@@ -226,7 +226,7 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
         className="hi-bubble-pink"
         style={{
           position: 'absolute',
-          left: 'clamp(20px, 62vw, calc(100% - 240px))',
+          left: 'calc(22vw + 10px)',
           bottom: 118,
           zIndex: 6,
           background: 'rgba(255,255,255,0.96)',
@@ -524,6 +524,188 @@ function StreakDashboardModal({ habits, onClose, darkMode }: {
 }
 
 /* ──────────────────────────────────────────────────────────────────────────────
+   Weekly Summary Modal — preview of what a weekly report looks like
+   ────────────────────────────────────────────────────────────────────────────── */
+
+const WEEK_DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
+
+function WeeklySummaryModal({ habits, darkMode, onClose }: {
+  habits: HabitWithStreak[]
+  darkMode: boolean
+  onClose: () => void
+}) {
+  const t = darkMode
+    ? { bg: '#0F1B45', text: '#fff', muted: 'rgba(255,255,255,0.5)', card: 'rgba(255,255,255,0.06)', border: 'rgba(255,255,255,0.10)' }
+    : { bg: '#EEF3FF', text: '#0B1437', muted: 'rgba(11,20,55,0.60)', card: 'rgba(255,255,255,0.9)', border: 'rgba(11,20,55,0.12)' }
+
+  const today = new Date()
+  const weekDates = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(today)
+    d.setDate(today.getDate() - 6 + i)
+    return localDateStr(d)
+  })
+  const totalPossible = habits.length * 7
+  const totalDone = habits.reduce((s, h) => s + weekDates.filter(d => h.completions?.includes(d)).length, 0)
+  const pct = totalPossible > 0 ? Math.round(totalDone / totalPossible * 100) : 0
+  const bestHabit = [...habits].sort((a, b) => {
+    const aW = weekDates.filter(d => a.completions?.includes(d)).length
+    const bW = weekDates.filter(d => b.completions?.includes(d)).length
+    return bW - aW
+  })[0]
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)' }}
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ scale: 0.92, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.92, y: 20 }}
+        transition={{ type: 'spring', damping: 24, stiffness: 300 }}
+        className="w-full max-w-sm rounded-3xl p-6 overflow-y-auto"
+        style={{ background: t.bg, border: `1px solid ${t.border}`, maxHeight: '85vh', boxShadow: '0 24px 64px rgba(0,0,0,0.5)' }}
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between mb-5">
+          <div>
+            <p className="text-xs font-semibold tracking-widest uppercase mb-0.5" style={{ color: '#38BDF8' }}>Weekly Summary</p>
+            <h2 className="text-lg font-bold" style={{ color: t.text }}>Your 7-day report</h2>
+          </div>
+          <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center text-lg"
+            style={{ background: t.card, color: t.muted }}>×</button>
+        </div>
+
+        {/* Score card */}
+        <div className="rounded-2xl p-4 mb-4 text-center" style={{ background: 'linear-gradient(135deg, rgba(37,99,235,0.25), rgba(56,189,248,0.15))', border: '1px solid rgba(56,189,248,0.25)' }}>
+          <p className="text-5xl font-bold mb-1" style={{ color: '#38BDF8', letterSpacing: '-0.03em' }}>{pct}%</p>
+          <p className="text-xs font-semibold tracking-wide uppercase" style={{ color: t.muted }}>completion this week</p>
+          <p className="text-xs mt-1" style={{ color: t.muted }}>{totalDone} of {totalPossible} sessions done</p>
+        </div>
+
+        {/* Per-habit grid */}
+        <div className="mb-4">
+          <p className="text-xs font-semibold mb-2 tracking-wide uppercase" style={{ color: t.muted }}>Habit breakdown</p>
+          <div className="rounded-2xl overflow-hidden" style={{ border: `1px solid ${t.border}` }}>
+            {/* Day headers */}
+            <div className="grid text-center py-2 px-3" style={{ gridTemplateColumns: '1fr repeat(7, 28px)', gap: 2 }}>
+              <div />
+              {WEEK_DAYS.map(d => <div key={d} className="text-[10px] font-semibold" style={{ color: t.muted }}>{d}</div>)}
+            </div>
+            {habits.slice(0, 6).map(h => (
+              <div key={h.id} className="grid items-center py-2 px-3" style={{ gridTemplateColumns: '1fr repeat(7, 28px)', gap: 2, borderTop: `1px solid ${t.border}` }}>
+                <span className="text-xs truncate pr-2" style={{ color: t.text }}>{h.emoji} {h.name}</span>
+                {weekDates.map(d => (
+                  <div key={d} className="rounded-md flex items-center justify-center" style={{
+                    height: 22,
+                    background: h.completions?.includes(d) ? '#2563EB' : t.card,
+                  }}>
+                    {h.completions?.includes(d) && <span style={{ fontSize: 9, color: '#fff' }}>✓</span>}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Highlights */}
+        {bestHabit && (
+          <div className="rounded-2xl p-3 mb-3" style={{ background: t.card, border: `1px solid ${t.border}` }}>
+            <p className="text-xs font-semibold mb-1" style={{ color: '#FBBF24' }}>⭐ Star of the week</p>
+            <p className="text-sm font-semibold" style={{ color: t.text }}>{bestHabit.emoji} {bestHabit.name}</p>
+            <p className="text-xs" style={{ color: t.muted }}>
+              {weekDates.filter(d => bestHabit.completions?.includes(d)).length}/7 days completed
+            </p>
+          </div>
+        )}
+
+        <p className="text-[10px] text-center" style={{ color: t.muted }}>
+          Weekly summaries can be emailed every Monday — coming soon
+        </p>
+      </motion.div>
+    </motion.div>
+  )
+}
+
+/* ──────────────────────────────────────────────────────────────────────────────
+   Habit Suggestions Modal — for new / zero-habit users
+   ────────────────────────────────────────────────────────────────────────────── */
+
+const HABIT_SUGGESTIONS = [
+  { emoji: '💧', name: 'Drink 8 glasses of water',  cat: 'Health'  },
+  { emoji: '🏃', name: 'Exercise for 30 minutes',    cat: 'Health'  },
+  { emoji: '🧘', name: 'Meditate for 10 minutes',   cat: 'Mind'    },
+  { emoji: '📚', name: 'Read for 20 minutes',        cat: 'Mind'    },
+  { emoji: '✍️', name: 'Journal daily',              cat: 'Mind'    },
+  { emoji: '😴', name: 'Sleep before midnight',      cat: 'Health'  },
+  { emoji: '🍎', name: 'Eat a healthy meal',         cat: 'Health'  },
+  { emoji: '📵', name: 'No phone first hour',        cat: 'Mind'    },
+  { emoji: '💪', name: 'Strength training',          cat: 'Fitness' },
+  { emoji: '🚶', name: 'Walk 10,000 steps',          cat: 'Fitness' },
+  { emoji: '🌅', name: 'Wake up at 6 AM',            cat: 'Routine' },
+  { emoji: '☀️', name: 'Morning sunlight',           cat: 'Routine' },
+  { emoji: '🙏', name: 'Practice gratitude',         cat: 'Mind'    },
+  { emoji: '💊', name: 'Take vitamins',              cat: 'Health'  },
+  { emoji: '🌱', name: 'Learn something new',        cat: 'Growth'  },
+  { emoji: '🎯', name: 'Work on a side project',     cat: 'Growth'  },
+  { emoji: '📞', name: 'Call a friend or family',    cat: 'Social'  },
+  { emoji: '🧹', name: 'Tidy your space',            cat: 'Routine' },
+  { emoji: '🥗', name: 'No junk food',               cat: 'Health'  },
+  { emoji: '🔥', name: 'Cold shower',                cat: 'Health'  },
+]
+
+function HabitSuggestionsModal({ darkMode, onClose }: { darkMode: boolean; onClose: () => void }) {
+  const t = darkMode
+    ? { bg: '#0F1B45', text: '#fff', muted: 'rgba(255,255,255,0.5)', card: 'rgba(255,255,255,0.05)', border: 'rgba(255,255,255,0.09)' }
+    : { bg: '#EEF3FF', text: '#0B1437', muted: 'rgba(11,20,55,0.60)', card: 'rgba(255,255,255,0.9)', border: 'rgba(11,20,55,0.12)' }
+  const cats = [...new Set(HABIT_SUGGESTIONS.map(h => h.cat))]
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-end justify-center sm:items-center p-4"
+      style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)' }}
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ y: 60, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 60, opacity: 0 }}
+        transition={{ type: 'spring', damping: 26, stiffness: 300 }}
+        className="w-full max-w-md rounded-3xl p-5 overflow-y-auto"
+        style={{ background: t.bg, border: `1px solid ${t.border}`, maxHeight: '80vh', boxShadow: '0 24px 64px rgba(0,0,0,0.45)' }}
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <p className="text-xs font-semibold tracking-widest uppercase mb-0.5" style={{ color: '#38BDF8' }}>Get started</p>
+            <h2 className="text-lg font-bold" style={{ color: t.text }}>Popular habit ideas</h2>
+          </div>
+          <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center"
+            style={{ background: t.card, color: t.muted }}>×</button>
+        </div>
+        <p className="text-xs mb-4" style={{ color: t.muted }}>
+          Head to the Habits tab to add any of these. These are just ideas — build habits that matter to you.
+        </p>
+        {cats.map(cat => (
+          <div key={cat} className="mb-4">
+            <p className="text-[10px] font-semibold tracking-widest uppercase mb-2" style={{ color: t.muted }}>{cat}</p>
+            <div className="grid grid-cols-2 gap-2">
+              {HABIT_SUGGESTIONS.filter(h => h.cat === cat).map(h => (
+                <div key={h.name} className="flex items-center gap-2 rounded-xl px-3 py-2.5"
+                  style={{ background: t.card, border: `1px solid ${t.border}` }}>
+                  <span className="text-lg flex-shrink-0">{h.emoji}</span>
+                  <span className="text-xs font-medium leading-tight" style={{ color: t.text }}>{h.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </motion.div>
+    </motion.div>
+  )
+}
+
+/* ──────────────────────────────────────────────────────────────────────────────
    Dashboard
    ────────────────────────────────────────────────────────────────────────────── */
 
@@ -533,6 +715,8 @@ export default function Dashboard() {
   const { data: habits = [], isLoading } = useHabits()
   const toggleMutation = useToggleCompletion()
   const [showStreaks, setShowStreaks] = useState(false)
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  const [showWeeklySummary, setShowWeeklySummary] = useState(false)
 
   // First name only, fallback to "friend"
   const userName = (profile?.display_name ?? '').split(' ')[0] || 'friend'
@@ -612,6 +796,13 @@ export default function Dashboard() {
     <div className="app-bg min-h-screen" style={{ paddingTop: 76, paddingBottom: 80 }}>
       {/* Hero section — overflow-x:clip prevents horizontal scroll while allowing dolphins to arc vertically */}
       <div className="flex flex-col items-center px-4 pt-8 pb-20 relative" style={{ overflowX: 'clip' }}>
+        {/* Aurora background layer */}
+        <div className="hero-aurora pointer-events-none" style={{
+          position: 'absolute', inset: 0, zIndex: 0,
+          background: darkMode
+            ? 'radial-gradient(ellipse 90% 55% at 15% 30%, rgba(56,189,248,0.18) 0%, transparent 55%), radial-gradient(ellipse 70% 45% at 85% 15%, rgba(14,165,233,0.13) 0%, transparent 50%), radial-gradient(ellipse 80% 60% at 55% 85%, rgba(37,99,235,0.12) 0%, transparent 50%), radial-gradient(ellipse 50% 35% at 40% 50%, rgba(99,102,241,0.08) 0%, transparent 45%)'
+            : 'radial-gradient(ellipse 90% 55% at 15% 30%, rgba(37,99,235,0.10) 0%, transparent 55%), radial-gradient(ellipse 70% 45% at 85% 15%, rgba(147,197,253,0.12) 0%, transparent 50%), radial-gradient(ellipse 80% 60% at 55% 85%, rgba(59,130,246,0.08) 0%, transparent 50%)',
+        }} />
         <div className="dolphin-glow rounded-full p-3 mb-3" style={{ background: darkMode ? 'rgba(56,189,248,0.08)' : 'rgba(37,99,235,0.08)' }}>
           <DolphinLogo size={56} />
         </div>
@@ -659,17 +850,28 @@ export default function Dashboard() {
         ) : (
           <>
             {/* Stats row */}
-            <div className="grid grid-cols-3 gap-2 mb-6">
+            <div className="grid grid-cols-3 gap-2 mb-3">
               {[
                 { label: 'Habits', value: totalHabits, accent: '#38BDF8' },
                 { label: 'This month', value: `${completionPct}%`, accent: '#4ADE80' },
                 { label: 'Perfect days', value: perfectDays, accent: '#FBBF24' },
               ].map(({ label, value, accent }) => (
                 <div key={label} className="rounded-2xl p-3 text-center glass-card">
-                  <p className="font-display leading-none mb-1" style={{ fontSize: 28, color: accent }}>{value}</p>
+                  <p className="text-3xl font-bold leading-none mb-1" style={{ color: accent, letterSpacing: '-0.02em' }}>{value}</p>
                   <p className="text-[10px] font-semibold tracking-wide uppercase" style={{ color: t.textMuted }}>{label}</p>
                 </div>
               ))}
+            </div>
+
+            {/* Weekly summary link */}
+            <div className="flex justify-end mb-5">
+              <button
+                onClick={() => setShowWeeklySummary(true)}
+                className="text-xs font-semibold flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all"
+                style={{ background: t.cardBg, border: `1px solid ${t.cardBorder}`, color: t.textMuted }}
+              >
+                📊 Weekly summary
+              </button>
             </div>
 
             {/* Quick complete chips */}
@@ -702,8 +904,15 @@ export default function Dashboard() {
             {habits.length === 0 && (
               <div className="text-center py-16">
                 <p className="text-4xl mb-3">🐬</p>
-                <p className="text-base font-semibold mb-1" style={{ color: t.text }}>No habits yet?</p>
-                <p className="text-sm" style={{ color: t.textMuted }}>Your pod is waiting.</p>
+                <p className="text-base font-semibold mb-1" style={{ color: t.text }}>Nothing tracked yet</p>
+                <p className="text-sm mb-5" style={{ color: t.textMuted }}>Start building your daily rhythm.</p>
+                <button
+                  onClick={() => setShowSuggestions(true)}
+                  className="px-5 py-2 rounded-xl text-sm font-semibold text-white"
+                  style={{ background: '#2563EB', boxShadow: '0 2px 8px rgba(37,99,235,0.35)' }}
+                >
+                  See habit ideas →
+                </button>
               </div>
             )}
           </>
@@ -717,6 +926,27 @@ export default function Dashboard() {
             habits={habits}
             onClose={() => setShowStreaks(false)}
             darkMode={darkMode}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Weekly summary preview */}
+      <AnimatePresence>
+        {showWeeklySummary && (
+          <WeeklySummaryModal
+            habits={habits}
+            darkMode={darkMode}
+            onClose={() => setShowWeeklySummary(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Habit suggestions for new/empty users */}
+      <AnimatePresence>
+        {showSuggestions && (
+          <HabitSuggestionsModal
+            darkMode={darkMode}
+            onClose={() => setShowSuggestions(false)}
           />
         )}
       </AnimatePresence>
