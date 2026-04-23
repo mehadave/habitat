@@ -59,11 +59,6 @@ export function useHabits() {
 
       if (error) throw error
 
-      const { data: streaks } = await supabase
-        .from('streaks')
-        .select('*')
-        .eq('user_id', userId!)
-
       // Fetch ALL completions — no date cap — so streak & total count are always accurate
       const { data: completions } = await supabase
         .from('habit_completions')
@@ -75,22 +70,16 @@ export function useHabits() {
         const habitDates = (completions ?? [])
           .filter((c) => c.habit_id === h.id)
           .map((c) => c.completed_date as string)
-          // already sorted ascending from the query, but dedupe just in case
           .filter((d, i, arr) => arr.indexOf(d) === i)
 
-        // Always derive streak values from the source of truth (completions),
-        // never from the potentially-stale streaks cache table.
         const dynamicCurrent = calcCurrentStreak(habitDates)
         const dynamicLongest = calcLongestStreak(habitDates)
-        const dbStreak = streaks?.find((s) => s.habit_id === h.id)
 
         return {
           ...h,
           streak: {
             habit_id: h.id,
             user_id: userId!,
-            ...(dbStreak ?? {}),
-            // Override cached values with freshly computed ones
             current_streak: dynamicCurrent,
             longest_streak: Math.max(dynamicLongest, dynamicCurrent),
             last_completed_date: habitDates.length > 0 ? habitDates[habitDates.length - 1] : null,
@@ -108,19 +97,47 @@ export function useToggleCompletion() {
   const { showCelebration } = useGamificationStore()
 
   return useMutation({
+    // Optimistic update — flip the cell immediately, sync DB in background
+    onMutate: async ({ habit, date }: { habit: HabitWithStreak; date: string }) => {
+      const userId = session!.user.id
+      await qc.cancelQueries({ queryKey: ['habits', userId] })
+      const previous = qc.getQueryData<HabitWithStreak[]>(['habits', userId])
+
+      qc.setQueryData<HabitWithStreak[]>(['habits', userId], (old = []) =>
+        old.map((h) => {
+          if (h.id !== habit.id) return h
+          const exists = h.completions?.includes(date)
+          const newCompletions = exists
+            ? h.completions.filter((d) => d !== date)
+            : [...(h.completions ?? []), date].sort()
+          const newStreak = calcCurrentStreak(newCompletions)
+          const newLongest = Math.max(calcLongestStreak(newCompletions), h.streak?.longest_streak ?? 0)
+          return {
+            ...h,
+            completions: newCompletions,
+            streak: {
+              ...h.streak,
+              current_streak: newStreak,
+              longest_streak: newLongest,
+              last_completed_date: newCompletions.length > 0 ? newCompletions[newCompletions.length - 1] : null,
+            },
+          }
+        })
+      )
+      return { previous }
+    },
+
     mutationFn: async ({ habit, date }: { habit: HabitWithStreak; date: string }) => {
       const userId = session!.user.id
       const exists = habit.completions?.includes(date)
 
       if (exists) {
-        // Remove completion
         await supabase
           .from('habit_completions')
           .delete()
           .eq('habit_id', habit.id)
           .eq('completed_date', date)
 
-        // Recalculate streak from remaining completions
         const { data: remaining } = await supabase
           .from('habit_completions')
           .select('completed_date')
@@ -143,12 +160,10 @@ export function useToggleCompletion() {
         }, { onConflict: 'habit_id' })
 
       } else {
-        // Add completion
         await supabase
           .from('habit_completions')
           .insert({ habit_id: habit.id, user_id: userId, completed_date: date })
 
-        // Recalculate streak
         const { data: allDates } = await supabase
           .from('habit_completions')
           .select('completed_date')
@@ -175,7 +190,15 @@ export function useToggleCompletion() {
         }
       }
     },
-    onSuccess: () => {
+
+    onError: (_err, _vars, context: any) => {
+      // Roll back optimistic update on failure
+      if (context?.previous) {
+        qc.setQueryData(['habits', session!.user.id], context.previous)
+      }
+    },
+
+    onSettled: () => {
       qc.invalidateQueries({ queryKey: ['habits'] })
     },
   })
@@ -266,8 +289,7 @@ export function usePermanentlyDeleteHabit() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      // Delete cascades to completions and streaks via FK
-      const { error: compErr } = await supabase.from('completions').delete().eq('habit_id', id)
+      const { error: compErr } = await supabase.from('habit_completions').delete().eq('habit_id', id)
       if (compErr) throw compErr
       const { error: streakErr } = await supabase.from('streaks').delete().eq('habit_id', id)
       if (streakErr) throw streakErr

@@ -104,9 +104,9 @@ export default function Calendar() {
   function heatmapColor(count: number): string {
     if (count === 0) return darkMode ? 'rgba(255,255,255,0.05)' : 'rgba(11,20,55,0.11)'
     const ratio = count / maxCount
-    if (ratio < 0.33) return '#1e3a8a'
-    if (ratio < 0.66) return '#2563EB'
-    return '#93C5FD'
+    if (ratio < 0.33) return '#93C5FD'   // few habits — lightest
+    if (ratio < 0.66) return '#2563EB'   // moderate — medium
+    return '#1e3a8a'                     // most habits — darkest
   }
 
   const selectedCompletions = selectedDate ? getCompletedHabitsForDate(selectedDate) : []
@@ -242,7 +242,7 @@ export default function Calendar() {
           </div>
           <div className="flex items-center gap-2 mt-2">
             <span className="text-xs" style={{ color: t.textSub }}>Less</span>
-            {[heatmapColor(0), '#1e3a8a', '#2563EB', '#93C5FD'].map((c, idx) => (
+            {[heatmapColor(0), '#93C5FD', '#2563EB', '#1e3a8a'].map((c, idx) => (
               <div key={idx} style={{ width: 10, height: 10, borderRadius: 2, background: c }} />
             ))}
             <span className="text-xs" style={{ color: t.textSub }}>More</span>
