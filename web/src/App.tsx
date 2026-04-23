@@ -114,19 +114,22 @@ function AppShell() {
 export default function App() {
   useAuthInit()
   const { session } = useAuthStore()
-  const { darkMode, setDarkMode } = useUIStore()
+  const { darkMode, setDarkMode, isManualOverrideActive } = useUIStore()
 
   // Apply dark/light mode class
   useEffect(() => {
     document.body.classList.toggle('light-mode', !darkMode)
   }, [darkMode])
 
-  // Sync with OS preference on first load
+  // Sync with OS preference on first load + system changes
+  // — but ONLY if the user hasn't manually toggled within the last hour
   useEffect(() => {
     const mq = window.matchMedia('(prefers-color-scheme: dark)')
     const stored = localStorage.getItem('habitat-ui')
     if (!stored) setDarkMode(mq.matches)
-    function handleChange(e: MediaQueryListEvent) { setDarkMode(e.matches) }
+    function handleChange(e: MediaQueryListEvent) {
+      if (!isManualOverrideActive()) setDarkMode(e.matches)
+    }
     mq.addEventListener('change', handleChange)
     return () => mq.removeEventListener('change', handleChange)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps

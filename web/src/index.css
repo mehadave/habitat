@@ -17,9 +17,9 @@ html, body {
   font-family: 'DM Serif Display', Georgia, serif;
 }
 
-/* ── Page-width container: 720px max, centred on desktop ── */
+/* ── Page-width container: 1040px max, centred on desktop ── */
 .page-inner {
-  max-width: 720px;
+  max-width: 1040px;
   margin: 0 auto;
 }
 
