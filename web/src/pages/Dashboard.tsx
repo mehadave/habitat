@@ -302,9 +302,12 @@ function PodiumSection({ habits, onToggle, darkMode }: {
 
   return (
     <div className="mb-6">
-      <h2 className="text-base font-bold mb-3" style={{ color: textColor }}>
-        🏆 Winning Habits
-      </h2>
+      <div className="flex items-center gap-2 mb-4">
+        <div style={{ width: 3, height: 18, borderRadius: 2, background: 'linear-gradient(180deg, #FBBF24, #F59E0B)' }} />
+        <h2 className="text-sm font-semibold tracking-wide uppercase" style={{ color: textColor, letterSpacing: '0.08em' }}>
+          Winning Habits
+        </h2>
+      </div>
 
       <div className="flex items-end justify-center gap-3" style={{ minHeight: 180 }}>
         {podiumOrder.map((habit, i) => {
@@ -324,7 +327,9 @@ function PodiumSection({ habits, onToggle, darkMode }: {
               <span className="text-2xl mb-1">{habit.emoji || '⭐'}</span>
               <span className="text-xs font-semibold text-center truncate w-full mb-1"
                 style={{ color: textColor }}>{habit.name}</span>
-              <span className="text-lg font-bold" style={{ color: '#38BDF8' }}>{streak}d 🔥</span>
+              <span className="font-display" style={{ fontSize: 22, color: '#38BDF8', letterSpacing: '-0.02em' }}>
+                {streak}<span className="font-sans text-xs font-semibold ml-0.5" style={{ color: 'rgba(56,189,248,0.65)' }}>d</span>
+              </span>
 
               {doneToday ? (
                 <span className="text-[10px] font-medium mb-2" style={{ color: '#4ADE80' }}>✓ Done</span>
@@ -377,9 +382,12 @@ function NeedsAttentionSection({ habits, onToggle, darkMode }: {
 
   return (
     <div className="mb-6">
-      <h2 className="text-sm font-semibold mb-2" style={{ color: mutedColor }}>
-        Needs attention
-      </h2>
+      <div className="flex items-center gap-2 mb-3">
+        <div style={{ width: 3, height: 18, borderRadius: 2, background: 'linear-gradient(180deg, #F87171, #DC2626)' }} />
+        <h2 className="text-sm font-semibold tracking-wide uppercase" style={{ color: mutedColor, letterSpacing: '0.08em' }}>
+          Needs Attention
+        </h2>
+      </div>
       <div>
         {struggling.map((habit, i) => {
           const streak = habit.streak?.current_streak ?? 0
@@ -603,7 +611,7 @@ export default function Dashboard() {
   return (
     <div className="app-bg min-h-screen" style={{ paddingTop: 76, paddingBottom: 80 }}>
       {/* Hero section — overflow-x:clip prevents horizontal scroll while allowing dolphins to arc vertically */}
-      <div className="flex flex-col items-center px-4 pt-8 pb-20 relative" style={{ overflowX: 'clip' }}>
+      <div className="flex flex-col items-center px-4 pt-8 pb-20 relative page-inner" style={{ overflowX: 'clip' }}>
         <div className="dolphin-glow rounded-full p-3 mb-3" style={{ background: darkMode ? 'rgba(56,189,248,0.08)' : 'rgba(37,99,235,0.08)' }}>
           <DolphinLogo size={56} />
         </div>
@@ -642,7 +650,7 @@ export default function Dashboard() {
       </div>
 
       {/* Content */}
-      <div className="px-4">
+      <div className="px-4 page-inner">
         {isLoading ? (
           <div className="flex justify-center py-12">
             <div className="w-6 h-6 rounded-full border-2 animate-spin"
@@ -653,14 +661,13 @@ export default function Dashboard() {
             {/* Stats row */}
             <div className="grid grid-cols-3 gap-2 mb-6">
               {[
-                { label: 'Habits', value: totalHabits },
-                { label: '% this month', value: `${completionPct}%` },
-                { label: 'Perfect days', value: perfectDays },
-              ].map(({ label, value }) => (
-                <div key={label} className="rounded-2xl p-3 text-center"
-                  style={{ background: t.cardBg, border: `1px solid ${t.cardBorder}` }}>
-                  <p className="text-xl font-bold" style={{ color: t.text }}>{value}</p>
-                  <p className="text-xs mt-0.5 font-medium" style={{ color: t.textMuted }}>{label}</p>
+                { label: 'Habits', value: totalHabits, accent: '#38BDF8' },
+                { label: 'This month', value: `${completionPct}%`, accent: '#4ADE80' },
+                { label: 'Perfect days', value: perfectDays, accent: '#FBBF24' },
+              ].map(({ label, value, accent }) => (
+                <div key={label} className="rounded-2xl p-3 text-center glass-card">
+                  <p className="font-display leading-none mb-1" style={{ fontSize: 28, color: accent }}>{value}</p>
+                  <p className="text-[10px] font-semibold tracking-wide uppercase" style={{ color: t.textMuted }}>{label}</p>
                 </div>
               ))}
             </div>

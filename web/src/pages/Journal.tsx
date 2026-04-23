@@ -369,7 +369,7 @@ export default function Journal() {
 
   return (
     <div className="app-bg min-h-screen" style={{ paddingTop: 76, paddingBottom: 80 }}>
-      <div className="px-4 pt-8">
+      <div className="px-4 pt-8 page-inner">
 
         {/* Header */}
         <div className="flex flex-col items-center mb-5">

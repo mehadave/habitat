@@ -101,7 +101,7 @@ export default function Analytics() {
 
   return (
     <div className="app-bg min-h-screen" style={{ paddingTop: 76, paddingBottom: 80 }}>
-      <div className="px-4 pt-8">
+      <div className="px-4 pt-8 page-inner">
         <h1 className="text-2xl font-bold mb-5" style={{ color: t.text }}>Analytics</h1>
 
         {/* Range filter */}
