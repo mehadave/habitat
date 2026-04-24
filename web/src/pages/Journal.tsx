@@ -292,10 +292,11 @@ export default function Journal() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [content, mood, category])
 
-  /* search */
+  /* search & filter */
   const [search, setSearch] = useState('')
   const [searchFocused, setSearchFocused] = useState(false)
   const searchRef = useRef<HTMLInputElement>(null)
+  const [filterCat, setFilterCat] = useState<CategoryId | null>(null)
 
   /* edit modal */
   const [editingEntry, setEditingEntry] = useState<JournalEntry | null>(null)
@@ -345,7 +346,8 @@ export default function Journal() {
   }
 
   const filtered = entries.filter(e =>
-    !search || e.content.toLowerCase().includes(search.toLowerCase())
+    (!search || e.content.toLowerCase().includes(search.toLowerCase())) &&
+    (!filterCat || e.category === filterCat)
   )
 
   const activeCat = catById(category)
@@ -601,10 +603,37 @@ export default function Journal() {
           </motion.div>
         </div>
 
+        {/* ── Category filter pills ── */}
+        <div className="flex gap-2 mb-4 overflow-x-auto pb-1 scrollbar-none">
+          <button
+            onClick={() => setFilterCat(null)}
+            className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold transition-all"
+            style={{
+              background: filterCat === null ? 'rgba(96,165,250,0.25)' : t.inputBg,
+              color: filterCat === null ? '#93C5FD' : t.textSub,
+              border: filterCat === null ? '1px solid rgba(96,165,250,0.45)' : '1px solid transparent',
+            }}
+          >All</button>
+          {CATEGORIES.map(cat => (
+            <button
+              key={cat.id}
+              onClick={() => setFilterCat(filterCat === cat.id ? null : cat.id)}
+              className="flex-shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold transition-all"
+              style={{
+                background: filterCat === cat.id ? cat.bg : t.inputBg,
+                color: filterCat === cat.id ? cat.color : t.textSub,
+                border: filterCat === cat.id ? `1px solid ${cat.border}` : '1px solid transparent',
+              }}
+            >
+              <span>{cat.emoji}</span>
+            </button>
+          ))}
+        </div>
+
         {/* ── Timeline ── */}
         {filtered.length === 0 ? (
           <p className="text-center text-sm py-8" style={{ color: t.textSub }}>
-            {search ? 'No entries match.' : 'Your thoughts will appear here.'}
+            {search || filterCat ? 'No entries match.' : 'Your thoughts will appear here.'}
           </p>
         ) : (
           <div className="relative pl-4">
