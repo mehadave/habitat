@@ -220,8 +220,10 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
           lineHeight: 1.4,
         }}
       >
-        <div>Hey <span style={{ color: '#2563EB', fontWeight: 700 }}>{userName}</span>,</div>
-        <div>You got this!! 💙</div>
+        <div className="flex flex-col sm:flex-row sm:gap-1">
+          <div>Hey <span style={{ color: '#2563EB', fontWeight: 700 }}>{userName}</span>,</div>
+          <div>You got this!! 💙</div>
+        </div>
       </div>
       <div
         className="hi-bubble-pink"
@@ -245,8 +247,10 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
           lineHeight: 1.4,
         }}
       >
-        <div>Hey <span style={{ color: '#ec4899', fontWeight: 700 }}>{userName}</span>,</div>
-        <div>You got this!! 🩷</div>
+        <div className="flex flex-col sm:flex-row sm:gap-1">
+          <div>Hey <span style={{ color: '#ec4899', fontWeight: 700 }}>{userName}</span>,</div>
+          <div>You got this!! 🩷</div>
+        </div>
       </div>
 
       {/* ── 4-layer wave SVG ── */}
