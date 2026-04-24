@@ -327,7 +327,7 @@ function PodiumSection({ habits, onToggle, darkMode }: {
               <span className="text-2xl mb-1">{habit.emoji || '⭐'}</span>
               <span className="text-xs font-semibold text-center truncate w-full mb-1"
                 style={{ color: textColor }}>{habit.name}</span>
-              <span className="font-display" style={{ fontSize: 22, color: '#38BDF8', letterSpacing: '-0.02em' }}>
+              <span className="font-bold" style={{ fontSize: 22, color: '#38BDF8', letterSpacing: '-0.02em' }}>
                 {streak}<span className="font-sans text-xs font-semibold ml-0.5" style={{ color: 'rgba(56,189,248,0.65)' }}>d</span>
               </span>
 
@@ -694,8 +694,18 @@ export default function Dashboard() {
         <div className="hero-aurora pointer-events-none" style={{
           position: 'absolute', top: -50, left: -50, right: -50, bottom: -50, zIndex: 0,
           background: darkMode
-            ? 'radial-gradient(ellipse 90% 55% at 15% 30%, rgba(56,189,248,0.18) 0%, transparent 55%), radial-gradient(ellipse 70% 45% at 85% 15%, rgba(14,165,233,0.13) 0%, transparent 50%), radial-gradient(ellipse 80% 60% at 55% 85%, rgba(37,99,235,0.12) 0%, transparent 50%), radial-gradient(ellipse 50% 35% at 40% 50%, rgba(99,102,241,0.08) 0%, transparent 45%)'
-            : 'radial-gradient(ellipse 90% 55% at 15% 30%, rgba(37,99,235,0.10) 0%, transparent 55%), radial-gradient(ellipse 70% 45% at 85% 15%, rgba(147,197,253,0.12) 0%, transparent 50%), radial-gradient(ellipse 80% 60% at 55% 85%, rgba(59,130,246,0.08) 0%, transparent 50%)',
+            ? [
+                'radial-gradient(ellipse 100% 65% at 10% 20%, rgba(56,189,248,0.38) 0%, transparent 55%)',
+                'radial-gradient(ellipse 80%  55% at 88% 10%, rgba(14,165,233,0.30) 0%, transparent 52%)',
+                'radial-gradient(ellipse 65%  50% at 50% 90%, rgba(37,99,235,0.25) 0%, transparent 52%)',
+                'radial-gradient(ellipse 55%  40% at 75% 55%, rgba(99,102,241,0.18) 0%, transparent 48%)',
+                'radial-gradient(ellipse 45%  30% at 25% 65%, rgba(56,189,248,0.15) 0%, transparent 45%)',
+              ].join(', ')
+            : [
+                'radial-gradient(ellipse 90% 55% at 15% 30%, rgba(37,99,235,0.12) 0%, transparent 55%)',
+                'radial-gradient(ellipse 70% 45% at 85% 15%, rgba(147,197,253,0.14) 0%, transparent 50%)',
+                'radial-gradient(ellipse 80% 60% at 55% 85%, rgba(59,130,246,0.10) 0%, transparent 50%)',
+              ].join(', '),
         }} />
         <div className="dolphin-glow rounded-full p-3 mb-3" style={{ background: darkMode ? 'rgba(56,189,248,0.08)' : 'rgba(37,99,235,0.08)' }}>
           <DolphinLogo size={56} />
@@ -751,7 +761,7 @@ export default function Dashboard() {
                 { label: 'Perfect days', value: perfectDays, accent: '#FBBF24' },
               ].map(({ label, value, accent }) => (
                 <div key={label} className="rounded-2xl p-3 text-center glass-card">
-                  <p className="font-display text-3xl leading-none mb-1" style={{ color: accent, letterSpacing: '-0.03em' }}>{value}</p>
+                  <p className="text-3xl font-bold leading-none mb-1" style={{ color: accent, letterSpacing: '-0.02em' }}>{value}</p>
                   <p className="text-[10px] font-semibold tracking-wide uppercase" style={{ color: t.textMuted }}>{label}</p>
                 </div>
               ))}
