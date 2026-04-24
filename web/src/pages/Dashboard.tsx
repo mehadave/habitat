@@ -205,9 +205,9 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
           left: 'calc(22vw + 10px)',
           bottom: 118,
           zIndex: 6,
-          background: 'rgba(255,255,255,0.96)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
+          background: 'rgba(255,255,255,0.55)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
           borderRadius: '14px 14px 14px 4px',
           padding: '6px 12px',
           fontSize: 12,
@@ -216,11 +216,12 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
           border: '1px solid rgba(37,99,235,0.15)',
           boxShadow: '0 4px 16px rgba(0,0,0,0.14), 0 1px 4px rgba(37,99,235,0.12)',
           pointerEvents: 'none',
-          whiteSpace: 'nowrap',
           letterSpacing: '-0.01em',
+          lineHeight: 1.4,
         }}
       >
-        Hey <span style={{ color: '#2563EB', fontWeight: 700 }}>{userName}</span>, you got this! 💙
+        <div>Hey <span style={{ color: '#2563EB', fontWeight: 700 }}>{userName}</span>,</div>
+        <div>You got this!! 💙</div>
       </div>
       <div
         className="hi-bubble-pink"
@@ -229,9 +230,9 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
           left: 'calc(22vw + 10px)',
           bottom: 118,
           zIndex: 6,
-          background: 'rgba(255,255,255,0.96)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
+          background: 'rgba(255,255,255,0.55)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
           borderRadius: '14px 14px 14px 4px',
           padding: '6px 12px',
           fontSize: 12,
@@ -240,11 +241,12 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
           border: '1px solid rgba(236,72,153,0.15)',
           boxShadow: '0 4px 16px rgba(0,0,0,0.14), 0 1px 4px rgba(236,72,153,0.12)',
           pointerEvents: 'none',
-          whiteSpace: 'nowrap',
           letterSpacing: '-0.01em',
+          lineHeight: 1.4,
         }}
       >
-        Hey <span style={{ color: '#ec4899', fontWeight: 700 }}>{userName}</span>, you got this! 🩷
+        <div>Hey <span style={{ color: '#ec4899', fontWeight: 700 }}>{userName}</span>,</div>
+        <div>You got this!! 🩷</div>
       </div>
 
       {/* ── 4-layer wave SVG ── */}
