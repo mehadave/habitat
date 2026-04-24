@@ -187,7 +187,7 @@ export function useToggleCompletion() {
         }, { onConflict: 'habit_id' })
 
         if (isStreakMilestone(newStreak)) {
-          showCelebration(newStreak)
+          showCelebration(newStreak, habit.name, habit.emoji ?? '')
         }
       }
     },

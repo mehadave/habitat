@@ -47,11 +47,14 @@ export function getXPProgressInLevel(totalXP: number): { current: number; max: n
 }
 
 export function getStreakMilestones(): number[] {
-  return [7, 14, 21, 30, 60, 100]
+  return [7, 10, 15, 21, 30, 50, 60, 100]
 }
 
 export function isStreakMilestone(streak: number): boolean {
-  return getStreakMilestones().includes(streak)
+  if (getStreakMilestones().includes(streak)) return true
+  if (streak >= 100 && streak % 100 === 0) return true
+  if (streak >= 365 && streak % 365 === 0) return true
+  return false
 }
 
 export function calculateXPGain(eventType: string, starRating = 0): number {

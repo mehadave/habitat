@@ -8,6 +8,8 @@ interface XPToastData {
 
 interface CelebrationData {
   days: number
+  habitName: string
+  habitEmoji: string
 }
 
 interface GamificationState {
@@ -15,7 +17,7 @@ interface GamificationState {
   celebration: CelebrationData | null
   showToast: (xp: number, bonus?: boolean) => void
   dismissToast: (id: string) => void
-  showCelebration: (days: number) => void
+  showCelebration: (days: number, habitName: string, habitEmoji: string) => void
   dismissCelebration: () => void
 }
 
@@ -29,6 +31,6 @@ export const useGamificationStore = create<GamificationState>((set, get) => ({
   },
   dismissToast: (id) =>
     set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })),
-  showCelebration: (days) => set({ celebration: { days } }),
+  showCelebration: (days, habitName, habitEmoji) => set({ celebration: { days, habitName, habitEmoji } }),
   dismissCelebration: () => set({ celebration: null }),
 }))
