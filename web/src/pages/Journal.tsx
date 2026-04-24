@@ -425,6 +425,20 @@ export default function Journal() {
             )}
           </AnimatePresence>
 
+          {/* Frog category hint */}
+          {category === 'morning-frog' && !content.trim() && (
+            <p className="text-sm mb-2 leading-snug" style={{ color: t.textMuted }}>
+              What's the one biggest task{' '}
+              <em style={{ fontStyle: 'italic', opacity: 0.75 }}>(frog)</em>{' '}
+              you wanna do{' '}
+              <em style={{ fontStyle: 'italic', opacity: 0.75 }}>(eat)</em>{' '}
+              today?{' '}
+              <em style={{ fontStyle: 'italic', opacity: 0.6, fontSize: '0.8em' }}>
+                — from "Eat the Frog" by Brian Tracy
+              </em>
+            </p>
+          )}
+
           {/* Textarea */}
           <textarea
             value={content}
@@ -432,7 +446,7 @@ export default function Journal() {
             placeholder={`${activeCat.emoji}  ${
               category === 'vent' ? "Let it all out…" :
               category === 'ideas' ? "What's the idea?" :
-              category === 'morning-frog' ? "What's the one thing?" :
+              category === 'morning-frog' ? "Write your frog here…" :
               category === 'to-do' ? "What needs doing?" :
               category === 'journalling' ? "Write it out…" :
               "What's on your mind?"
