@@ -110,6 +110,9 @@ export default function Calendar() {
   }
 
   const selectedCompletions = selectedDate ? getCompletedHabitsForDate(selectedDate) : []
+  const selectedMissed = selectedDate
+    ? habits.filter(h => !h.completions?.includes(selectedDate) && selectedDate <= todayStr)
+    : []
 
   const isNextDisabled = year === now.getFullYear() && month === now.getMonth()
 
@@ -190,8 +193,8 @@ export default function Calendar() {
             <h3 className="text-base font-semibold mb-2" style={{ color: t.text }}>
               {new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
             </h3>
-            {selectedCompletions.length === 0 ? (
-              <p className="text-xs" style={{ color: t.textMuted }}>No completions this day.</p>
+            {selectedCompletions.length === 0 && selectedMissed.length === 0 ? (
+              <p className="text-xs" style={{ color: t.textMuted }}>No habits logged this day.</p>
             ) : (
               <div className="space-y-1.5">
                 {selectedCompletions.map(h => {
@@ -202,7 +205,22 @@ export default function Calendar() {
                         style={{ background: HABIT_COLORS[idx % HABIT_COLORS.length] }} />
                       <span>{h.emoji}</span>
                       <span style={{ color: t.text }}>{h.name}</span>
-                      <span style={{ color: '#93C5FD' }}>✓</span>
+                      <span style={{ color: '#4ADE80' }}>✓</span>
+                    </div>
+                  )
+                })}
+                {selectedMissed.length > 0 && selectedCompletions.length > 0 && (
+                  <div className="my-1.5" style={{ height: 1, background: t.divider }} />
+                )}
+                {selectedMissed.map(h => {
+                  const idx = habits.findIndex(hh => hh.id === h.id)
+                  return (
+                    <div key={h.id} className="flex items-center gap-2 text-sm opacity-50">
+                      <div className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                        style={{ background: HABIT_COLORS[idx % HABIT_COLORS.length] }} />
+                      <span>{h.emoji}</span>
+                      <span style={{ color: t.text }}>{h.name}</span>
+                      <span style={{ color: t.textSub }}>✗</span>
                     </div>
                   )
                 })}
