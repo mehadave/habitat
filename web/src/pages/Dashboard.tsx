@@ -202,12 +202,12 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
         className="hi-bubble-blue"
         style={{
           position: 'absolute',
-          left: 'calc(22vw + 10px)',
+          left: 'calc(22vw + 24px)',
           bottom: 118,
           zIndex: 6,
-          background: 'rgba(255,255,255,0.55)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
+          background: 'rgba(255,255,255,0.82)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
           borderRadius: '14px 14px 14px 4px',
           padding: '6px 12px',
           fontSize: 12,
@@ -227,12 +227,12 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
         className="hi-bubble-pink"
         style={{
           position: 'absolute',
-          left: 'calc(22vw + 10px)',
+          left: 'calc(22vw + 24px)',
           bottom: 118,
           zIndex: 6,
-          background: 'rgba(255,255,255,0.55)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
+          background: 'rgba(255,255,255,0.82)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
           borderRadius: '14px 14px 14px 4px',
           padding: '6px 12px',
           fontSize: 12,
