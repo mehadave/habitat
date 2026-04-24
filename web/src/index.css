@@ -64,15 +64,17 @@ body.light-mode .skeleton {
   html { font-size: 16px; }
 }
 
-/* ── Speech bubbles: hidden on mobile, shown on desktop ── */
+/* ── Speech bubbles: repositioned on mobile, normal on desktop ── */
 .hi-bubble-blue,
 .hi-bubble-pink {
-  display: none;
+  left: 6px !important;
+  bottom: 88px !important;
 }
 @media (min-width: 640px) {
   .hi-bubble-blue,
   .hi-bubble-pink {
-    display: block;
+    left: calc(22vw + 10px) !important;
+    bottom: 118px !important;
   }
 }
 
