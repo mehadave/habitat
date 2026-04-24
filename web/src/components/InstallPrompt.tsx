@@ -101,13 +101,22 @@ export function InstallPrompt() {
       </div>
 
       {platform === 'android' && (
-        <button
-          onClick={install}
-          className="mt-3 w-full py-2 rounded-xl text-sm font-medium text-white"
-          style={{ background: '#2563EB' }}
-        >
-          Install
-        </button>
+        <>
+          <button
+            onClick={install}
+            className="mt-3 w-full py-2 rounded-xl text-sm font-medium text-white"
+            style={{ background: '#2563EB' }}
+          >
+            Install
+          </button>
+          <div className="mt-2 flex items-center gap-2 px-3 py-2 rounded-xl"
+            style={{ background: darkMode ? 'rgba(255,255,255,0.05)' : 'rgba(11,20,55,0.04)' }}>
+            <span style={{ fontSize: 16 }}>⋮</span>
+            <p className="text-xs" style={{ color: t.muted }}>
+              Or tap <strong style={{ color: t.text }}>⋮ Menu</strong> → <strong style={{ color: t.text }}>Add to Home screen</strong> in Chrome
+            </p>
+          </div>
+        </>
       )}
 
       {platform === 'ios' && (

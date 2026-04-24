@@ -292,6 +292,7 @@ function PodiumSection({ habits, onToggle, darkMode }: {
       : [ranked[0]]
 
   // Index 0 = left (2nd place) · 1 = center (1st place) · 2 = right (3rd place)
+  // For 1 habit: force gold (index 1). For 2+: use podium position as-is.
   const medals      = ['🥈', '🥇', '🥉']
   const podiumHeights = [72,   96,   56  ]
   const podiumColors = [
@@ -299,6 +300,7 @@ function PodiumSection({ habits, onToggle, darkMode }: {
     'linear-gradient(180deg, rgba(255,215,0,0.25),   rgba(255,215,0,0.05))',   // gold
     'linear-gradient(180deg, rgba(205,127,50,0.18),  rgba(205,127,50,0.03))',  // bronze
   ]
+  function podiumIdx(i: number) { return podiumOrder.length === 1 ? 1 : i }
 
   return (
     <div className="mb-6">
@@ -313,7 +315,7 @@ function PodiumSection({ habits, onToggle, darkMode }: {
         {podiumOrder.map((habit, i) => {
           const streak = habit.streak?.current_streak ?? 0
           const doneToday = habit.completions?.includes(todayStr)
-          const height = podiumHeights[i] ?? 56
+          const height = podiumHeights[podiumIdx(i)] ?? 56
 
           return (
             <motion.div
@@ -344,12 +346,12 @@ function PodiumSection({ habits, onToggle, darkMode }: {
                 className="w-full rounded-t-xl flex items-start justify-center pt-2"
                 style={{
                   height,
-                  background: podiumColors[i],
+                  background: podiumColors[podiumIdx(i)],
                   border: `1px solid ${cardBorder}`,
                   borderBottom: 'none',
                 }}
               >
-                <span className="text-2xl">{medals[i]}</span>
+                <span className="text-2xl">{medals[podiumIdx(i)]}</span>
               </div>
             </motion.div>
           )

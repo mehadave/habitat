@@ -194,7 +194,7 @@ export function StreakCelebration() {
                 boxShadow: '0 4px 16px rgba(37,99,235,0.4)',
               }}
             >
-              Keep going 🌊
+              Keep going
             </button>
           </motion.div>
         </motion.div>
