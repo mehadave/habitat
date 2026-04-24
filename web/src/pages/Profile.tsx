@@ -71,22 +71,28 @@ function WeeklySummaryModal({ habits, darkMode, onClose }: {
         <div className="mb-4">
           <p className="text-xs font-semibold mb-2 tracking-wide uppercase" style={{ color: t.muted }}>Habit breakdown</p>
           <div className="rounded-2xl overflow-hidden" style={{ border: `1px solid ${t.border}` }}>
-            <div className="grid text-center py-2 px-3" style={{ gridTemplateColumns: '1fr repeat(7, 28px)', gap: 2 }}>
+            {/* Day headers */}
+            <div className="grid py-2 px-3" style={{ gridTemplateColumns: '1fr repeat(7, 24px)', gap: 3 }}>
               <div />
-              {WEEK_DAYS.map(d => <div key={d} className="text-[10px] font-semibold" style={{ color: t.muted }}>{d}</div>)}
+              {WEEK_DAYS.map(d => (
+                <div key={d} className="text-[10px] font-semibold text-center" style={{ color: t.muted }}>{d}</div>
+              ))}
             </div>
             {habits.slice(0, 6).map(h => (
-              <div key={h.id} className="grid items-center py-2 px-3" style={{ gridTemplateColumns: '1fr repeat(7, 28px)', gap: 2, borderTop: `1px solid ${t.border}` }}>
-                <span className="text-xs truncate pr-2" style={{ color: t.text }}>{h.emoji} {h.name}</span>
-                {weekDates.map(d => (
-                  <div key={d} className="rounded-md flex items-center justify-center" style={{ height: 22, background: h.completions?.includes(d) ? '#2563EB' : t.card }}>
-                    {h.completions?.includes(d) && (
-                      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="20 6 9 17 4 12"/>
-                      </svg>
-                    )}
-                  </div>
-                ))}
+              <div key={h.id} className="grid items-center py-2 px-3" style={{ gridTemplateColumns: '1fr repeat(7, 24px)', gap: 3, borderTop: `1px solid ${t.border}` }}>
+                <span className="text-xs pr-2 leading-snug" style={{ color: t.text, wordBreak: 'break-word' }}>{h.emoji} {h.name}</span>
+                {weekDates.map(d => {
+                  const done = h.completions?.includes(d)
+                  return (
+                    <div key={d} className="flex items-center justify-center" style={{ height: 22 }}>
+                      {done && (
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(148,163,184,0.85)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                      )}
+                    </div>
+                  )
+                })}
               </div>
             ))}
           </div>
@@ -380,7 +386,7 @@ export default function Profile() {
           {/* Danger zone */}
           <div className="rounded-2xl p-4"
             style={{ background: 'rgba(248,113,113,0.06)', border: '1px solid rgba(248,113,113,0.2)' }}>
-            <p className="text-sm font-medium mb-2" style={{ color: '#F87171' }}>Danger zone</p>
+            <p className="text-sm font-medium mb-2" style={{ color: t.text }}>Danger zone</p>
             <button onClick={() => setShowDeleteConfirm(true)} className="text-xs"
               style={{ color: '#F87171' }}>
               Delete my account →

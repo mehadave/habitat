@@ -196,10 +196,10 @@ export function MonthlyHabitTracker({ habits, onToggle }: Props) {
               {habits.map((habit, hi) => {
                 const color = HABIT_COLORS[hi % HABIT_COLORS.length]
                 return (
-                  <th key={habit.id} className="px-1 py-1.5 text-center" style={{ minWidth: 32 }}>
+                  <th key={habit.id} className="px-1 py-1.5 text-center" style={{ minWidth: 36 }}>
                     <div className="flex flex-col items-center gap-0.5">
                       <div className="w-2 h-2 rounded-full" style={{ background: color }} />
-                      <span className="text-[9px] leading-tight" style={{ color: t.textMuted }}>
+                      <span className="text-base leading-none" style={{ color: t.textMuted }}>
                         {habit.emoji}
                       </span>
                     </div>
