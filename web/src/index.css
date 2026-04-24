@@ -64,6 +64,18 @@ body.light-mode .skeleton {
   html { font-size: 16px; }
 }
 
+/* ── Speech bubbles: hidden on mobile, shown on desktop ── */
+.hi-bubble-blue,
+.hi-bubble-pink {
+  display: none;
+}
+@media (min-width: 640px) {
+  .hi-bubble-blue,
+  .hi-bubble-pink {
+    display: block;
+  }
+}
+
 /* ── Hero aurora animation ───────────────────────── */
 @keyframes aurora-shift {
   0%   { background-position: 0% 50%; opacity: 0.85; }

@@ -419,6 +419,34 @@ export default function Habits() {
   const [showSortDropdown, setShowSortDropdown] = useState(false)
   const sortRef = useRef<HTMLDivElement>(null)
   const [manualOrder, setManualOrder] = useState<HabitWithStreak[]>([])
+  const orderInitialized = useRef(false)
+
+  const HABIT_ORDER_KEY = 'habitat_habit_order'
+
+  // Restore saved order once habits load
+  useEffect(() => {
+    if (habits.length === 0 || orderInitialized.current) return
+    orderInitialized.current = true
+    try {
+      const saved = localStorage.getItem(HABIT_ORDER_KEY)
+      if (!saved) return
+      const savedIds: string[] = JSON.parse(saved)
+      const active = habits.filter(h => h.is_active !== false)
+      const restored = [...active].sort((a, b) => {
+        const ai = savedIds.indexOf(a.id)
+        const bi = savedIds.indexOf(b.id)
+        return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi)
+      })
+      setManualOrder(restored)
+    } catch {}
+  }, [habits])
+
+  function handleReorder(newOrder: HabitWithStreak[]) {
+    setManualOrder(newOrder)
+    try {
+      localStorage.setItem(HABIT_ORDER_KEY, JSON.stringify(newOrder.map(h => h.id)))
+    } catch {}
+  }
 
   useEffect(() => {
     function handler(e: MouseEvent) {
@@ -609,7 +637,7 @@ export default function Habits() {
               <Reorder.Group
                 axis="y"
                 values={displayHabits}
-                onReorder={(newOrder) => setManualOrder(newOrder)}
+                onReorder={handleReorder}
                 className="space-y-3"
                 style={{ listStyle: 'none', padding: 0, margin: 0 }}
               >

@@ -133,7 +133,7 @@ export default function Calendar() {
         {/* Day headers */}
         <div className="grid grid-cols-7 gap-1 mb-2">
           {['S','M','T','W','T','F','S'].map((d, i) => (
-            <div key={i} className="text-center text-xs py-1" style={{ color: t.textSub }}>{d}</div>
+            <div key={i} className="text-center text-sm font-medium py-1" style={{ color: t.textSub }}>{d}</div>
           ))}
         </div>
 
@@ -162,16 +162,16 @@ export default function Calendar() {
                   cursor: isFuture ? 'default' : 'pointer',
                 }}
               >
-                <span className="text-xs" style={{ color: isToday ? '#93C5FD' : t.text }}>
+                <span className="text-sm font-medium" style={{ color: isToday ? '#93C5FD' : t.text }}>
                   {day}
                 </span>
                 {completedHabits.length > 0 && (
-                  <div className="flex gap-0.5 mt-0.5 flex-wrap justify-center max-w-[28px]">
+                  <div className="flex gap-0.5 mt-0.5 flex-wrap justify-center max-w-[32px]">
                     {completedHabits.slice(0, 4).map((h) => {
                       const idx = habits.findIndex(hh => hh.id === h.id)
                       return (
                         <div key={h.id} style={{
-                          width: 4, height: 4, borderRadius: '50%',
+                          width: 5, height: 5, borderRadius: '50%',
                           background: HABIT_COLORS[idx % HABIT_COLORS.length],
                         }} />
                       )
@@ -193,12 +193,12 @@ export default function Calendar() {
             {selectedCompletions.length === 0 ? (
               <p className="text-xs" style={{ color: t.textMuted }}>No completions this day.</p>
             ) : (
-              <div className="space-y-1">
+              <div className="space-y-1.5">
                 {selectedCompletions.map(h => {
                   const idx = habits.findIndex(hh => hh.id === h.id)
                   return (
-                    <div key={h.id} className="flex items-center gap-2 text-xs">
-                      <div className="w-2 h-2 rounded-full flex-shrink-0"
+                    <div key={h.id} className="flex items-center gap-2 text-sm">
+                      <div className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                         style={{ background: HABIT_COLORS[idx % HABIT_COLORS.length] }} />
                       <span>{h.emoji}</span>
                       <span style={{ color: t.text }}>{h.name}</span>
@@ -207,7 +207,7 @@ export default function Calendar() {
                   )
                 })}
                 {isPerfectDay(selectedDate) && habits.length > 0 && (
-                  <p className="text-xs mt-2" style={{ color: '#FBBF24' }}>⭐ Perfect day!</p>
+                  <p className="text-sm mt-2" style={{ color: '#FBBF24' }}>⭐ Perfect day!</p>
                 )}
               </div>
             )}
@@ -219,12 +219,12 @@ export default function Calendar() {
           <div className="mb-6 rounded-2xl p-3"
             style={{ background: t.cardBg, border: `1px solid ${t.cardBorder}` }}>
             <p className="text-xs font-medium mb-2" style={{ color: t.textMuted }}>Habit colors</p>
-            <div className="flex flex-wrap gap-x-4 gap-y-1.5">
+            <div className="flex flex-wrap gap-x-4 gap-y-2">
               {habits.map((h, i) => (
                 <div key={h.id} className="flex items-center gap-1.5">
-                  <div className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                  <div className="w-3 h-3 rounded-full flex-shrink-0"
                     style={{ background: HABIT_COLORS[i % HABIT_COLORS.length] }} />
-                  <span className="text-xs" style={{ color: t.text }}>{h.emoji} {h.name}</span>
+                  <span className="text-sm" style={{ color: t.text }}>{h.emoji} {h.name}</span>
                 </div>
               ))}
             </div>
