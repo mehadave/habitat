@@ -716,7 +716,6 @@ export default function Dashboard() {
   const toggleMutation = useToggleCompletion()
   const [showStreaks, setShowStreaks] = useState(false)
   const [showSuggestions, setShowSuggestions] = useState(false)
-  const [showWeeklySummary, setShowWeeklySummary] = useState(false)
 
   // First name only, fallback to "friend"
   const userName = (profile?.display_name ?? '').split(' ')[0] || 'friend'
@@ -857,21 +856,10 @@ export default function Dashboard() {
                 { label: 'Perfect days', value: perfectDays, accent: '#FBBF24' },
               ].map(({ label, value, accent }) => (
                 <div key={label} className="rounded-2xl p-3 text-center glass-card">
-                  <p className="text-3xl font-bold leading-none mb-1" style={{ color: accent, letterSpacing: '-0.02em' }}>{value}</p>
+                  <p className="font-display text-3xl leading-none mb-1" style={{ color: accent, letterSpacing: '-0.03em' }}>{value}</p>
                   <p className="text-[10px] font-semibold tracking-wide uppercase" style={{ color: t.textMuted }}>{label}</p>
                 </div>
               ))}
-            </div>
-
-            {/* Weekly summary link */}
-            <div className="flex justify-end mb-5">
-              <button
-                onClick={() => setShowWeeklySummary(true)}
-                className="text-xs font-semibold flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all"
-                style={{ background: t.cardBg, border: `1px solid ${t.cardBorder}`, color: t.textMuted }}
-              >
-                📊 Weekly summary
-              </button>
             </div>
 
             {/* Quick complete chips */}
@@ -926,17 +914,6 @@ export default function Dashboard() {
             habits={habits}
             onClose={() => setShowStreaks(false)}
             darkMode={darkMode}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* Weekly summary preview */}
-      <AnimatePresence>
-        {showWeeklySummary && (
-          <WeeklySummaryModal
-            habits={habits}
-            darkMode={darkMode}
-            onClose={() => setShowWeeklySummary(false)}
           />
         )}
       </AnimatePresence>

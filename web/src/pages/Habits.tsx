@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import { motion, AnimatePresence, Reorder } from 'framer-motion'
 import { useHabits, useAddHabit, useUpdateHabit, useDeleteHabit, useToggleCompletion } from '../hooks/useHabits'
 import { useUIStore } from '../store/uiStore'
@@ -68,65 +68,21 @@ const EMOJI_CATS: { icon: string; name: string; emojis: string[] }[] = [
   { icon: '🇺🇸', name: 'Flags', emojis: ['🇦🇫','🇦🇱','🇩🇿','🇦🇩','🇦🇴','🇦🇬','🇦🇷','🇦🇲','🇦🇺','🇦🇹','🇦🇿','🇧🇸','🇧🇭','🇧🇩','🇧🇧','🇧🇾','🇧🇪','🇧🇿','🇧🇯','🇧🇹','🇧🇴','🇧🇦','🇧🇼','🇧🇷','🇧🇳','🇧🇬','🇧🇫','🇧🇮','🇨🇻','🇰🇭','🇨🇲','🇨🇦','🇨🇫','🇹🇩','🇨🇱','🇨🇳','🇨🇴','🇰🇲','🇨🇬','🇨🇩','🇨🇷','🇨🇮','🇭🇷','🇨🇺','🇨🇾','🇨🇿','🇩🇰','🇩🇯','🇩🇲','🇩🇴','🇪🇨','🇪🇬','🇸🇻','🇬🇶','🇪🇷','🇪🇪','🇸🇿','🇪🇹','🇫🇯','🇫🇮','🇫🇷','🇬🇦','🇬🇲','🇬🇪','🇩🇪','🇬🇭','🇬🇷','🇬🇩','🇬🇹','🇬🇳','🇬🇼','🇬🇾','🇭🇹','🇭🇳','🇭🇺','🇮🇸','🇮🇳','🇮🇩','🇮🇷','🇮🇶','🇮🇪','🇮🇱','🇮🇹','🇯🇲','🇯🇵','🇯🇴','🇰🇿','🇰🇪','🇰🇮','🇰🇼','🇰🇬','🇱🇦','🇱🇻','🇱🇧','🇱🇸','🇱🇷','🇱🇾','🇱🇮','🇱🇹','🇱🇺','🇲🇬','🇲🇼','🇲🇾','🇲🇻','🇲🇱','🇲🇹','🇲🇭','🇲🇷','🇲🇺','🇲🇽','🇫🇲','🇲🇩','🇲🇨','🇲🇳','🇲🇪','🇲🇦','🇲🇿','🇲🇲','🇳🇦','🇳🇷','🇳🇵','🇳🇱','🇳🇿','🇳🇮','🇳🇪','🇳🇬','🇲🇰','🇳🇴','🇴🇲','🇵🇰','🇵🇼','🇵🇸','🇵🇦','🇵🇬','🇵🇾','🇵🇪','🇵🇭','🇵🇱','🇵🇹','🇶🇦','🇷🇴','🇷🇺','🇷🇼','🇰🇳','🇱🇨','🇻🇨','🇼🇸','🇸🇲','🇸🇹','🇸🇦','🇸🇳','🇷🇸','🇸🇨','🇸🇱','🇸🇬','🇸🇰','🇸🇮','🇸🇧','🇸🇴','🇿🇦','🇸🇸','🇪🇸','🇱🇰','🇸🇩','🇸🇷','🇸🇪','🇨🇭','🇸🇾','🇹🇼','🇹🇯','🇹🇿','🇹🇭','🇹🇱','🇹🇬','🇹🇴','🇹🇹','🇹🇳','🇹🇷','🇹🇲','🇹🇻','🇺🇬','🇺🇦','🇦🇪','🇬🇧','🇺🇸','🇺🇾','🇺🇿','🇻🇺','🇻🇪','🇻🇳','🇾🇪','🇿🇲','🇿🇼'] },
 ]
 
+const ALL_EMOJIS = EMOJI_CATS.flatMap(c => c.emojis)
+
 function EmojiPicker({ t, onSelect, onClose }: {
   t: ReturnType<typeof buildTokens>
   onSelect: (e: string) => void
   onClose: () => void
 }) {
-  const [activeCat, setActiveCat] = useState(0)
-  const [search, setSearch] = useState('')
-  const searchRef = useRef<HTMLInputElement>(null)
-
-  const displayEmojis = search.trim()
-    ? EMOJI_CATS.flatMap(c => c.emojis).filter(e => {
-        // simple unicode match — search by typing an emoji or partial name
-        return e.includes(search.trim())
-      })
-    : EMOJI_CATS[activeCat].emojis
-
   return (
     <div className="mb-4 rounded-2xl overflow-hidden" style={{ border: `1px solid ${t.cardBorder}`, background: t.sheetBg }}>
-      {/* Search bar */}
-      <div className="px-3 pt-3 pb-2" style={{ borderBottom: `1px solid ${t.divider}` }}>
-        <input
-          ref={searchRef}
-          type="text"
-          placeholder="🔍  Search emoji…"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          className="w-full px-3 py-2 rounded-xl text-sm outline-none"
-          style={{ background: t.inputBg, border: t.inputBorder, color: t.inputColor }}
-        />
-      </div>
-
-      {/* Category tabs */}
-      {!search.trim() && (
-        <div className="flex gap-1 overflow-x-auto no-scrollbar px-2 py-2" style={{ borderBottom: `1px solid ${t.divider}` }}>
-          {EMOJI_CATS.map((cat, i) => (
-            <button
-              key={cat.name}
-              onClick={() => setActiveCat(i)}
-              className="flex-shrink-0 text-lg w-9 h-9 rounded-xl flex items-center justify-center transition-all"
-              style={{
-                background: activeCat === i ? 'rgba(37,99,235,0.25)' : t.inputBg,
-                border: activeCat === i ? '1.5px solid #2563EB' : t.inputBorder,
-              }}
-              title={cat.name}
-            >
-              {cat.icon}
-            </button>
-          ))}
-        </div>
-      )}
-
-      {/* Emoji grid */}
+      {/* Flat emoji grid — all categories combined */}
       <div
         className="grid overflow-y-auto px-2 py-2"
-        style={{ gridTemplateColumns: 'repeat(8, 1fr)', gap: 4, maxHeight: 200 }}
+        style={{ gridTemplateColumns: 'repeat(8, 1fr)', gap: 4, maxHeight: 240 }}
       >
-        {displayEmojis.length === 0 ? (
-          <p className="col-span-8 text-center text-xs py-4" style={{ color: t.textMuted }}>No results</p>
-        ) : displayEmojis.map((e, i) => (
+        {ALL_EMOJIS.map((e, i) => (
           <button
             key={`${e}-${i}`}
             onClick={() => { onSelect(e); onClose() }}
@@ -175,8 +131,8 @@ function buildTokens(darkMode: boolean) {
   } : {
     bg: '#F0F4FF',
     text: '#0B1437',
-    textMuted: 'rgba(11,20,55,0.72)',
-    textSub: 'rgba(11,20,55,0.62)',
+    textMuted: 'rgba(11,20,55,0.88)',
+    textSub: 'rgba(11,20,55,0.78)',
     cardBg: 'rgba(255,255,255,0.85)',
     cardBorder: 'rgba(11,20,55,0.18)',
     inputBg: 'rgba(11,20,55,0.09)',
@@ -460,7 +416,19 @@ export default function Habits() {
   const [editHabit, setEditHabit] = useState<HabitWithStreak | null>(null)
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
   const [sortBy, setSortBy] = useState<'default' | 'streak' | 'name' | 'priority'>('default')
+  const [showSortDropdown, setShowSortDropdown] = useState(false)
+  const sortRef = useRef<HTMLDivElement>(null)
   const [manualOrder, setManualOrder] = useState<HabitWithStreak[]>([])
+
+  useEffect(() => {
+    function handler(e: MouseEvent) {
+      if (sortRef.current && !sortRef.current.contains(e.target as Node)) {
+        setShowSortDropdown(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
 
   const t = buildTokens(darkMode)
 
@@ -574,21 +542,65 @@ export default function Habits() {
               <p className="text-xs font-semibold tracking-wide uppercase" style={{ color: t.textMuted }}>
                 Your Habits
               </p>
-              <div className="flex items-center gap-1">
-                {(['default','streak','name','priority'] as const).map(opt => (
-                  <button
-                    key={opt}
-                    onClick={() => setSortBy(opt)}
-                    className="px-2.5 py-1 rounded-lg text-[10px] font-semibold transition-all"
+              <div className="relative" ref={sortRef}>
+                <button
+                  onClick={() => setShowSortDropdown(v => !v)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all"
+                  style={{
+                    background: showSortDropdown ? 'rgba(37,99,235,0.20)' : t.inputBg,
+                    border: showSortDropdown ? '1px solid rgba(37,99,235,0.45)' : t.inputBorder,
+                    color: t.textMuted,
+                  }}
+                >
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/>
+                  </svg>
+                  Sort
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                    style={{ transform: showSortDropdown ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }}>
+                    <polyline points="6 9 12 15 18 9"/>
+                  </svg>
+                </button>
+                {showSortDropdown && (
+                  <div
+                    className="absolute right-0 top-full mt-1.5 rounded-2xl overflow-hidden z-30"
                     style={{
-                      background: sortBy === opt ? 'rgba(37,99,235,0.25)' : t.inputBg,
-                      border: sortBy === opt ? '1px solid rgba(37,99,235,0.5)' : t.inputBorder,
-                      color: sortBy === opt ? '#93C5FD' : t.textMuted,
+                      background: t.sheetBg,
+                      border: `1px solid ${t.cardBorder}`,
+                      boxShadow: '0 12px 32px rgba(0,0,0,0.28)',
+                      minWidth: 148,
                     }}
                   >
-                    {opt === 'default' ? '⠿' : opt === 'streak' ? '🔥' : opt === 'name' ? 'A-Z' : '⭐'}
-                  </button>
-                ))}
+                    {([
+                      { key: 'default',  label: 'Default',       icon: 'M4 6h16M4 12h16M4 18h16' },
+                      { key: 'streak',   label: 'Streak',        icon: 'M12 2C8 8 5 10 5 14a7 7 0 0014 0c0-4-3-6-7-12z' },
+                      { key: 'name',     label: 'Name (A–Z)',    icon: 'M3 5h12M3 10h9M3 15h5' },
+                      { key: 'priority', label: 'Priority',      icon: 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z' },
+                    ] as const).map(({ key, label, icon }) => (
+                      <button
+                        key={key}
+                        onClick={() => { setSortBy(key); setShowSortDropdown(false) }}
+                        className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-left transition-all"
+                        style={{
+                          color: sortBy === key ? '#93C5FD' : t.textMuted,
+                          background: sortBy === key ? 'rgba(37,99,235,0.18)' : 'transparent',
+                        }}
+                        onMouseEnter={ev => { if (sortBy !== key) (ev.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.04)' }}
+                        onMouseLeave={ev => { (ev.currentTarget as HTMLButtonElement).style.background = sortBy === key ? 'rgba(37,99,235,0.18)' : 'transparent' }}
+                      >
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d={icon}/>
+                        </svg>
+                        {label}
+                        {sortBy === key && (
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#93C5FD" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="ml-auto">
+                            <polyline points="20 6 9 17 4 12"/>
+                          </svg>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 

@@ -35,17 +35,17 @@ export default function Analytics() {
   } : {
     bg: '#F0F4FF',
     text: '#0B1437',
-    textMuted: 'rgba(11,20,55,0.72)',
-    textSub: 'rgba(11,20,55,0.62)',
+    textMuted: 'rgba(11,20,55,0.88)',
+    textSub: 'rgba(11,20,55,0.78)',
     cardBg: 'rgba(255,255,255,0.85)',
     cardBorder: 'rgba(11,20,55,0.18)',
     inputBg: 'rgba(11,20,55,0.11)',
-    btnText: 'rgba(11,20,55,0.72)',
+    btnText: 'rgba(11,20,55,0.88)',
     barTrack: 'rgba(11,20,55,0.14)',
     tooltipBg: '#E8EFFF',
     tooltipBorder: 'rgba(11,20,55,0.20)',
     tooltipText: '#0B1437',
-    axisTick: 'rgba(11,20,55,0.62)',
+    axisTick: 'rgba(11,20,55,0.78)',
   }
 
   const rangeStart = range === '7d' ? daysAgo(7)

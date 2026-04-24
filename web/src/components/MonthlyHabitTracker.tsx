@@ -53,14 +53,14 @@ export function MonthlyHabitTracker({ habits, onToggle }: Props) {
     expandText: 'rgba(255,255,255,0.5)',
   } : {
     text: '#0B1437',
-    textSub: 'rgba(11,20,55,0.62)',
-    textMuted: 'rgba(11,20,55,0.72)',
+    textSub: 'rgba(11,20,55,0.78)',
+    textMuted: 'rgba(11,20,55,0.88)',
     cardBg: 'rgba(255,255,255,0.85)',
     cardBorder: 'rgba(11,20,55,0.18)',
     divider: 'rgba(11,20,55,0.13)',
     inputBg: 'rgba(11,20,55,0.09)',
     expandBg: 'rgba(11,20,55,0.09)',
-    expandText: 'rgba(11,20,55,0.70)',
+    expandText: 'rgba(11,20,55,0.85)',
   }
 
   function dateStr(day: number) {

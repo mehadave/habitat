@@ -23,7 +23,7 @@ export function QuoteRotator({ intervalMs = 600000, darkMode = true }: QuoteRota
   const pillBg = darkMode ? 'rgba(255,255,255,0.07)' : 'rgba(11,20,55,0.11)'
   const pillBorder = darkMode ? 'rgba(255,255,255,0.12)' : 'rgba(11,20,55,0.1)'
   const textColor = darkMode ? 'rgba(255,255,255,0.75)' : 'rgba(11,20,55,0.65)'
-  const authorColor = darkMode ? 'rgba(255,255,255,0.4)' : 'rgba(11,20,55,0.62)'
+  const authorColor = darkMode ? 'rgba(255,255,255,0.4)' : 'rgba(11,20,55,0.78)'
 
   return (
     <div
