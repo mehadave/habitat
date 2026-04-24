@@ -88,53 +88,57 @@ body {
 .app-bg {
   background-color: #080E1C;
   background-image:
-    radial-gradient(ellipse at 20% 10%, rgba(56,189,248,0.13) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 85%, rgba(14,165,233,0.10) 0%, transparent 48%),
-    radial-gradient(ellipse at 50% 120%, rgba(37,99,235,0.09) 0%, transparent 45%),
-    radial-gradient(ellipse at 60% 0%,  rgba(99,102,241,0.07) 0%, transparent 40%);
+    radial-gradient(ellipse 120% 40% at 10% 0%,  rgba(56,189,248,0.22) 0%, transparent 60%),
+    radial-gradient(ellipse 80%  32% at 88% 0%,  rgba(14,165,233,0.16) 0%, transparent 55%),
+    radial-gradient(ellipse 60%  28% at 52% 0%,  rgba(99,102,241,0.11) 0%, transparent 50%),
+    radial-gradient(ellipse at 20% 10%, rgba(56,189,248,0.09) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 85%, rgba(14,165,233,0.07) 0%, transparent 48%),
+    radial-gradient(ellipse at 50% 120%, rgba(37,99,235,0.07) 0%, transparent 45%);
   background-attachment: fixed;
   position: relative;
   overflow: clip;
 }
 
-/* ── Ocean animated background (dark mode) ──────── */
+/* ── Animated aurora overlay (dark mode) — NO scale to prevent edge clipping ── */
 .app-bg::before {
   content: '';
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: -60px; left: -60px; right: -60px; bottom: -60px;
   pointer-events: none;
   z-index: 0;
   background:
-    radial-gradient(ellipse 600px 200px at 20% 90%, rgba(6,182,212,0.08) 0%, transparent 100%),
-    radial-gradient(ellipse 400px 300px at 80% 20%, rgba(59,130,246,0.06) 0%, transparent 100%),
-    radial-gradient(ellipse 500px 200px at 60% 60%, rgba(14,165,233,0.05) 0%, transparent 100%);
-  animation: ocean-drift 12s ease-in-out infinite alternate;
+    radial-gradient(ellipse 70% 30% at 18% 4%,  rgba(56,189,248,0.22) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 24% at 82% 3%,  rgba(14,165,233,0.16) 0%, transparent 58%),
+    radial-gradient(ellipse 40% 20% at 52% 2%,  rgba(99,102,241,0.12) 0%, transparent 52%),
+    radial-gradient(ellipse 600px 200px at 22% 88%, rgba(6,182,212,0.07) 0%, transparent 100%),
+    radial-gradient(ellipse 400px 280px at 78% 22%, rgba(59,130,246,0.06) 0%, transparent 100%);
+  animation: aurora-drift 14s ease-in-out infinite alternate;
 }
 
 .app-bg::after {
   content: '';
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: -40px; left: -40px; right: -40px; bottom: -40px;
   pointer-events: none;
   z-index: 0;
   background:
-    radial-gradient(circle 120px at 15% 25%, rgba(56,189,248,0.06) 0%, transparent 100%),
-    radial-gradient(circle 80px at 75% 45%, rgba(99,102,241,0.05) 0%, transparent 100%),
-    radial-gradient(circle 100px at 45% 75%, rgba(6,182,212,0.04) 0%, transparent 100%),
-    radial-gradient(circle 60px at 85% 85%, rgba(59,130,246,0.05) 0%, transparent 100%);
-  animation: bubbles-float 16s ease-in-out infinite alternate-reverse;
+    radial-gradient(ellipse 55% 22% at 65% 3%,  rgba(56,189,248,0.13) 0%, transparent 60%),
+    radial-gradient(circle 140px at 14% 18%, rgba(56,189,248,0.09) 0%, transparent 100%),
+    radial-gradient(circle 90px at 76% 42%, rgba(99,102,241,0.07) 0%, transparent 100%),
+    radial-gradient(circle 110px at 44% 72%, rgba(6,182,212,0.05) 0%, transparent 100%);
+  animation: aurora-drift-2 18s ease-in-out infinite alternate-reverse;
 }
 
-@keyframes ocean-drift {
-  0%   { transform: translate(0, 0) scale(1); opacity: 0.7; }
-  50%  { transform: translate(30px, -15px) scale(1.05); opacity: 1; }
-  100% { transform: translate(-20px, 10px) scale(0.98); opacity: 0.8; }
+@keyframes aurora-drift {
+  0%   { transform: translate(0, 0);     opacity: 0.75; }
+  40%  { transform: translate(28px, -18px); opacity: 1; }
+  100% { transform: translate(-22px, 12px); opacity: 0.82; }
 }
 
-@keyframes bubbles-float {
-  0%   { transform: translateY(0); opacity: 0.5; }
-  50%  { transform: translateY(-20px); opacity: 0.8; }
-  100% { transform: translateY(5px); opacity: 0.6; }
+@keyframes aurora-drift-2 {
+  0%   { transform: translate(0, 0);    opacity: 0.55; }
+  50%  { transform: translate(-18px, -10px); opacity: 0.85; }
+  100% { transform: translate(14px, 8px); opacity: 0.65; }
 }
 
 /* Ensure page content stays above animated bg.

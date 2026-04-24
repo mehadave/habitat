@@ -189,7 +189,7 @@ export function NavBar() {
   }, [])
 
   const topBarBg = darkMode
-    ? 'linear-gradient(180deg, rgba(8,14,28,0.96) 0%, rgba(8,14,28,0.88) 100%)'
+    ? 'linear-gradient(180deg, rgba(8,14,28,0.72) 0%, rgba(8,14,28,0.60) 100%)'
     : 'linear-gradient(180deg, rgba(248,250,255,0.97) 0%, rgba(240,244,255,0.92) 100%)'
   const topBarBorder = darkMode ? 'rgba(255,255,255,0.07)' : 'rgba(11,20,55,0.09)'
   const tabActiveBg  = darkMode ? 'rgba(56,189,248,0.13)' : 'rgba(37,99,235,0.10)'
