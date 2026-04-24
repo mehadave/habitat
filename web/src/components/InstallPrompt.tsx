@@ -12,12 +12,11 @@ export function InstallPrompt() {
   const { darkMode } = useUIStore()
   const [show, setShow] = useState(false)
   const [platform, setPlatform] = useState<'ios' | 'android' | null>(null)
+  const [canInstall, setCanInstall] = useState(false)
 
   useEffect(() => {
-    // Don't show if already dismissed this session
     if (sessionStorage.getItem('pwa-prompt-dismissed')) return
 
-    // Don't show if already running as installed PWA
     const isStandalone =
       ('standalone' in navigator && (navigator as { standalone?: boolean }).standalone === true) ||
       window.matchMedia('(display-mode: standalone)').matches
@@ -25,17 +24,26 @@ export function InstallPrompt() {
 
     const ua = navigator.userAgent
     const isIOS = /iphone|ipad|ipod/i.test(ua)
+    const isAndroid = /android/i.test(ua)
 
     if (isIOS) {
       setPlatform('ios')
+      setTimeout(() => setShow(true), 4000)
+    } else if (isAndroid) {
+      // Show Android prompt immediately from UA — no need to wait for beforeinstallprompt
+      setPlatform('android')
       setTimeout(() => setShow(true), 4000)
     }
 
     function handleBeforeInstallPrompt(e: Event) {
       e.preventDefault()
       deferredPrompt = e as BeforeInstallPromptEvent
-      setPlatform('android')
-      setTimeout(() => setShow(true), 4000)
+      setCanInstall(true)
+      // If not already showing Android prompt, show it now (desktop Chrome case)
+      if (!isIOS && !isAndroid) {
+        setPlatform('android')
+        setTimeout(() => setShow(true), 4000)
+      }
     }
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
@@ -86,7 +94,7 @@ export function InstallPrompt() {
               </p>
             ) : (
               <p className="text-xs mt-0.5" style={{ color: t.muted }}>
-                Add to home screen for the best experience
+                Add to your home screen for the best experience
               </p>
             )}
           </div>
@@ -102,18 +110,20 @@ export function InstallPrompt() {
 
       {platform === 'android' && (
         <>
-          <button
-            onClick={install}
-            className="mt-3 w-full py-2 rounded-xl text-sm font-medium text-white"
-            style={{ background: '#2563EB' }}
-          >
-            Install
-          </button>
+          {canInstall && (
+            <button
+              onClick={install}
+              className="mt-3 w-full py-2 rounded-xl text-sm font-medium text-white"
+              style={{ background: '#2563EB' }}
+            >
+              Install
+            </button>
+          )}
           <div className="mt-2 flex items-center gap-2 px-3 py-2 rounded-xl"
             style={{ background: darkMode ? 'rgba(255,255,255,0.05)' : 'rgba(11,20,55,0.04)' }}>
             <span style={{ fontSize: 16 }}>⋮</span>
             <p className="text-xs" style={{ color: t.muted }}>
-              Or tap <strong style={{ color: t.text }}>⋮ Menu</strong> → <strong style={{ color: t.text }}>Add to Home screen</strong> in Chrome
+              Tap <strong style={{ color: t.text }}>⋮ Menu</strong> → <strong style={{ color: t.text }}>Add to Home screen</strong> in Chrome
             </p>
           </div>
         </>
