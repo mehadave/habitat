@@ -43,8 +43,8 @@ export default function Calendar() {
   } : {
     bg: '#F0F4FF',
     text: '#0B1437',
-    textMuted: 'rgba(11,20,55,0.72)',
-    textSub: 'rgba(11,20,55,0.62)',
+    textMuted: 'rgba(11,20,55,0.88)',
+    textSub: 'rgba(11,20,55,0.78)',
     cardBg: 'rgba(255,255,255,0.75)',
     cardBorder: 'rgba(11,20,55,0.18)',
     inputBg: 'rgba(11,20,55,0.09)',
@@ -55,7 +55,7 @@ export default function Calendar() {
     navBorder: 'rgba(11,20,55,0.1)',
     sheetBg: '#E8EFFF',
     badgeBg: 'rgba(11,20,55,0.13)',
-    badgeText: 'rgba(11,20,55,0.70)',
+    badgeText: 'rgba(11,20,55,0.85)',
   }
 
   const daysInMonth = getDaysInMonth(year, month)

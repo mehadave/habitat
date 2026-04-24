@@ -224,8 +224,8 @@ export default function Journal() {
   } : {
     bg: '#F0F4FF',
     text: '#0B1437',
-    textMuted: 'rgba(11,20,55,0.72)',
-    textSub: 'rgba(11,20,55,0.62)',
+    textMuted: 'rgba(11,20,55,0.88)',
+    textSub: 'rgba(11,20,55,0.78)',
     cardBg: 'rgba(255,255,255,0.75)',
     cardBorder: 'rgba(11,20,55,0.18)',
     inputBg: 'rgba(11,20,55,0.09)',
