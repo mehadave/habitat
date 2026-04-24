@@ -604,7 +604,7 @@ export default function Journal() {
         </div>
 
         {/* ── Category filter pills ── */}
-        <div className="flex gap-2 mb-4 overflow-x-auto pb-1 scrollbar-none">
+        <div className="flex gap-2 mb-4 overflow-x-auto pb-1 scrollbar-none justify-center flex-wrap">
           <button
             onClick={() => setFilterCat(null)}
             className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold transition-all"
