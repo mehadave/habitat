@@ -690,9 +690,9 @@ export default function Dashboard() {
     <div className="app-bg min-h-screen" style={{ paddingTop: 76, paddingBottom: 80 }}>
       {/* Hero section — overflow-x:clip prevents horizontal scroll while allowing dolphins to arc vertically */}
       <div className="flex flex-col items-center px-4 pt-8 pb-20 relative" style={{ overflowX: 'clip' }}>
-        {/* Aurora background layer */}
+        {/* Aurora background layer — oversized by 50px to prevent translate clipping */}
         <div className="hero-aurora pointer-events-none" style={{
-          position: 'absolute', inset: 0, zIndex: 0,
+          position: 'absolute', top: -50, left: -50, right: -50, bottom: -50, zIndex: 0,
           background: darkMode
             ? 'radial-gradient(ellipse 90% 55% at 15% 30%, rgba(56,189,248,0.18) 0%, transparent 55%), radial-gradient(ellipse 70% 45% at 85% 15%, rgba(14,165,233,0.13) 0%, transparent 50%), radial-gradient(ellipse 80% 60% at 55% 85%, rgba(37,99,235,0.12) 0%, transparent 50%), radial-gradient(ellipse 50% 35% at 40% 50%, rgba(99,102,241,0.08) 0%, transparent 45%)'
             : 'radial-gradient(ellipse 90% 55% at 15% 30%, rgba(37,99,235,0.10) 0%, transparent 55%), radial-gradient(ellipse 70% 45% at 85% 15%, rgba(147,197,253,0.12) 0%, transparent 50%), radial-gradient(ellipse 80% 60% at 55% 85%, rgba(59,130,246,0.08) 0%, transparent 50%)',
