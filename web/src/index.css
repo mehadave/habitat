@@ -68,7 +68,7 @@ body.light-mode .skeleton {
 .hi-bubble-blue,
 .hi-bubble-pink {
   left: 20px !important;
-  bottom: 115px !important;
+  bottom: 75px !important;
 }
 @media (min-width: 640px) {
   .hi-bubble-blue,
