@@ -193,18 +193,17 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
         </div>
       </div>
 
-      {/* ── Speech bubbles — anchored to dolphin level so they never overlap text ──
-          Anchor sits at bottom:62 (same as dolphins) with height = dolphin body (~50px).
-          Bubbles use bottom:100% + marginBottom so they're always just above the dolphin,
-          on every screen size, with no fixed-pixel mobile override needed.
+      {/* ── Speech bubbles — placed at bottom:20 inside the OceanWave container
+          (which is position:absolute, bottom:0, height:145 in the hero).
+          bottom:20 = 20px from hero's bottom = safely inside the wave zone,
+          below the hero's pb-20 content area on every screen size.
       ── */}
-      <div style={{ position: 'absolute', bottom: 62, left: 0, right: 0, height: 50, zIndex: 6, pointerEvents: 'none' }}>
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 145, zIndex: 6, pointerEvents: 'none' }}>
         <div
           className="hi-bubble-blue"
           style={{
             position: 'absolute',
-            bottom: '100%',
-            marginBottom: 8,
+            bottom: 20,
             left: 20,
             background: 'rgba(255,255,255,0.82)',
             backdropFilter: 'blur(12px)',
@@ -229,8 +228,7 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
           className="hi-bubble-pink"
           style={{
             position: 'absolute',
-            bottom: '100%',
-            marginBottom: 8,
+            bottom: 20,
             left: 20,
             background: 'rgba(255,255,255,0.82)',
             backdropFilter: 'blur(12px)',
