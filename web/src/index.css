@@ -64,19 +64,7 @@ body.light-mode .skeleton {
   html { font-size: 16px; }
 }
 
-/* ── Speech bubbles: repositioned on mobile, normal on desktop ── */
-.hi-bubble-blue,
-.hi-bubble-pink {
-  left: 20px !important;
-  bottom: 75px !important;
-}
-@media (min-width: 640px) {
-  .hi-bubble-blue,
-  .hi-bubble-pink {
-    left: calc(22vw + 24px) !important;
-    bottom: 118px !important;
-  }
-}
+/* ── Speech bubbles — no position override needed; anchored via DOM to dolphin level ── */
 
 /* ── Hero aurora animation ───────────────────────── */
 @keyframes aurora-shift {

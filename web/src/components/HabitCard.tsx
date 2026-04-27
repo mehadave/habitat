@@ -74,14 +74,14 @@ export function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCardProps)
       >
         <button
           onClick={() => { setShowActions(false); onEdit(habit) }}
-          className="px-3 py-1.5 rounded-lg text-xs font-semibold pointer-events-auto"
+          className="flex-1 py-1.5 rounded-lg text-xs font-semibold pointer-events-auto text-center"
           style={{ background: 'rgba(37,99,235,0.22)', color: '#93C5FD' }}
         >
           Edit
         </button>
         <button
           onClick={() => { setShowActions(false); onDelete(habit.id) }}
-          className="px-3 py-1.5 rounded-lg text-xs font-semibold pointer-events-auto"
+          className="flex-1 py-1.5 rounded-lg text-xs font-semibold pointer-events-auto text-center"
           style={{ background: 'rgba(248,113,113,0.2)', color: '#F87171' }}
         >
           Delete
