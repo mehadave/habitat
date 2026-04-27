@@ -193,63 +193,63 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
         </div>
       </div>
 
-      {/* ── "Hi!" speech bubbles — appear while dolphins peek underwater at ~13 vw ──
-          Blue bubble: visible at 12.5–15 % of 13 s cycle (real-time ~1.6–2.0 s).
-          Pink bubble: same keyframe but -6.5 s delay → visible at ~8.1–8.5 s.
-          Both dolphins are near 13 vw at those moments, so we anchor here.
+      {/* ── Speech bubbles — anchored to dolphin level so they never overlap text ──
+          Anchor sits at bottom:62 (same as dolphins) with height = dolphin body (~50px).
+          Bubbles use bottom:100% + marginBottom so they're always just above the dolphin,
+          on every screen size, with no fixed-pixel mobile override needed.
       ── */}
-      <div
-        className="hi-bubble-blue"
-        style={{
-          position: 'absolute',
-          left: 'calc(22vw + 24px)',
-          bottom: 118,
-          zIndex: 6,
-          background: 'rgba(255,255,255,0.82)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-          borderRadius: '14px 14px 14px 4px',
-          padding: '6px 12px',
-          fontSize: 12,
-          fontWeight: 500,
-          color: '#1e3a8a',
-          border: '1px solid rgba(37,99,235,0.15)',
-          boxShadow: '0 4px 16px rgba(0,0,0,0.14), 0 1px 4px rgba(37,99,235,0.12)',
-          pointerEvents: 'none',
-          letterSpacing: '-0.01em',
-          lineHeight: 1.4,
-        }}
-      >
-        <div className="flex flex-col sm:flex-row sm:gap-1">
-          <div>Hey <span style={{ color: '#2563EB', fontWeight: 700 }}>{userName}</span>,</div>
-          <div>You got this!! 💙</div>
+      <div style={{ position: 'absolute', bottom: 62, left: 0, right: 0, height: 50, zIndex: 6, pointerEvents: 'none' }}>
+        <div
+          className="hi-bubble-blue"
+          style={{
+            position: 'absolute',
+            bottom: '100%',
+            marginBottom: 8,
+            left: 20,
+            background: 'rgba(255,255,255,0.82)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            borderRadius: '14px 14px 14px 4px',
+            padding: '6px 12px',
+            fontSize: 12,
+            fontWeight: 500,
+            color: '#1e3a8a',
+            border: '1px solid rgba(37,99,235,0.15)',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.14), 0 1px 4px rgba(37,99,235,0.12)',
+            letterSpacing: '-0.01em',
+            lineHeight: 1.4,
+          }}
+        >
+          <div className="flex flex-col sm:flex-row sm:gap-1">
+            <div>Hey <span style={{ color: '#2563EB', fontWeight: 700 }}>{userName}</span>,</div>
+            <div>You got this!! 💙</div>
+          </div>
         </div>
-      </div>
-      <div
-        className="hi-bubble-pink"
-        style={{
-          position: 'absolute',
-          left: 'calc(22vw + 24px)',
-          bottom: 118,
-          zIndex: 6,
-          background: 'rgba(255,255,255,0.82)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-          borderRadius: '14px 14px 14px 4px',
-          padding: '6px 12px',
-          fontSize: 12,
-          fontWeight: 500,
-          color: '#1e3a8a',
-          border: '1px solid rgba(236,72,153,0.15)',
-          boxShadow: '0 4px 16px rgba(0,0,0,0.14), 0 1px 4px rgba(236,72,153,0.12)',
-          pointerEvents: 'none',
-          letterSpacing: '-0.01em',
-          lineHeight: 1.4,
-        }}
-      >
-        <div className="flex flex-col sm:flex-row sm:gap-1">
+        <div
+          className="hi-bubble-pink"
+          style={{
+            position: 'absolute',
+            bottom: '100%',
+            marginBottom: 8,
+            left: 20,
+            background: 'rgba(255,255,255,0.82)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            borderRadius: '14px 14px 14px 4px',
+            padding: '6px 12px',
+            fontSize: 12,
+            fontWeight: 500,
+            color: '#1e3a8a',
+            border: '1px solid rgba(236,72,153,0.15)',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.14), 0 1px 4px rgba(236,72,153,0.12)',
+            letterSpacing: '-0.01em',
+            lineHeight: 1.4,
+          }}
+        >
+          <div className="flex flex-col sm:flex-row sm:gap-1">
           <div>Hey <span style={{ color: '#ec4899', fontWeight: 700 }}>{userName}</span>,</div>
           <div>You got this!! 🩷</div>
+        </div>
         </div>
       </div>
 
