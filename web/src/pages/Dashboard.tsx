@@ -193,17 +193,17 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
         </div>
       </div>
 
-      {/* ── Speech bubbles — placed at bottom:20 inside the OceanWave container
+      {/* ── Speech bubbles — placed at bottom:65 inside the OceanWave container
           (which is position:absolute, bottom:0, height:145 in the hero).
-          bottom:20 = 20px from hero's bottom = safely inside the wave zone,
-          below the hero's pb-20 content area on every screen size.
+          bottom:65 ≈ dolphin height (62) — bubble floats right beside the dolphin.
+          left:20 keeps it left-aligned, away from the centered hero text.
       ── */}
       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 145, zIndex: 6, pointerEvents: 'none' }}>
         <div
           className="hi-bubble-blue"
           style={{
             position: 'absolute',
-            bottom: 20,
+            bottom: 65,
             left: 20,
             background: 'rgba(255,255,255,0.82)',
             backdropFilter: 'blur(12px)',
@@ -228,7 +228,7 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
           className="hi-bubble-pink"
           style={{
             position: 'absolute',
-            bottom: 20,
+            bottom: 65,
             left: 20,
             background: 'rgba(255,255,255,0.82)',
             backdropFilter: 'blur(12px)',
