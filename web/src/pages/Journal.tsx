@@ -37,8 +37,34 @@ function useVoiceBlob(onText: (text: string) => void) {
   const [recording, setRecording] = useState(false)
   const [micBlocked, setMicBlocked] = useState(false)
   const recognitionRef = useRef<any>(null)
+  const wakeLockRef = useRef<any>(null)
   const onTextRef = useRef(onText)
   onTextRef.current = onText
+
+  function acquireWakeLock() {
+    if ('wakeLock' in navigator) {
+      ;(navigator as any).wakeLock.request('screen')
+        .then((lock: any) => { wakeLockRef.current = lock })
+        .catch(() => { /* not supported or denied */ })
+    }
+  }
+
+  function releaseWakeLock() {
+    wakeLockRef.current?.release().catch(() => {})
+    wakeLockRef.current = null
+  }
+
+  const stop = useCallback(() => {
+    const r = recognitionRef.current
+    if (r) {
+      recognitionRef.current = null
+      r.onend = null  // prevent double setState from the onend event
+      r.stop()
+    }
+    setRecording(false)
+    releaseWakeLock()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const start = useCallback(async () => {
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
@@ -73,22 +99,36 @@ function useVoiceBlob(onText: (text: string) => void) {
       if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
         setMicBlocked(true)
       }
-      setRecording(false)
       recognitionRef.current = null
+      setRecording(false)
+      releaseWakeLock()
+    }
+
+    // onend fires when recognition stops (timeout, silence, or manually) —
+    // if recognitionRef is still set here it means it auto-stopped (not us).
+    r.onend = () => {
+      recognitionRef.current = null
+      setRecording(false)
+      releaseWakeLock()
     }
 
     r.start()
     recognitionRef.current = r
     setRecording(true)
+    acquireWakeLock()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const stop = useCallback(() => {
-    recognitionRef.current?.stop()
-    recognitionRef.current = null
-    setRecording(false)
-  }, [])
+  // Tap-to-toggle: one tap starts, another tap stops
+  const toggle = useCallback(() => {
+    if (recognitionRef.current) {
+      stop()
+    } else {
+      start()
+    }
+  }, [start, stop])
 
-  return { recording, micBlocked, setMicBlocked, start, stop }
+  return { recording, micBlocked, setMicBlocked, start, stop, toggle }
 }
 
 /* ── Timeline entry card ─────────────────────────────────────────────────── */
@@ -305,7 +345,7 @@ export default function Journal() {
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null)
 
   /* voice blob */
-  const { recording, micBlocked, setMicBlocked, start: startRec, stop: stopRec } = useVoiceBlob((text) => {
+  const { recording, micBlocked, setMicBlocked, start: startRec, toggle: toggleRec } = useVoiceBlob((text) => {
     // Functional update avoids stale closure — always appends to latest content
     setContent(prev => {
       const trimmed = prev.trimEnd()
@@ -502,11 +542,7 @@ export default function Journal() {
               <div className="flex items-center gap-2">
                 {voiceSupported && (
                   <button
-                    onMouseDown={micBlocked ? undefined : startRec}
-                    onMouseUp={micBlocked ? undefined : stopRec}
-                    onTouchStart={micBlocked ? undefined : startRec}
-                    onTouchEnd={micBlocked ? undefined : stopRec}
-                    onClick={micBlocked ? () => { setMicBlocked(false); startRec() } : undefined}
+                    onClick={micBlocked ? () => { setMicBlocked(false); startRec() } : toggleRec}
                     className="w-9 h-9 rounded-xl flex items-center justify-center text-base select-none flex-shrink-0"
                     style={{
                       background: micBlocked
@@ -525,7 +561,7 @@ export default function Journal() {
                       WebkitUserSelect: 'none',
                       transition: 'all 0.15s ease',
                     }}
-                    title={micBlocked ? 'Mic blocked — tap to retry' : 'Hold to dictate'}
+                    title={micBlocked ? 'Mic blocked — tap to retry' : recording ? 'Tap to stop recording' : 'Tap to start recording'}
                   >
                     {micBlocked ? '🚫' : recording ? '⏹' : '🎙'}
                   </button>
