@@ -87,12 +87,23 @@ function useVoiceBlob(onText: (text: string) => void) {
     r.interimResults = true
     r.lang = 'en-US'
 
+    // Track committed length to handle Android Chrome's cumulative-result bug:
+    // Android fires final results that include ALL previous text (e.g. "so" → "so my"
+    // → "so my day"), causing duplicates if you naively append each final result.
+    // By building the full final transcript and slicing from committedLength,
+    // we only send the truly new portion regardless of platform.
+    let committedLength = 0
+
     r.onresult = (e: any) => {
-      let final = ''
-      for (let i = e.resultIndex; i < e.results.length; i++) {
-        if (e.results[i].isFinal) final += e.results[i][0].transcript
+      let allFinal = ''
+      for (let i = 0; i < e.results.length; i++) {
+        if (e.results[i].isFinal) allFinal += e.results[i][0].transcript
       }
-      if (final) onTextRef.current(final)
+      const newPart = allFinal.slice(committedLength).trim()
+      if (newPart) {
+        committedLength = allFinal.length
+        onTextRef.current(newPart)
+      }
     }
 
     r.onerror = (e: any) => {
