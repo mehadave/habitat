@@ -203,7 +203,7 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
           className="hi-bubble-blue"
           style={{
             position: 'absolute',
-            bottom: 118,
+            bottom: 112,
             left: 20,
             background: 'rgba(255,255,255,0.82)',
             backdropFilter: 'blur(12px)',
@@ -228,7 +228,7 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
           className="hi-bubble-pink"
           style={{
             position: 'absolute',
-            bottom: 118,
+            bottom: 112,
             left: 20,
             background: 'rgba(255,255,255,0.82)',
             backdropFilter: 'blur(12px)',
@@ -695,7 +695,7 @@ export default function Dashboard() {
   return (
     <div className="app-bg min-h-screen" style={{ paddingTop: 76, paddingBottom: 80 }}>
       {/* Hero section — overflow-x:clip prevents horizontal scroll while allowing dolphins to arc vertically */}
-      <div className="flex flex-col items-center px-4 pt-8 pb-20 relative" style={{ overflowX: 'clip' }}>
+      <div className="flex flex-col items-center px-4 pt-8 pb-36 relative" style={{ overflowX: 'clip' }}>
         {/* Aurora background layer — oversized by 50px to prevent translate clipping */}
         <div className="hero-aurora pointer-events-none" style={{
           position: 'absolute', top: -50, left: -50, right: -50, bottom: -50, zIndex: 0,
