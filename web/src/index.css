@@ -494,7 +494,7 @@ body.light-mode ::-webkit-scrollbar-thumb { background: rgba(11,20,55,0.15); }
 .hi-bubble-blue { animation: hi-bubble-pop 9s linear infinite; left: 20px; }
 .hi-bubble-pink { animation: hi-bubble-pop 9s linear infinite; animation-delay: -4.5s; left: 20px; }
 @media (min-width: 640px) {
-  .hi-bubble-blue, .hi-bubble-pink { left: 25%; }
+  .hi-bubble-blue, .hi-bubble-pink { left: 20%; }
 }
 
 /* ── Water ring inner flow (SVG animateTransform used directly in JSX) ── */
