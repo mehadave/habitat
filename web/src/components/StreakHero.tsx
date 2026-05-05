@@ -18,16 +18,15 @@ export function StreakHero({ streak, startDate, darkMode = true, label, sublabel
   const labelColor  = darkMode ? 'rgba(255,255,255,0.42)' : 'rgba(11,20,55,0.55)'
   const subColor    = darkMode ? 'rgba(255,255,255,0.28)' : 'rgba(11,20,55,0.45)'
 
-  // Gradient changes with milestone
-  const numGradient = streak >= 30
-    ? 'linear-gradient(135deg, #FBBF24 0%, #F59E0B 50%, #FCD34D 100%)'   // gold
+  // Solid color per milestone — avoids WebkitBackgroundClip:text rendering bug
+  // on Android browsers (shows a gradient rectangle instead of clipping to text)
+  const numColor = streak >= 30
+    ? '#FBBF24'                                          // gold
     : streak >= 7
-      ? 'linear-gradient(135deg, #93C5FD 0%, #38BDF8 50%, #60A5FA 100%)' // sky blue
+      ? '#38BDF8'                                        // sky blue
       : streak > 0
-        ? 'linear-gradient(135deg, #ffffff 0%, #BAE6FD 100%)'             // white→light
-        : darkMode
-          ? 'linear-gradient(135deg, rgba(255,255,255,0.30) 0%, rgba(255,255,255,0.15) 100%)'
-          : 'linear-gradient(135deg, rgba(11,20,55,0.35) 0%, rgba(11,20,55,0.20) 100%)'
+        ? darkMode ? '#93C5FD' : '#2563EB'               // soft blue / strong blue
+        : darkMode ? 'rgba(255,255,255,0.45)' : 'rgba(11,20,55,0.40)'  // muted
 
   const glowColor = streak >= 30
     ? 'rgba(251,191,36,0.18)'
@@ -62,12 +61,9 @@ export function StreakHero({ streak, startDate, darkMode = true, label, sublabel
           className="font-display leading-none relative"
           style={{
             fontSize: 'clamp(72px, 14vw, 108px)',
-            background: numGradient,
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
+            color: numColor,
             letterSpacing: '-0.03em',
-            transition: 'all 0.4s ease',
+            transition: 'color 0.4s ease',
           }}
         >
           {streak}
