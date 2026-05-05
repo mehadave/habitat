@@ -16,6 +16,7 @@ import { syncNotificationsToSW, scheduleWeeklySummary } from './hooks/useNotific
 import Login from './pages/auth/Login'
 import Signup from './pages/auth/Signup'
 import ForgotPassword from './pages/auth/ForgotPassword'
+import ResetPassword from './pages/auth/ResetPassword'
 
 // App pages
 import Dashboard from './pages/Dashboard'
@@ -139,6 +140,7 @@ export default function App() {
       <Route path="/login" element={session ? <Navigate to="/dashboard" replace /> : <Login />} />
       <Route path="/signup" element={session ? <Navigate to="/dashboard" replace /> : <Signup />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route
         path="/*"
         element={
