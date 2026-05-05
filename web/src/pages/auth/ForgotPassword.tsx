@@ -71,6 +71,11 @@ export default function ForgotPassword() {
           </p>
         </div>
 
+        {/* OAuth hint */}
+        <div className="rounded-xl px-4 py-3 mb-4 text-xs text-center" style={{ background: 'rgba(251,191,36,0.10)', border: '1px solid rgba(251,191,36,0.20)', color: darkMode ? 'rgba(255,255,255,0.55)' : 'rgba(11,20,55,0.55)' }}>
+          Signed up with Google? Just use the <strong>Continue with Google</strong> button on the login page — no password needed.
+        </div>
+
         {sent ? (
           <div className="text-center">
             <div className="text-4xl mb-3">📬</div>
