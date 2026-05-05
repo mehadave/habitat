@@ -84,25 +84,23 @@ function useVoiceBlob(onText: (text: string) => void) {
     setMicBlocked(false)
     const r = new SR()
     r.continuous = true
-    r.interimResults = true
+    r.interimResults = false  // No interim events — fewer callbacks, eliminates Android duplicate bug
     r.lang = 'en-US'
 
-    // Track committed length to handle Android Chrome's cumulative-result bug:
-    // Android fires final results that include ALL previous text (e.g. "so" → "so my"
-    // → "so my day"), causing duplicates if you naively append each final result.
-    // By building the full final transcript and slicing from committedLength,
-    // we only send the truly new portion regardless of platform.
-    let committedLength = 0
+    // Track committed result indices so we never process the same result twice.
+    // Android Chrome (and some other mobile browsers) can re-fire onresult for
+    // the same resultIndex — either with updated text or as exact duplicates.
+    // A Set keyed by index is the most robust guard: once index N is committed,
+    // we ignore any future event that tries to deliver it again.
+    const committedIndices = new Set<number>()
 
     r.onresult = (e: any) => {
-      let allFinal = ''
       for (let i = 0; i < e.results.length; i++) {
-        if (e.results[i].isFinal) allFinal += e.results[i][0].transcript
-      }
-      const newPart = allFinal.slice(committedLength).trim()
-      if (newPart) {
-        committedLength = allFinal.length
-        onTextRef.current(newPart)
+        if (e.results[i].isFinal && !committedIndices.has(i)) {
+          committedIndices.add(i)
+          const text = e.results[i][0].transcript.trim()
+          if (text) onTextRef.current(text)
+        }
       }
     }
 
