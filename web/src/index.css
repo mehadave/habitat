@@ -491,8 +491,11 @@ body.light-mode ::-webkit-scrollbar-thumb { background: rgba(11,20,55,0.15); }
   12.5%, 41%   { opacity: 1; transform: translateY(0px) scale(1);    }
   44%,   100%  { opacity: 0; transform: translateY(-4px) scale(0.8); }
 }
-.hi-bubble-blue { animation: hi-bubble-pop 9s linear infinite; }
-.hi-bubble-pink { animation: hi-bubble-pop 9s linear infinite; animation-delay: -4.5s; }
+.hi-bubble-blue { animation: hi-bubble-pop 9s linear infinite; left: 20px; }
+.hi-bubble-pink { animation: hi-bubble-pop 9s linear infinite; animation-delay: -4.5s; left: 20px; }
+@media (min-width: 640px) {
+  .hi-bubble-blue, .hi-bubble-pink { left: 25%; }
+}
 
 /* ── Water ring inner flow (SVG animateTransform used directly in JSX) ── */
 /* No CSS needed — SVG SMIL handles it */

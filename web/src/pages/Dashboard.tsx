@@ -204,7 +204,6 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
           style={{
             position: 'absolute',
             bottom: 112,
-            left: 20,
             background: 'rgba(255,255,255,0.82)',
             backdropFilter: 'blur(12px)',
             WebkitBackdropFilter: 'blur(12px)',
@@ -229,7 +228,6 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
           style={{
             position: 'absolute',
             bottom: 112,
-            left: 20,
             background: 'rgba(255,255,255,0.82)',
             backdropFilter: 'blur(12px)',
             WebkitBackdropFilter: 'blur(12px)',
