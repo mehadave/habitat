@@ -131,6 +131,81 @@ function buildTokens(_darkMode?: boolean) {
   }
 }
 
+const DRUM_ITEM_H = 44
+const DRUM_VISIBLE = 5
+
+function DrumPicker({ items, value, onChange, width = 60 }: {
+  items: string[]
+  value: string
+  onChange: (v: string) => void
+  width?: number
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const scrolling = useRef(false)
+
+  useEffect(() => {
+    const idx = items.indexOf(value)
+    if (ref.current && idx >= 0 && !scrolling.current) {
+      ref.current.scrollTop = idx * DRUM_ITEM_H
+    }
+  }, [value, items])
+
+  function handleScroll() {
+    scrolling.current = true
+    clearTimeout(timerRef.current)
+    timerRef.current = setTimeout(() => {
+      scrolling.current = false
+      if (!ref.current) return
+      const idx = Math.round(ref.current.scrollTop / DRUM_ITEM_H)
+      const clamped = Math.max(0, Math.min(items.length - 1, idx))
+      if (items[clamped] !== value) onChange(items[clamped])
+    }, 120)
+  }
+
+  return (
+    <div style={{ position: 'relative', width, height: DRUM_ITEM_H * DRUM_VISIBLE, overflow: 'hidden' }}>
+      {/* Fade top */}
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: DRUM_ITEM_H * 2,
+        background: 'linear-gradient(to bottom, var(--surface-alt) 30%, transparent 100%)',
+        pointerEvents: 'none', zIndex: 2 }} />
+      {/* Fade bottom */}
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: DRUM_ITEM_H * 2,
+        background: 'linear-gradient(to top, var(--surface-alt) 30%, transparent 100%)',
+        pointerEvents: 'none', zIndex: 2 }} />
+      {/* Selection band */}
+      <div style={{ position: 'absolute', top: DRUM_ITEM_H * 2, left: 4, right: 4, height: DRUM_ITEM_H,
+        background: 'var(--surface-tint)', borderRadius: 10,
+        pointerEvents: 'none', zIndex: 1 }} />
+      {/* Scroll list */}
+      <div ref={ref} onScroll={handleScroll} className="no-scrollbar"
+        style={{ height: '100%', overflowY: 'scroll', scrollSnapType: 'y mandatory',
+          paddingTop: DRUM_ITEM_H * 2, paddingBottom: DRUM_ITEM_H * 2 }}>
+        {items.map((item, i) => {
+          const sel = item === value
+          return (
+            <div key={i}
+              onClick={() => {
+                onChange(item)
+                ref.current?.scrollTo({ top: i * DRUM_ITEM_H, behavior: 'smooth' })
+              }}
+              style={{ height: DRUM_ITEM_H, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                scrollSnapAlign: 'center', userSelect: 'none', cursor: 'pointer',
+                fontSize: sel ? 20 : 16, fontWeight: sel ? 700 : 400,
+                color: sel ? 'var(--text-1)' : 'var(--text-3)',
+              }}
+            >{item}</div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+const HOURS   = Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, '0'))
+const MINUTES = Array.from({ length: 12 }, (_, i) => String(i * 5).padStart(2, '0'))
+const PERIODS = ['AM', 'PM']
+
 function AddEditSheet({
   habitId,
   initial,
@@ -164,14 +239,6 @@ function AddEditSheet({
   const [h24, mm] = form.notifTime.split(':').map(Number)
   const isPM = h24 >= 12
   const h12 = h24 % 12 || 12
-  function cycleHour(dir: 1 | -1) {
-    const next = (h24 + dir + 24) % 24
-    setForm(f => ({ ...f, notifTime: `${String(next).padStart(2,'0')}:${String(mm).padStart(2,'0')}` }))
-  }
-  function cycleMinute(dir: 1 | -1) {
-    const next = (mm + dir * 5 + 60) % 60
-    setForm(f => ({ ...f, notifTime: `${String(h24).padStart(2,'0')}:${String(next).padStart(2,'0')}` }))
-  }
   function setAmPm(pm: boolean) {
     if (pm === isPM) return
     const next = pm ? h24 + 12 : h24 - 12
@@ -359,42 +426,31 @@ function AddEditSheet({
 
           {form.notifEnabled && (
             <div className="px-3 pb-3 pt-2" style={{ background: t.inputBg, borderTop: `1px solid ${t.divider}` }}>
-              {/* Time picker */}
-              <div className="flex items-center gap-3 mb-3">
-                <span className="text-xs flex-shrink-0" style={{ color: t.textMuted }}>Time</span>
-                <div className="flex items-center gap-1 rounded-2xl px-3 py-2"
+              {/* Drum-roll time picker */}
+              <div className="flex justify-center mb-3">
+                <div className="flex items-center rounded-2xl overflow-hidden"
                   style={{ background: t.cardBg, border: t.inputBorder }}>
-                  {/* Hour */}
-                  <div
-                    className="text-base font-bold tabular-nums w-7 text-center select-none cursor-ns-resize"
-                    style={{ color: t.text }}
-                    onClick={() => cycleHour(1)}
-                    onWheel={e => { e.preventDefault(); cycleHour(e.deltaY > 0 ? -1 : 1) }}
-                  >{String(h12).padStart(2, '0')}</div>
-                  <span className="font-bold text-base" style={{ color: t.textMuted }}>:</span>
-                  {/* Minute */}
-                  <div
-                    className="text-base font-bold tabular-nums w-7 text-center select-none cursor-ns-resize"
-                    style={{ color: t.text }}
-                    onClick={() => cycleMinute(1)}
-                    onWheel={e => { e.preventDefault(); cycleMinute(e.deltaY > 0 ? -1 : 1) }}
-                  >{String(mm).padStart(2, '0')}</div>
-                  {/* AM / PM */}
-                  <div className="flex flex-col gap-0.5 ml-2">
-                    {(['AM', 'PM'] as const).map(p => {
-                      const active = p === 'AM' ? !isPM : isPM
-                      return (
-                        <button key={p} onClick={() => setAmPm(p === 'PM')}
-                          className="px-2 py-0.5 rounded-lg text-[11px] font-bold transition-all"
-                          style={{
-                            background: active ? 'rgba(37,99,235,0.28)' : 'transparent',
-                            color: active ? '#93C5FD' : t.textMuted,
-                            border: active ? '1.5px solid rgba(37,99,235,0.6)' : '1px solid transparent',
-                          }}
-                        >{p}</button>
-                      )
-                    })}
-                  </div>
+                  <DrumPicker
+                    items={HOURS}
+                    value={String(h12).padStart(2, '0')}
+                    onChange={v => {
+                      const newH12 = parseInt(v)
+                      const newH24 = isPM ? (newH12 === 12 ? 12 : newH12 + 12) : (newH12 === 12 ? 0 : newH12)
+                      setForm(f => ({ ...f, notifTime: `${String(newH24).padStart(2,'0')}:${String(mm).padStart(2,'0')}` }))
+                    }}
+                  />
+                  <div style={{ color: 'var(--text-3)', fontWeight: 700, fontSize: 20, paddingBottom: 2, flexShrink: 0 }}>:</div>
+                  <DrumPicker
+                    items={MINUTES}
+                    value={String(Math.round(mm / 5) * 5).padStart(2, '0')}
+                    onChange={v => setForm(f => ({ ...f, notifTime: `${String(h24).padStart(2,'0')}:${v}` }))}
+                  />
+                  <DrumPicker
+                    items={PERIODS}
+                    value={isPM ? 'PM' : 'AM'}
+                    onChange={v => setAmPm(v === 'PM')}
+                    width={52}
+                  />
                 </div>
               </div>
               <div>
