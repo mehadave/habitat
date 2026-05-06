@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useUIStore } from '../store/uiStore'
-import { CommitGrid } from './CommitGrid'
 import type { HabitWithStreak } from '../lib/types'
 
 interface HabitCardProps {
@@ -35,7 +34,6 @@ function PriorityBadge({ rating }: { rating: number }) {
 export function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCardProps) {
   const { darkMode } = useUIStore()
   const [revealed, setRevealed] = useState(false)
-  const [showHistory, setShowHistory] = useState(false)
   const [showActions, setShowActions] = useState(false)
 
   const streak = habit.streak?.current_streak ?? 0
@@ -124,15 +122,9 @@ export function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCardProps)
               >
                 {habit.name}
               </h3>
-              {/* View history toggle in subtitle area */}
-              <button
-                onClick={() => setShowHistory(h => !h)}
-                className="text-xs mt-0.5 leading-none"
-                style={{ color: textMuted }}
-              >
-                {monthsAgo > 0 ? `${monthsAgo}mo ago · ` : ''}
-                <span style={{ color: '#60A5FA' }}>{showHistory ? 'Hide history ▾' : 'View history ▸'}</span>
-              </button>
+              {monthsAgo > 0 && (
+                <span className="text-xs mt-0.5 leading-none" style={{ color: textMuted }}>{monthsAgo}mo ago</span>
+              )}
             </div>
           </div>
 
@@ -174,18 +166,6 @@ export function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCardProps)
             >
               {revealed ? '👁 Shown' : '🔒 Private'}
             </button>
-          </div>
-        )}
-
-        {/* Commit grid (hidden by default) */}
-        {showHistory && (
-          <div className="mt-3">
-            <CommitGrid
-              habitId={habit.id}
-              habitName={habit.name}
-              completions={habit.completions || []}
-              onToggle={(date) => onToggle(habit.id, date)}
-            />
           </div>
         )}
 
