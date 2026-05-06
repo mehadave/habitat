@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useUIStore } from '../store/uiStore'
 import { localDateStr } from '../hooks/useHabits'
 import type { HabitWithStreak } from '../lib/types'
 
@@ -32,7 +31,6 @@ interface Props {
 }
 
 export function MonthlyHabitTracker({ habits, onToggle }: Props) {
-  const { darkMode } = useUIStore()
   const [expanded, setExpanded] = useState(false)
 
   const now = new Date()
@@ -41,26 +39,16 @@ export function MonthlyHabitTracker({ habits, onToggle }: Props) {
   const todayStr = localDateStr()
   const daysInMonth = getDaysInMonth(year, month)
 
-  const t = darkMode ? {
-    text: '#ffffff',
-    textSub: 'rgba(255,255,255,0.3)',
-    textMuted: 'rgba(255,255,255,0.45)',
-    cardBg: 'rgba(255,255,255,0.04)',
-    cardBorder: 'rgba(255,255,255,0.09)',
-    divider: 'rgba(255,255,255,0.07)',
-    inputBg: 'rgba(255,255,255,0.07)',
-    expandBg: 'rgba(255,255,255,0.06)',
-    expandText: 'rgba(255,255,255,0.5)',
-  } : {
-    text: '#0B1437',
-    textSub: 'rgba(11,20,55,0.78)',
-    textMuted: 'rgba(11,20,55,0.88)',
-    cardBg: 'rgba(255,255,255,0.85)',
-    cardBorder: 'rgba(11,20,55,0.18)',
-    divider: 'rgba(11,20,55,0.13)',
-    inputBg: 'rgba(11,20,55,0.09)',
-    expandBg: 'rgba(11,20,55,0.09)',
-    expandText: 'rgba(11,20,55,0.85)',
+  const t = {
+    text: 'var(--text-1)',
+    textSub: 'var(--text-3)',
+    textMuted: 'var(--text-2)',
+    cardBg: 'var(--surface)',
+    cardBorder: 'var(--border)',
+    divider: 'var(--divider)',
+    inputBg: 'var(--input-bg)',
+    expandBg: 'var(--surface-tint)',
+    expandText: 'var(--text-2)',
   }
 
   function dateStr(day: number) {
@@ -102,7 +90,7 @@ export function MonthlyHabitTracker({ habits, onToggle }: Props) {
         style={{
           borderBottom: `1px solid ${t.divider}`,
           opacity: isFuture ? 0.35 : 1,
-          background: isToday ? (darkMode ? 'rgba(37,99,235,0.08)' : 'rgba(37,99,235,0.06)') : 'transparent',
+          background: isToday ? 'var(--today-bg)' : 'transparent',
         }}
       >
         <td className="px-2 py-1">
@@ -181,7 +169,7 @@ export function MonthlyHabitTracker({ habits, onToggle }: Props) {
         style={{
           background: t.cardBg,
           border: `1px solid ${t.cardBorder}`,
-          boxShadow: darkMode ? 'none' : '0 2px 12px rgba(11,20,55,0.11)',
+          boxShadow: 'var(--card-shadow)',
         }}
       >
         <table className="w-full" style={{ borderCollapse: 'collapse', minWidth: 'max-content' }}>

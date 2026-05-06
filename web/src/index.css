@@ -16,6 +16,8 @@
   --input-border: rgba(255,255,255,0.12);
   --divider:      rgba(255,255,255,0.08);
   --nav-bg:       rgba(11,20,55,0.85);
+  --today-bg:     rgba(37,99,235,0.08);
+  --card-shadow:  none;
 }
 
 html, body {
@@ -187,6 +189,8 @@ body.light-mode {
   --input-border: rgba(11,20,55,0.12);
   --divider:      rgba(11,20,55,0.09);
   --nav-bg:       rgba(239,244,255,0.92);
+  --today-bg:     rgba(37,99,235,0.06);
+  --card-shadow:  0 2px 12px rgba(11,20,55,0.11);
 }
 
 /* Auth pages keep dark look in both modes */
