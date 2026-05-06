@@ -68,24 +68,15 @@ function ProfileDropdown({ onClose, darkMode }: { onClose: () => void; darkMode:
   const { toggleDarkMode } = useUIStore()
   const navigate = useNavigate()
 
-  const t = darkMode ? {
-    sheetBg: 'rgba(10,16,38,0.97)',
-    cardBorder: 'rgba(255,255,255,0.10)',
-    text: '#ffffff',
-    textMuted: 'rgba(255,255,255,0.4)',
-    divider: 'rgba(255,255,255,0.07)',
-    linkColor: 'rgba(255,255,255,0.75)',
-    borderColor: 'rgba(255,255,255,0.07)',
-    rowHover: 'rgba(255,255,255,0.04)',
-  } : {
-    sheetBg: 'rgba(248,250,255,0.97)',
-    cardBorder: 'rgba(11,20,55,0.15)',
-    text: '#0B1437',
-    textMuted: 'rgba(11,20,55,0.60)',
-    divider: 'rgba(11,20,55,0.10)',
-    linkColor: 'rgba(11,20,55,0.80)',
-    borderColor: 'rgba(11,20,55,0.08)',
-    rowHover: 'rgba(11,20,55,0.03)',
+  const t = {
+    sheetBg: 'var(--surface-alt)',
+    cardBorder: 'var(--border)',
+    text: 'var(--text-1)',
+    textMuted: 'var(--text-2)',
+    divider: 'var(--divider)',
+    linkColor: 'var(--text-2)',
+    borderColor: 'var(--border)',
+    rowHover: 'var(--surface-tint)',
   }
 
   async function handleLogout() {

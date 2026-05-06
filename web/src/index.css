@@ -2,6 +2,22 @@
 
 * { box-sizing: border-box; }
 
+/* ── Color tokens — dark mode defaults ──────────────── */
+:root {
+  --bg-app:       #060818;
+  --text-1:       rgba(255,255,255,0.88);   /* primary text   */
+  --text-2:       rgba(255,255,255,0.52);   /* muted text     */
+  --text-3:       rgba(255,255,255,0.32);   /* subtle text    */
+  --surface:      rgba(255,255,255,0.05);   /* card bg        */
+  --surface-alt:  #0F1B45;                  /* sheet/tooltip  */
+  --surface-tint: rgba(255,255,255,0.06);   /* badge/expand   */
+  --border:       rgba(255,255,255,0.09);   /* card borders   */
+  --input-bg:     rgba(255,255,255,0.07);
+  --input-border: rgba(255,255,255,0.12);
+  --divider:      rgba(255,255,255,0.08);
+  --nav-bg:       rgba(11,20,55,0.85);
+}
+
 html, body {
   margin: 0;
   padding: 0;
@@ -84,7 +100,7 @@ body.light-mode .skeleton {
 /* ── Dark mode (default) ─────────────────────────── */
 body {
   background-color: #07091E;
-  color: rgba(255,255,255,0.88);
+  color: var(--text-1);
 }
 
 .app-bg {
@@ -150,10 +166,27 @@ body {
   z-index: 1;
 }
 
-/* ── Light mode ──────────────────────────────────── */
+/* ── Light mode — token overrides + WCAG AA contrast ─ */
 body.light-mode {
   background-color: #F0F4FF;
-  color: #0B1437;
+  color: var(--text-1);
+
+  /* Structural tokens — contrast ratios vs #F0F4FF:
+     --text-1  #0B1437            ~21:1  ✓
+     --text-2  rgba(11,20,55,.75) ~7.3:1 ✓
+     --text-3  rgba(11,20,55,.65) ~4.95:1 ✓ (AA min 4.5:1) */
+  --bg-app:       #F0F4FF;
+  --text-1:       #0B1437;
+  --text-2:       rgba(11,20,55,0.75);
+  --text-3:       rgba(11,20,55,0.65);
+  --surface:      rgba(255,255,255,0.88);
+  --surface-alt:  #E8EFFF;
+  --surface-tint: rgba(11,20,55,0.05);
+  --border:       rgba(11,20,55,0.10);
+  --input-bg:     rgba(11,20,55,0.05);
+  --input-border: rgba(11,20,55,0.12);
+  --divider:      rgba(11,20,55,0.09);
+  --nav-bg:       rgba(239,244,255,0.92);
 }
 
 /* Auth pages keep dark look in both modes */

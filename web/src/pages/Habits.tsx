@@ -115,31 +115,19 @@ interface FormWithNotif extends HabitFormData {
   notifDays: number[]
 }
 
-function buildTokens(darkMode: boolean) {
-  return darkMode ? {
-    bg: '#0B1120',
-    text: '#ffffff',
-    textMuted: 'rgba(255,255,255,0.45)',
-    textSub: 'rgba(255,255,255,0.3)',
-    cardBg: 'rgba(255,255,255,0.04)',
-    cardBorder: 'rgba(255,255,255,0.09)',
-    inputBg: 'rgba(255,255,255,0.07)',
-    inputBorder: '1px solid rgba(255,255,255,0.12)',
-    inputColor: '#fff',
-    divider: 'rgba(255,255,255,0.1)',
-    sheetBg: '#0F1B45',
-  } : {
-    bg: '#F0F4FF',
-    text: '#0B1437',
-    textMuted: 'rgba(11,20,55,0.88)',
-    textSub: 'rgba(11,20,55,0.78)',
-    cardBg: 'rgba(255,255,255,0.85)',
-    cardBorder: 'rgba(11,20,55,0.18)',
-    inputBg: 'rgba(11,20,55,0.09)',
-    inputBorder: '1px solid rgba(11,20,55,0.15)',
-    inputColor: '#0B1437',
-    divider: 'rgba(11,20,55,0.1)',
-    sheetBg: '#EEF3FF',
+function buildTokens(_darkMode?: boolean) {
+  return {
+    bg: 'var(--bg-app)',
+    text: 'var(--text-1)',
+    textMuted: 'var(--text-2)',
+    textSub: 'var(--text-3)',
+    cardBg: 'var(--surface)',
+    cardBorder: 'var(--border)',
+    inputBg: 'var(--input-bg)',
+    inputBorder: '1px solid var(--input-border)',
+    inputColor: 'var(--text-1)',
+    divider: 'var(--divider)',
+    sheetBg: 'var(--surface-alt)',
   }
 }
 

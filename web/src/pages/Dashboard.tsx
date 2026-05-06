@@ -281,9 +281,9 @@ function PodiumSection({ habits, onToggle, darkMode }: {
 
   if (ranked.length === 0) return null
 
-  const textColor = darkMode ? '#fff' : '#0B1437'
-  const mutedColor = darkMode ? 'rgba(255,255,255,0.5)' : 'rgba(11,20,55,0.70)'
-  const cardBorder = darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(11,20,55,0.18)'
+  const textColor = 'var(--text-1)'
+  const mutedColor = 'var(--text-2)'
+  const cardBorder = 'var(--border)'
 
   // Podium layout: Silver (left) | Gold (center) | Bronze (right)
   // Position i directly maps to the correct medal/height — no remapping needed.
@@ -373,16 +373,15 @@ function NeedsAttentionSection({ habits, onToggle, darkMode }: {
   darkMode: boolean
 }) {
   const todayStr = localDateStr()
-  const struggling = habits
-    .filter(h => (h.streak?.current_streak ?? 0) < 3)
-    .sort((a, b) => (a.streak?.current_streak ?? 0) - (b.streak?.current_streak ?? 0))
-    .slice(0, 4)
+  const sorted = [...habits].sort((a, b) => (a.streak?.current_streak ?? 0) - (b.streak?.current_streak ?? 0))
+  const belowTwo = sorted.filter(h => (h.streak?.current_streak ?? 0) < 2)
+  const struggling = belowTwo.length >= 4 ? belowTwo : sorted.slice(0, 4)
 
   if (struggling.length === 0) return null
 
-  const textColor = darkMode ? '#fff' : '#0B1437'
-  const mutedColor = darkMode ? 'rgba(255,255,255,0.4)' : 'rgba(11,20,55,0.62)'
-  const divider = darkMode ? 'rgba(255,255,255,0.06)' : 'rgba(11,20,55,0.11)'
+  const textColor = 'var(--text-1)'
+  const mutedColor = 'var(--text-2)'
+  const divider = 'var(--divider)'
 
   return (
     <div className="mb-6">
@@ -435,11 +434,11 @@ function StreakDashboardModal({ habits, onClose, darkMode }: {
   onClose: () => void
   darkMode: boolean
 }) {
-  const textColor = darkMode ? '#fff' : '#0B1437'
-  const mutedColor = darkMode ? 'rgba(255,255,255,0.5)' : 'rgba(11,20,55,0.70)'
-  const sheetBg = darkMode ? '#0F1B45' : '#EEF3FF'
-  const cardBorder = darkMode ? 'rgba(255,255,255,0.1)' : 'rgba(11,20,55,0.1)'
-  const barTrack = darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(11,20,55,0.14)'
+  const textColor = 'var(--text-1)'
+  const mutedColor = 'var(--text-2)'
+  const sheetBg = 'var(--surface-alt)'
+  const cardBorder = 'var(--border)'
+  const barTrack = 'var(--surface-tint)'
 
   const sorted = [...habits].sort(
     (a, b) => (b.streak?.current_streak ?? 0) - (a.streak?.current_streak ?? 0)
@@ -555,9 +554,7 @@ const HABIT_SUGGESTIONS = [
 ]
 
 function HabitSuggestionsModal({ darkMode, onClose }: { darkMode: boolean; onClose: () => void }) {
-  const t = darkMode
-    ? { bg: '#0F1B45', text: '#fff', muted: 'rgba(255,255,255,0.5)', card: 'rgba(255,255,255,0.05)', border: 'rgba(255,255,255,0.09)' }
-    : { bg: '#EEF3FF', text: '#0B1437', muted: 'rgba(11,20,55,0.60)', card: 'rgba(255,255,255,0.9)', border: 'rgba(11,20,55,0.12)' }
+  const t = { bg: 'var(--surface-alt)', text: 'var(--text-1)', muted: 'var(--text-2)', card: 'var(--surface)', border: 'var(--border)' }
   const cats = [...new Set(HABIT_SUGGESTIONS.map(h => h.cat))]
 
   return (
@@ -619,22 +616,14 @@ export default function Dashboard() {
   // First name only, fallback to "friend"
   const userName = (profile?.display_name ?? '').split(' ')[0] || 'friend'
 
-  const t = darkMode ? {
-    bg: '#0B1120',
-    text: '#ffffff',
-    textMuted: 'rgba(255,255,255,0.5)',
-    textSub: 'rgba(255,255,255,0.3)',
-    cardBg: 'rgba(255,255,255,0.05)',
-    cardBorder: 'rgba(255,255,255,0.08)',
-    inputBg: 'rgba(255,255,255,0.07)',
-  } : {
-    bg: '#F0F4FF',
-    text: '#0B1437',
-    textMuted: 'rgba(11,20,55,0.72)',
-    textSub: 'rgba(11,20,55,0.62)',
-    cardBg: 'rgba(255,255,255,0.8)',
-    cardBorder: 'rgba(11,20,55,0.18)',
-    inputBg: 'rgba(11,20,55,0.09)',
+  const t = {
+    bg: 'var(--bg-app)',
+    text: 'var(--text-1)',
+    textMuted: 'var(--text-2)',
+    textSub: 'var(--text-3)',
+    cardBg: 'var(--surface)',
+    cardBorder: 'var(--border)',
+    inputBg: 'var(--input-bg)',
   }
 
   const todayStr = localDateStr()

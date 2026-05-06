@@ -18,34 +18,20 @@ export default function Analytics() {
   const { darkMode } = useUIStore()
   const [range, setRange] = useState<Range>('30d')
 
-  const t = darkMode ? {
-    bg: '#0B1120',
-    text: '#ffffff',
-    textMuted: 'rgba(255,255,255,0.45)',
-    textSub: 'rgba(255,255,255,0.3)',
-    cardBg: 'rgba(255,255,255,0.04)',
-    cardBorder: 'rgba(255,255,255,0.09)',
-    inputBg: 'rgba(255,255,255,0.07)',
-    btnText: 'rgba(255,255,255,0.55)',
-    barTrack: 'rgba(255,255,255,0.1)',
-    tooltipBg: '#0F1B45',
-    tooltipBorder: 'rgba(255,255,255,0.12)',
-    tooltipText: '#fff',
-    axisTick: 'rgba(255,255,255,0.3)',
-  } : {
-    bg: '#F0F4FF',
-    text: '#0B1437',
-    textMuted: 'rgba(11,20,55,0.88)',
-    textSub: 'rgba(11,20,55,0.78)',
-    cardBg: 'rgba(255,255,255,0.85)',
-    cardBorder: 'rgba(11,20,55,0.18)',
-    inputBg: 'rgba(11,20,55,0.11)',
-    btnText: 'rgba(11,20,55,0.88)',
-    barTrack: 'rgba(11,20,55,0.14)',
-    tooltipBg: '#E8EFFF',
-    tooltipBorder: 'rgba(11,20,55,0.20)',
-    tooltipText: '#0B1437',
-    axisTick: 'rgba(11,20,55,0.78)',
+  const t = {
+    bg: 'var(--bg-app)',
+    text: 'var(--text-1)',
+    textMuted: 'var(--text-2)',
+    textSub: 'var(--text-3)',
+    cardBg: 'var(--surface)',
+    cardBorder: 'var(--border)',
+    inputBg: 'var(--input-bg)',
+    btnText: 'var(--text-2)',
+    barTrack: 'var(--surface-tint)',
+    tooltipBg: 'var(--surface-alt)',
+    tooltipBorder: 'var(--border)',
+    tooltipText: 'var(--text-1)',
+    axisTick: 'var(--text-3)',
   }
 
   const rangeStart = range === '7d' ? daysAgo(7)
