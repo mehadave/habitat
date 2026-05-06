@@ -22,7 +22,7 @@ export default function Calendar() {
   const now = new Date()
   const [year, setYear] = useState(now.getFullYear())
   const [month, setMonth] = useState(now.getMonth())
-  const [selectedDate, setSelectedDate] = useState<string | null>(null)
+  const [selectedDate, setSelectedDate] = useState<string | null>(todayStr)
   const [filterIds, setFilterIds] = useState<string[]>([])
 
   const visibleHabits = filterIds.length > 0 ? habits.filter(h => filterIds.includes(h.id)) : habits
