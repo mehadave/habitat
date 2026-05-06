@@ -20,9 +20,7 @@ function WeeklySummaryModal({ habits, darkMode, onClose }: {
   darkMode: boolean
   onClose: () => void
 }) {
-  const t = darkMode
-    ? { bg: '#0F1B45', text: '#fff', muted: 'rgba(255,255,255,0.5)', card: 'rgba(255,255,255,0.06)', border: 'rgba(255,255,255,0.10)' }
-    : { bg: '#EEF3FF', text: '#0B1437', muted: 'rgba(11,20,55,0.60)', card: 'rgba(255,255,255,0.9)', border: 'rgba(11,20,55,0.12)' }
+  const t = { bg: 'var(--surface-alt)', text: 'var(--text-1)', muted: 'var(--text-2)', card: 'var(--surface)', border: 'var(--border)' }
 
   const today = new Date()
   const weekDates = Array.from({ length: 7 }, (_, i) => {
@@ -121,38 +119,22 @@ export default function Profile() {
   const { profile, logout, setProfile } = useAuthStore()
   const { darkMode, toggleDarkMode, streakShields } = useUIStore()
 
-  const t = darkMode ? {
-    bg: '#0B1120',
-    text: '#ffffff',
-    textMuted: 'rgba(255,255,255,0.45)',
-    textSub: 'rgba(255,255,255,0.3)',
-    cardBg: 'rgba(255,255,255,0.04)',
-    cardBorder: 'rgba(255,255,255,0.09)',
-    inputBg: 'rgba(255,255,255,0.07)',
-    inputBorder: '1px solid rgba(255,255,255,0.12)',
-    inputColor: '#fff',
-    divider: 'rgba(255,255,255,0.1)',
-    navBg: 'rgba(11,20,55,0.85)',
-    navBorder: 'rgba(255,255,255,0.06)',
-    sheetBg: '#0F1B45',
-    badgeBg: 'rgba(255,255,255,0.08)',
-    badgeText: 'rgba(255,255,255,0.5)',
-  } : {
-    bg: '#F0F4FF',
-    text: '#0B1437',
-    textMuted: 'rgba(11,20,55,0.88)',
-    textSub: 'rgba(11,20,55,0.78)',
-    cardBg: 'rgba(255,255,255,0.75)',
-    cardBorder: 'rgba(11,20,55,0.18)',
-    inputBg: 'rgba(11,20,55,0.09)',
-    inputBorder: '1px solid rgba(11,20,55,0.15)',
-    inputColor: '#0B1437',
-    divider: 'rgba(11,20,55,0.20)',
-    navBg: 'rgba(239,244,255,0.92)',
-    navBorder: 'rgba(11,20,55,0.1)',
-    sheetBg: '#E8EFFF',
-    badgeBg: 'rgba(11,20,55,0.13)',
-    badgeText: 'rgba(11,20,55,0.85)',
+  const t = {
+    bg: 'var(--bg-app)',
+    text: 'var(--text-1)',
+    textMuted: 'var(--text-2)',
+    textSub: 'var(--text-3)',
+    cardBg: 'var(--surface)',
+    cardBorder: 'var(--border)',
+    inputBg: 'var(--input-bg)',
+    inputBorder: '1px solid var(--input-border)',
+    inputColor: 'var(--text-1)',
+    divider: 'var(--divider)',
+    navBg: 'var(--nav-bg)',
+    navBorder: 'var(--border)',
+    sheetBg: 'var(--surface-alt)',
+    badgeBg: 'var(--surface-tint)',
+    badgeText: 'var(--text-2)',
   }
 
   const { data: habits = [] } = useHabits()

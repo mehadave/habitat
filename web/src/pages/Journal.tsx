@@ -258,30 +258,18 @@ export default function Journal() {
   const deleteMutation = useDeleteJournalEntry()
 
   /* theme */
-  const t = darkMode ? {
-    bg: '#0B1120',
-    text: '#ffffff',
-    textMuted: 'rgba(255,255,255,0.45)',
-    textSub: 'rgba(255,255,255,0.3)',
-    cardBg: 'rgba(255,255,255,0.04)',
-    cardBorder: 'rgba(255,255,255,0.09)',
-    inputBg: 'rgba(255,255,255,0.07)',
-    inputBorder: '1px solid rgba(255,255,255,0.12)',
-    inputColor: '#fff',
-    sheetBg: '#0F1B45',
-    spineBg: 'rgba(37,99,235,0.25)',
-  } : {
-    bg: '#F0F4FF',
-    text: '#0B1437',
-    textMuted: 'rgba(11,20,55,0.88)',
-    textSub: 'rgba(11,20,55,0.78)',
-    cardBg: 'rgba(255,255,255,0.75)',
-    cardBorder: 'rgba(11,20,55,0.18)',
-    inputBg: 'rgba(11,20,55,0.09)',
-    inputBorder: '1px solid rgba(11,20,55,0.15)',
-    inputColor: '#0B1437',
-    sheetBg: '#E8EFFF',
-    spineBg: 'rgba(37,99,235,0.15)',
+  const t = {
+    bg: 'var(--bg-app)',
+    text: 'var(--text-1)',
+    textMuted: 'var(--text-2)',
+    textSub: 'var(--text-3)',
+    cardBg: 'var(--surface)',
+    cardBorder: 'var(--border)',
+    inputBg: 'var(--input-bg)',
+    inputBorder: '1px solid var(--input-border)',
+    inputColor: 'var(--text-1)',
+    sheetBg: 'var(--surface-alt)',
+    spineBg: darkMode ? 'rgba(37,99,235,0.25)' : 'rgba(37,99,235,0.15)',
   }
 
   /* editor state */
