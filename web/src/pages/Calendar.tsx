@@ -110,41 +110,42 @@ export default function Calendar() {
   return (
     <div className="app-bg min-h-screen" style={{ paddingTop: 76, paddingBottom: 80 }}>
       <div className="px-4 pt-8 page-inner">
-        <h1 className="text-2xl font-bold mb-3" style={{ color: t.text }}>Calendar</h1>
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-2xl font-bold" style={{ color: t.text }}>Calendar</h1>
 
-        {/* Habit filter chips */}
-        {habits.length > 0 && (
-          <div className="flex gap-2 overflow-x-auto no-scrollbar mb-4 pb-1">
-            <button
-              onClick={() => setFilterIds([])}
-              className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold transition-all"
-              style={{
-                background: filterIds.length === 0 ? 'rgba(37,99,235,0.25)' : t.inputBg,
-                color: filterIds.length === 0 ? '#93C5FD' : t.textMuted,
-                border: filterIds.length === 0 ? '1.5px solid #2563EB' : '1px solid var(--border)',
-              }}
-            >All</button>
-            {habits.map((h, i) => {
-              const active = filterIds.includes(h.id)
-              const color = HABIT_COLORS[i % HABIT_COLORS.length]
-              return (
-                <button
-                  key={h.id}
-                  onClick={() => toggleFilter(h.id)}
-                  className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all"
-                  style={{
-                    background: active ? `${color}22` : t.inputBg,
-                    color: active ? color : t.textMuted,
-                    border: active ? `1.5px solid ${color}88` : '1px solid var(--border)',
-                  }}
-                >
-                  <span>{h.emoji}</span>
-                  <span>{h.name}</span>
-                </button>
-              )
-            })}
-          </div>
-        )}
+          {/* Habit filter chips — emoji only, right-aligned */}
+          {habits.length > 0 && (
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+              <button
+                onClick={() => setFilterIds([])}
+                className="flex-shrink-0 px-2.5 py-1 rounded-full text-xs font-semibold transition-all"
+                style={{
+                  background: filterIds.length === 0 ? 'rgba(37,99,235,0.25)' : t.inputBg,
+                  color: filterIds.length === 0 ? '#93C5FD' : t.textMuted,
+                  border: filterIds.length === 0 ? '1.5px solid #2563EB' : '1px solid var(--border)',
+                }}
+              >All</button>
+              {habits.map((h, i) => {
+                const active = filterIds.includes(h.id)
+                const color = HABIT_COLORS[i % HABIT_COLORS.length]
+                return (
+                  <button
+                    key={h.id}
+                    onClick={() => toggleFilter(h.id)}
+                    className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-base transition-all"
+                    style={{
+                      background: active ? `${color}22` : t.inputBg,
+                      border: active ? `1.5px solid ${color}88` : '1px solid var(--border)',
+                    }}
+                    title={h.name}
+                  >
+                    {h.emoji}
+                  </button>
+                )
+              })}
+            </div>
+          )}
+        </div>
 
         {/* Month nav */}
         <div className="flex items-center justify-between mb-4">
@@ -255,23 +256,6 @@ export default function Calendar() {
                 )}
               </div>
             )}
-          </div>
-        )}
-
-        {/* Habit color legend */}
-        {habits.length > 0 && (
-          <div className="mb-6 rounded-2xl p-3"
-            style={{ background: t.cardBg, border: `1px solid ${t.cardBorder}` }}>
-            <p className="text-xs font-medium mb-2" style={{ color: t.textMuted }}>Habit colors</p>
-            <div className="flex flex-wrap gap-x-4 gap-y-2">
-              {habits.map((h, i) => (
-                <div key={h.id} className="flex items-center gap-1.5">
-                  <div className="w-3 h-3 rounded-full flex-shrink-0"
-                    style={{ background: HABIT_COLORS[i % HABIT_COLORS.length] }} />
-                  <span className="text-sm" style={{ color: t.text }}>{h.emoji} {h.name}</span>
-                </div>
-              ))}
-            </div>
           </div>
         )}
 
