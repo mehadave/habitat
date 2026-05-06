@@ -509,6 +509,7 @@ export default function Habits() {
   const [showSortDropdown, setShowSortDropdown] = useState(false)
   const sortRef = useRef<HTMLDivElement>(null)
   const [manualOrder, setManualOrder] = useState<HabitWithStreak[]>([])
+  const [orderReady, setOrderReady] = useState(false)
   const orderInitialized = useRef(false)
 
   const HABIT_ORDER_KEY = 'habitat_habit_order'
@@ -519,16 +520,18 @@ export default function Habits() {
     orderInitialized.current = true
     try {
       const saved = localStorage.getItem(HABIT_ORDER_KEY)
-      if (!saved) return
-      const savedIds: string[] = JSON.parse(saved)
-      const active = habits.filter(h => h.is_active !== false)
-      const restored = [...active].sort((a, b) => {
-        const ai = savedIds.indexOf(a.id)
-        const bi = savedIds.indexOf(b.id)
-        return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi)
-      })
-      setManualOrder(restored)
+      if (saved) {
+        const savedIds: string[] = JSON.parse(saved)
+        const active = habits.filter(h => h.is_active !== false)
+        const restored = [...active].sort((a, b) => {
+          const ai = savedIds.indexOf(a.id)
+          const bi = savedIds.indexOf(b.id)
+          return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi)
+        })
+        setManualOrder(restored)
+      }
     } catch {}
+    setOrderReady(true)
   }, [habits])
 
   function handleReorder(newOrder: HabitWithStreak[]) {
@@ -732,7 +735,7 @@ export default function Habits() {
                 style={{ listStyle: 'none', padding: 0, margin: 0 }}
               >
                 {displayHabits.map((habit) => (
-                  <Reorder.Item key={habit.id} value={habit} initial={false} style={{ listStyle: 'none' }}>
+                  <Reorder.Item key={habit.id} value={habit} initial={false} layout={orderReady ? true : undefined} style={{ listStyle: 'none' }}>
                     <HabitCard
                       habit={habit}
                       onEdit={(h) => setEditHabit(h)}
