@@ -160,6 +160,24 @@ function AddEditSheet({
   })
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
 
+  // Time picker helpers
+  const [h24, mm] = form.notifTime.split(':').map(Number)
+  const isPM = h24 >= 12
+  const h12 = h24 % 12 || 12
+  function cycleHour(dir: 1 | -1) {
+    const next = (h24 + dir + 24) % 24
+    setForm(f => ({ ...f, notifTime: `${String(next).padStart(2,'0')}:${String(mm).padStart(2,'0')}` }))
+  }
+  function cycleMinute(dir: 1 | -1) {
+    const next = (mm + dir * 5 + 60) % 60
+    setForm(f => ({ ...f, notifTime: `${String(h24).padStart(2,'0')}:${String(next).padStart(2,'0')}` }))
+  }
+  function setAmPm(pm: boolean) {
+    if (pm === isPM) return
+    const next = pm ? h24 + 12 : h24 - 12
+    setForm(f => ({ ...f, notifTime: `${String(next).padStart(2,'0')}:${String(mm).padStart(2,'0')}` }))
+  }
+
   function toggleDay(d: number) {
     setForm(f => ({
       ...f,
@@ -344,23 +362,40 @@ function AddEditSheet({
               {/* Time picker */}
               <div className="flex items-center gap-3 mb-3">
                 <span className="text-xs flex-shrink-0" style={{ color: t.textMuted }}>Time</span>
-                <input
-                  type="time"
-                  value={form.notifTime}
-                  onChange={e => setForm(f => ({ ...f, notifTime: e.target.value }))}
-                  className="notif-time-input"
-                  style={{
-                    background: t.cardBg,
-                    border: t.inputBorder,
-                    color: t.text,
-                    borderRadius: 12,
-                    padding: '8px 12px',
-                    fontSize: 14,
-                    fontWeight: 600,
-                    outline: 'none',
-                    colorScheme: 'dark',
-                  }}
-                />
+                <div className="flex items-center gap-1 rounded-2xl px-3 py-2"
+                  style={{ background: t.cardBg, border: t.inputBorder }}>
+                  {/* Hour */}
+                  <div
+                    className="text-base font-bold tabular-nums w-7 text-center select-none cursor-ns-resize"
+                    style={{ color: t.text }}
+                    onClick={() => cycleHour(1)}
+                    onWheel={e => { e.preventDefault(); cycleHour(e.deltaY > 0 ? -1 : 1) }}
+                  >{String(h12).padStart(2, '0')}</div>
+                  <span className="font-bold text-base" style={{ color: t.textMuted }}>:</span>
+                  {/* Minute */}
+                  <div
+                    className="text-base font-bold tabular-nums w-7 text-center select-none cursor-ns-resize"
+                    style={{ color: t.text }}
+                    onClick={() => cycleMinute(1)}
+                    onWheel={e => { e.preventDefault(); cycleMinute(e.deltaY > 0 ? -1 : 1) }}
+                  >{String(mm).padStart(2, '0')}</div>
+                  {/* AM / PM */}
+                  <div className="flex flex-col gap-0.5 ml-2">
+                    {(['AM', 'PM'] as const).map(p => {
+                      const active = p === 'AM' ? !isPM : isPM
+                      return (
+                        <button key={p} onClick={() => setAmPm(p === 'PM')}
+                          className="px-2 py-0.5 rounded-lg text-[11px] font-bold transition-all"
+                          style={{
+                            background: active ? 'rgba(37,99,235,0.28)' : 'transparent',
+                            color: active ? '#93C5FD' : t.textMuted,
+                            border: active ? '1.5px solid rgba(37,99,235,0.6)' : '1px solid transparent',
+                          }}
+                        >{p}</button>
+                      )
+                    })}
+                  </div>
+                </div>
               </div>
               <div>
                 <p className="text-xs mb-2" style={{ color: t.textMuted }}>
