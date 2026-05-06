@@ -23,6 +23,13 @@ export default function Calendar() {
   const [year, setYear] = useState(now.getFullYear())
   const [month, setMonth] = useState(now.getMonth())
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
+  const [filterIds, setFilterIds] = useState<string[]>([])
+
+  const visibleHabits = filterIds.length > 0 ? habits.filter(h => filterIds.includes(h.id)) : habits
+
+  function toggleFilter(id: string) {
+    setFilterIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])
+  }
 
   const t = {
     bg: 'var(--bg-app)',
@@ -50,12 +57,12 @@ export default function Calendar() {
   }
 
   function getCompletedHabitsForDate(d: string) {
-    return habits.filter(h => h.completions?.includes(d))
+    return visibleHabits.filter(h => h.completions?.includes(d))
   }
 
   function isPerfectDay(d: string) {
-    if (habits.length === 0) return false
-    return habits.every(h => h.completions?.includes(d))
+    if (visibleHabits.length === 0) return false
+    return visibleHabits.every(h => h.completions?.includes(d))
   }
 
   function prevMonth() {
@@ -81,7 +88,7 @@ export default function Calendar() {
     const d = new Date()
     d.setDate(d.getDate() - i)
     const ds = localDateStr(d)
-    heatmapCells.push({ date: ds, count: habits.filter(h => h.completions?.includes(ds)).length })
+    heatmapCells.push({ date: ds, count: visibleHabits.filter(h => h.completions?.includes(ds)).length })
   }
   const maxCount = Math.max(...heatmapCells.map(c => c.count), 1)
 
@@ -95,7 +102,7 @@ export default function Calendar() {
 
   const selectedCompletions = selectedDate ? getCompletedHabitsForDate(selectedDate) : []
   const selectedMissed = selectedDate
-    ? habits.filter(h => !h.completions?.includes(selectedDate) && selectedDate <= todayStr)
+    ? visibleHabits.filter(h => !h.completions?.includes(selectedDate) && selectedDate <= todayStr)
     : []
 
   const isNextDisabled = year === now.getFullYear() && month === now.getMonth()
@@ -103,7 +110,42 @@ export default function Calendar() {
   return (
     <div className="app-bg min-h-screen" style={{ paddingTop: 76, paddingBottom: 80 }}>
       <div className="px-4 pt-8 page-inner">
-        <h1 className="text-2xl font-bold mb-4" style={{ color: t.text }}>Calendar</h1>
+        <h1 className="text-2xl font-bold mb-3" style={{ color: t.text }}>Calendar</h1>
+
+        {/* Habit filter chips */}
+        {habits.length > 0 && (
+          <div className="flex gap-2 overflow-x-auto no-scrollbar mb-4 pb-1">
+            <button
+              onClick={() => setFilterIds([])}
+              className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold transition-all"
+              style={{
+                background: filterIds.length === 0 ? 'rgba(37,99,235,0.25)' : t.inputBg,
+                color: filterIds.length === 0 ? '#93C5FD' : t.textMuted,
+                border: filterIds.length === 0 ? '1.5px solid #2563EB' : '1px solid var(--border)',
+              }}
+            >All</button>
+            {habits.map((h, i) => {
+              const active = filterIds.includes(h.id)
+              const color = HABIT_COLORS[i % HABIT_COLORS.length]
+              return (
+                <button
+                  key={h.id}
+                  onClick={() => toggleFilter(h.id)}
+                  className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all"
+                  style={{
+                    background: active ? `${color}22` : t.inputBg,
+                    color: active ? color : t.textMuted,
+                    border: active ? `1.5px solid ${color}88` : '1px solid var(--border)',
+                  }}
+                >
+                  <span>{h.emoji}</span>
+                  <span>{h.name}</span>
+                </button>
+              )
+            })}
+          </div>
+        )}
+
         {/* Month nav */}
         <div className="flex items-center justify-between mb-4">
           <button onClick={prevMonth} className="p-2 rounded-xl w-10 h-10 flex items-center justify-center text-lg"
@@ -208,7 +250,7 @@ export default function Calendar() {
                     </div>
                   )
                 })}
-                {isPerfectDay(selectedDate) && habits.length > 0 && (
+                {isPerfectDay(selectedDate) && visibleHabits.length > 0 && (
                   <p className="text-sm mt-2" style={{ color: '#FBBF24' }}>⭐ Perfect day!</p>
                 )}
               </div>
