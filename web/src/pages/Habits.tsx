@@ -160,26 +160,6 @@ function AddEditSheet({
   })
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
 
-  // Time picker helpers — form.notifTime is "HH:MM" 24-hour
-  const [h24, mm] = form.notifTime.split(':').map(Number)
-  const isPM = h24 >= 12
-  const h12 = h24 % 12 || 12
-
-  function cycleHour(dir: 1 | -1) {
-    const next = (h24 + dir + 24) % 24
-    setForm(f => ({ ...f, notifTime: `${String(next).padStart(2,'0')}:${String(mm).padStart(2,'0')}` }))
-  }
-  function cycleMinute(dir: 1 | -1) {
-    const snapped = Math.round(mm / 5) * 5
-    const next = (snapped + dir * 5 + 60) % 60
-    setForm(f => ({ ...f, notifTime: `${String(h24).padStart(2,'0')}:${String(next).padStart(2,'0')}` }))
-  }
-  function setAmPm(pm: boolean) {
-    if (pm === isPM) return
-    const next = pm ? h24 + 12 : h24 - 12
-    setForm(f => ({ ...f, notifTime: `${String(next).padStart(2,'0')}:${String(mm).padStart(2,'0')}` }))
-  }
-
   function toggleDay(d: number) {
     setForm(f => ({
       ...f,
@@ -361,42 +341,26 @@ function AddEditSheet({
 
           {form.notifEnabled && (
             <div className="px-3 pb-3 pt-2" style={{ background: t.inputBg, borderTop: `1px solid ${t.divider}` }}>
-              {/* Custom time picker */}
+              {/* Time picker */}
               <div className="flex items-center gap-3 mb-3">
                 <span className="text-xs flex-shrink-0" style={{ color: t.textMuted }}>Time</span>
-                <div className="flex items-center gap-2 rounded-xl px-3 py-2" style={{ background: t.cardBg, border: t.inputBorder }}>
-                  {/* Hour */}
-                  <div className="flex flex-col items-center gap-0.5">
-                    <button onClick={() => cycleHour(1)} className="w-7 h-6 rounded-lg flex items-center justify-center text-[10px]" style={{ background: t.inputBg, color: t.textMuted }}>▲</button>
-                    <span className="text-sm font-semibold w-6 text-center tabular-nums" style={{ color: t.text }}>{String(h12).padStart(2,'0')}</span>
-                    <button onClick={() => cycleHour(-1)} className="w-7 h-6 rounded-lg flex items-center justify-center text-[10px]" style={{ background: t.inputBg, color: t.textMuted }}>▼</button>
-                  </div>
-                  <span className="text-sm font-bold pb-0.5" style={{ color: t.textMuted }}>:</span>
-                  {/* Minute */}
-                  <div className="flex flex-col items-center gap-0.5">
-                    <button onClick={() => cycleMinute(1)} className="w-7 h-6 rounded-lg flex items-center justify-center text-[10px]" style={{ background: t.inputBg, color: t.textMuted }}>▲</button>
-                    <span className="text-sm font-semibold w-6 text-center tabular-nums" style={{ color: t.text }}>{String(mm).padStart(2,'0')}</span>
-                    <button onClick={() => cycleMinute(-1)} className="w-7 h-6 rounded-lg flex items-center justify-center text-[10px]" style={{ background: t.inputBg, color: t.textMuted }}>▼</button>
-                  </div>
-                  {/* AM / PM */}
-                  <div className="flex flex-col gap-1 ml-1">
-                    {(['AM','PM'] as const).map(period => {
-                      const active = period === 'AM' ? !isPM : isPM
-                      return (
-                        <button
-                          key={period}
-                          onClick={() => setAmPm(period === 'PM')}
-                          className="px-2 py-0.5 rounded-lg text-[10px] font-semibold transition-all"
-                          style={{
-                            background: active ? 'rgba(37,99,235,0.28)' : t.inputBg,
-                            color: active ? '#93C5FD' : t.textMuted,
-                            border: active ? '1.5px solid #2563EB' : t.inputBorder,
-                          }}
-                        >{period}</button>
-                      )
-                    })}
-                  </div>
-                </div>
+                <input
+                  type="time"
+                  value={form.notifTime}
+                  onChange={e => setForm(f => ({ ...f, notifTime: e.target.value }))}
+                  className="notif-time-input"
+                  style={{
+                    background: t.cardBg,
+                    border: t.inputBorder,
+                    color: t.text,
+                    borderRadius: 12,
+                    padding: '8px 12px',
+                    fontSize: 14,
+                    fontWeight: 600,
+                    outline: 'none',
+                    colorScheme: 'dark',
+                  }}
+                />
               </div>
               <div>
                 <p className="text-xs mb-2" style={{ color: t.textMuted }}>
