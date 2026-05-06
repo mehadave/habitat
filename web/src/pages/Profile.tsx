@@ -15,9 +15,8 @@ import type { HabitWithStreak } from '../lib/types'
 
 const WEEK_DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
 
-function WeeklySummaryModal({ habits, darkMode, onClose }: {
+function WeeklySummaryModal({ habits, onClose }: {
   habits: HabitWithStreak[]
-  darkMode: boolean
   onClose: () => void
 }) {
   const t = { bg: 'var(--surface-alt)', text: 'var(--text-1)', muted: 'var(--text-2)', card: 'var(--surface)', border: 'var(--border)' }
@@ -382,7 +381,6 @@ export default function Profile() {
         {showWeeklySummaryModal && (
           <WeeklySummaryModal
             habits={habits}
-            darkMode={darkMode}
             onClose={() => setShowWeeklySummaryModal(false)}
           />
         )}

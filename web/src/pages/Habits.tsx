@@ -680,7 +680,6 @@ export default function Habits() {
                   <Reorder.Item key={habit.id} value={habit} initial={false} style={{ listStyle: 'none' }}>
                     <HabitCard
                       habit={habit}
-                      onToggle={handleToggle}
                       onEdit={(h) => setEditHabit(h)}
                       onDelete={(id) => setDeleteConfirm(id)}
                     />
@@ -693,7 +692,6 @@ export default function Habits() {
                   <HabitCard
                     key={habit.id}
                     habit={habit}
-                    onToggle={handleToggle}
                     onEdit={(h) => setEditHabit(h)}
                     onDelete={(id) => setDeleteConfirm(id)}
                   />

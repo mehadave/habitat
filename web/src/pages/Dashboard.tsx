@@ -265,10 +265,9 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
    Podium section — top 3 habits by streak
    ────────────────────────────────────────────────────────────────────────────── */
 
-function PodiumSection({ habits, onToggle, darkMode }: {
+function PodiumSection({ habits, onToggle }: {
   habits: HabitWithStreak[]
   onToggle: (habitId: string, date: string) => void
-  darkMode: boolean
 }) {
   const todayStr = localDateStr()
   const ranked = [...habits]
@@ -367,10 +366,9 @@ function PodiumSection({ habits, onToggle, darkMode }: {
    Needs Attention — minimal list, max 4 habits
    ────────────────────────────────────────────────────────────────────────────── */
 
-function NeedsAttentionSection({ habits, onToggle, darkMode }: {
+function NeedsAttentionSection({ habits, onToggle }: {
   habits: HabitWithStreak[]
   onToggle: (habitId: string, date: string) => void
-  darkMode: boolean
 }) {
   const todayStr = localDateStr()
   const sorted = [...habits].sort((a, b) => (a.streak?.current_streak ?? 0) - (b.streak?.current_streak ?? 0))
@@ -429,10 +427,9 @@ function NeedsAttentionSection({ habits, onToggle, darkMode }: {
    Streak Dashboard Modal
    ────────────────────────────────────────────────────────────────────────────── */
 
-function StreakDashboardModal({ habits, onClose, darkMode }: {
+function StreakDashboardModal({ habits, onClose }: {
   habits: HabitWithStreak[]
   onClose: () => void
-  darkMode: boolean
 }) {
   const textColor = 'var(--text-1)'
   const mutedColor = 'var(--text-2)'
@@ -553,7 +550,7 @@ const HABIT_SUGGESTIONS = [
   { emoji: '🔥', name: 'Cold shower',                cat: 'Health'  },
 ]
 
-function HabitSuggestionsModal({ darkMode, onClose }: { darkMode: boolean; onClose: () => void }) {
+function HabitSuggestionsModal({ onClose }: { onClose: () => void }) {
   const t = { bg: 'var(--surface-alt)', text: 'var(--text-1)', muted: 'var(--text-2)', card: 'var(--surface)', border: 'var(--border)' }
   const cats = [...new Set(HABIT_SUGGESTIONS.map(h => h.cat))]
 
@@ -782,10 +779,10 @@ export default function Dashboard() {
             )}
 
             {/* Podium — top 3 habits with 3+ day streaks */}
-            <PodiumSection habits={habits} onToggle={handleToggle} darkMode={darkMode} />
+            <PodiumSection habits={habits} onToggle={handleToggle} />
 
             {/* Needs attention — minimalistic list */}
-            <NeedsAttentionSection habits={habits} onToggle={handleToggle} darkMode={darkMode} />
+            <NeedsAttentionSection habits={habits} onToggle={handleToggle} />
 
             {habits.length === 0 && (
               <div className="text-center py-16">
@@ -811,7 +808,6 @@ export default function Dashboard() {
           <StreakDashboardModal
             habits={habits}
             onClose={() => setShowStreaks(false)}
-            darkMode={darkMode}
           />
         )}
       </AnimatePresence>
@@ -820,7 +816,6 @@ export default function Dashboard() {
       <AnimatePresence>
         {showSuggestions && (
           <HabitSuggestionsModal
-            darkMode={darkMode}
             onClose={() => setShowSuggestions(false)}
           />
         )}
