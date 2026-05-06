@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useUIStore } from '../store/uiStore'
 import { DolphinLogo } from './DolphinLogo'
 
 const STORAGE_KEY = 'habitat-onboarding-complete'
@@ -46,27 +45,17 @@ interface Props {
 }
 
 export function OnboardingModal({ onClose }: Props) {
-  const { darkMode } = useUIStore()
   const [step, setStep] = useState(0)
 
-  const t = darkMode ? {
-    sheetBg: '#0F1B45',
-    cardBorder: 'rgba(255,255,255,0.12)',
-    text: '#ffffff',
-    textMuted: 'rgba(255,255,255,0.6)',
-    textSub: 'rgba(255,255,255,0.4)',
+  const t = {
+    sheetBg: 'var(--surface-alt)',
+    cardBorder: 'var(--border)',
+    text: 'var(--text-1)',
+    textMuted: 'var(--text-2)',
+    textSub: 'var(--text-3)',
     tipBg: 'rgba(56,189,248,0.08)',
-    tipBorder: 'rgba(56,189,248,0.2)',
-    dotInactive: 'rgba(255,255,255,0.2)',
-  } : {
-    sheetBg: '#E8EFFF',
-    cardBorder: 'rgba(11,20,55,0.20)',
-    text: '#0B1437',
-    textMuted: 'rgba(11,20,55,0.65)',
-    textSub: 'rgba(11,20,55,0.62)',
-    tipBg: 'rgba(37,99,235,0.08)',
-    tipBorder: 'rgba(37,99,235,0.2)',
-    dotInactive: 'rgba(11,20,55,0.15)',
+    tipBorder: 'rgba(56,189,248,0.18)',
+    dotInactive: 'var(--border)',
   }
 
   const current = STEPS[step]

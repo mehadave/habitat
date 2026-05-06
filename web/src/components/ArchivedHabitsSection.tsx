@@ -1,10 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useArchivedHabits, useRestoreHabit, usePermanentlyDeleteHabit } from '../hooks/useHabits'
-import { useUIStore } from '../store/uiStore'
-
 export function ArchivedHabitsSection() {
-  const { darkMode } = useUIStore()
   const { data: archived = [] } = useArchivedHabits()
   const restoreMutation = useRestoreHabit()
   const deleteMutation = usePermanentlyDeleteHabit()
@@ -13,20 +10,13 @@ export function ArchivedHabitsSection() {
 
   if (archived.length === 0) return null
 
-  const t = darkMode ? {
-    text: '#ffffff',
-    textMuted: 'rgba(255,255,255,0.5)',
-    textSub: 'rgba(255,255,255,0.3)',
-    cardBg: 'rgba(255,255,255,0.03)',
-    cardBorder: 'rgba(255,255,255,0.07)',
-    divider: 'rgba(255,255,255,0.08)',
-  } : {
-    text: '#0B1437',
-    textMuted: 'rgba(11,20,55,0.88)',
-    textSub: 'rgba(11,20,55,0.78)',
-    cardBg: 'rgba(255,255,255,0.6)',
-    cardBorder: 'rgba(11,20,55,0.14)',
-    divider: 'rgba(11,20,55,0.14)',
+  const t = {
+    text: 'var(--text-1)',
+    textMuted: 'var(--text-2)',
+    textSub: 'var(--text-3)',
+    cardBg: 'var(--surface)',
+    cardBorder: 'var(--border)',
+    divider: 'var(--divider)',
   }
 
   return (
@@ -109,7 +99,7 @@ export function ArchivedHabitsSection() {
               exit={{ scale: 0.9, y: 10 }}
               className="w-full max-w-xs rounded-2xl p-6"
               style={{
-                background: darkMode ? '#0F1B45' : '#E8EFFF',
+                background: 'var(--surface-alt)',
                 border: '1px solid rgba(248,113,113,0.3)',
               }}
               onClick={e => e.stopPropagation()}
