@@ -725,8 +725,8 @@ export default function Habits() {
               </div>
             </div>
 
-            {/* Habit cards — draggable when sort is default */}
-            {sortBy === 'default' ? (
+            {/* Habit cards — hidden until saved order is restored to prevent shuffle */}
+            {orderReady && (sortBy === 'default' ? (
               <Reorder.Group
                 axis="y"
                 values={displayHabits}
@@ -735,7 +735,7 @@ export default function Habits() {
                 style={{ listStyle: 'none', padding: 0, margin: 0 }}
               >
                 {displayHabits.map((habit) => (
-                  <Reorder.Item key={habit.id} value={habit} initial={false} layout={orderReady ? true : undefined} style={{ listStyle: 'none' }}>
+                  <Reorder.Item key={habit.id} value={habit} initial={false} layout style={{ listStyle: 'none' }}>
                     <HabitCard
                       habit={habit}
                       onEdit={(h) => setEditHabit(h)}
@@ -755,7 +755,7 @@ export default function Habits() {
                   />
                 ))}
               </div>
-            )}
+            ))}
 
             {/* Archived habits section */}
             <ArchivedHabitsSection />
