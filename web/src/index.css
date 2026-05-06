@@ -553,6 +553,25 @@ body.light-mode ::-webkit-scrollbar-thumb { background: rgba(11,20,55,0.15); }
 .voice-blob-idle      { animation: blob-idle      2.4s ease-in-out infinite; }
 .voice-blob-recording { animation: blob-recording 0.8s ease-in-out infinite; }
 
+/* ── Notification time input ─────────────────────── */
+input[type="time"].notif-time-input {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+input[type="time"].notif-time-input::-webkit-calendar-picker-indicator {
+  filter: invert(0.6);
+  cursor: pointer;
+  opacity: 0.6;
+}
+body.light-mode input[type="time"].notif-time-input {
+  color-scheme: light;
+}
+body.light-mode input[type="time"].notif-time-input::-webkit-calendar-picker-indicator {
+  filter: none;
+  opacity: 0.5;
+}
+
 /* ── Desktop nav tabs ────────────────────────────── */
 @media (min-width: 768px) {
   .bottom-nav-mobile {
