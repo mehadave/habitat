@@ -5,7 +5,6 @@ import type { HabitWithStreak } from '../lib/types'
 
 interface HabitCardProps {
   habit: HabitWithStreak
-  onToggle: (habitId: string, date: string) => void
   onEdit: (habit: HabitWithStreak) => void
   onDelete: (habitId: string) => void
 }
@@ -31,7 +30,7 @@ function PriorityBadge({ rating }: { rating: number }) {
   )
 }
 
-export function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCardProps) {
+export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
   const { darkMode } = useUIStore()
   const [revealed, setRevealed] = useState(false)
   const [showActions, setShowActions] = useState(false)
