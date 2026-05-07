@@ -65,7 +65,7 @@ export default function PrivacyPolicy() {
       <div className="px-4 pt-6 max-w-lg mx-auto">
         {/* Effective date */}
         <p className="text-xs mb-6" style={{ color: 'var(--text-3)' }}>
-          Effective date: May 6, 2025 · Last updated: May 6, 2025
+          Effective date: May 6, 2026 · Last updated: May 6, 2026
         </p>
 
         {/* Intro card */}
