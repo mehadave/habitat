@@ -133,7 +133,7 @@ function buildTokens(_darkMode?: boolean) {
 
 
 const DRUM_ITEM_H = 44
-const DRUM_VISIBLE = 5
+const DRUM_VISIBLE = 3
 
 function DrumPicker({ items, value, onChange, width = 60 }: {
   items: string[]
@@ -167,21 +167,21 @@ function DrumPicker({ items, value, onChange, width = 60 }: {
   return (
     <div style={{ position: 'relative', width, height: DRUM_ITEM_H * DRUM_VISIBLE, overflow: 'hidden' }}>
       {/* Fade top */}
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: DRUM_ITEM_H * 2,
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: DRUM_ITEM_H * 1,
         background: 'linear-gradient(to bottom, var(--surface-alt) 30%, transparent 100%)',
         pointerEvents: 'none', zIndex: 2 }} />
       {/* Fade bottom */}
-      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: DRUM_ITEM_H * 2,
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: DRUM_ITEM_H * 1,
         background: 'linear-gradient(to top, var(--surface-alt) 30%, transparent 100%)',
         pointerEvents: 'none', zIndex: 2 }} />
       {/* Selection band */}
-      <div style={{ position: 'absolute', top: DRUM_ITEM_H * 2, left: 4, right: 4, height: DRUM_ITEM_H,
+      <div style={{ position: 'absolute', top: DRUM_ITEM_H * 1, left: 4, right: 4, height: DRUM_ITEM_H,
         background: 'var(--surface-tint)', borderRadius: 10,
         pointerEvents: 'none', zIndex: 1 }} />
       {/* Scroll list */}
       <div ref={ref} onScroll={handleScroll} className="no-scrollbar"
         style={{ height: '100%', overflowY: 'scroll', scrollSnapType: 'y mandatory',
-          paddingTop: DRUM_ITEM_H * 2, paddingBottom: DRUM_ITEM_H * 2 }}>
+          paddingTop: DRUM_ITEM_H * 1, paddingBottom: DRUM_ITEM_H * 1 }}>
         {items.map((item, i) => {
           const sel = item === value
           return (
