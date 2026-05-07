@@ -57,8 +57,7 @@ function useVoiceBlob(onText: (text: string) => void) {
   const stop = useCallback(() => {
     const r = recognitionRef.current
     if (r) {
-      recognitionRef.current = null
-      r.onend = null  // prevent double setState from the onend event
+      recognitionRef.current = null  // signals onend not to restart
       r.stop()
     }
     setRecording(false)
@@ -83,21 +82,16 @@ function useVoiceBlob(onText: (text: string) => void) {
 
     setMicBlocked(false)
     const r = new SR()
-    r.continuous = true
-    r.interimResults = false  // No interim events — fewer callbacks, eliminates Android duplicate bug
+    // continuous=false + manual onend restart avoids Chrome Android/Windows bug
+    // where continuous=true replays the last phrase at the start of each
+    // internal reconnect, causing duplicates.
+    r.continuous = false
+    r.interimResults = false
     r.lang = 'en-US'
 
-    // Track committed result indices so we never process the same result twice.
-    // Android Chrome (and some other mobile browsers) can re-fire onresult for
-    // the same resultIndex — either with updated text or as exact duplicates.
-    // A Set keyed by index is the most robust guard: once index N is committed,
-    // we ignore any future event that tries to deliver it again.
-    const committedIndices = new Set<number>()
-
     r.onresult = (e: any) => {
-      for (let i = 0; i < e.results.length; i++) {
-        if (e.results[i].isFinal && !committedIndices.has(i)) {
-          committedIndices.add(i)
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        if (e.results[i].isFinal) {
           const text = e.results[i][0].transcript.trim()
           if (text) onTextRef.current(text)
         }
@@ -113,12 +107,16 @@ function useVoiceBlob(onText: (text: string) => void) {
       releaseWakeLock()
     }
 
-    // onend fires when recognition stops (timeout, silence, or manually) —
-    // if recognitionRef is still set here it means it auto-stopped (not us).
+    // onend fires on every utterance pause. If the user hasn't tapped stop,
+    // restart the same instance to keep listening (simulates continuous mode
+    // without the Chrome cross-session replay bug).
     r.onend = () => {
-      recognitionRef.current = null
-      setRecording(false)
-      releaseWakeLock()
+      if (recognitionRef.current === r) {
+        try { r.start() } catch { /* already starting */ }
+      } else {
+        setRecording(false)
+        releaseWakeLock()
+      }
     }
 
     r.start()

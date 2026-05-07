@@ -412,7 +412,7 @@ export default function Analytics() {
         ) : (
           <div className="space-y-2.5 pb-2">
             {habitStats.map((h, i) => {
-              const ringColor = h.rate >= 70 ? '#4ADE80' : h.rate >= 40 ? '#38BDF8' : '#F87171'
+              const ringColor = h.doneToday ? '#4ADE80' : h.streak > 0 ? '#FBBF24' : '#F87171'
               return (
                 <motion.div
                   key={h.id}
@@ -424,23 +424,19 @@ export default function Analytics() {
                 >
                   <div className="flex items-center gap-3">
                     <RingProgress pct={h.rate} size={52} strokeWidth={5} color={ringColor}>
-                      <span style={{ fontSize: 10, fontWeight: 700, color: ringColor }}>{h.rate}%</span>
+                      {h.doneToday
+                        ? <span style={{ fontSize: 13, color: ringColor }}>✓</span>
+                        : <span style={{ fontSize: 10, fontWeight: 700, color: ringColor }}>{h.streak > 0 ? `${h.streak}d` : '—'}</span>
+                      }
                     </RingProgress>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1.5">
                         <span style={{ fontSize: 18 }}>{h.emoji}</span>
                         <span className="text-sm font-semibold truncate" style={{ color: t.text }}>{h.name}</span>
-                        {h.doneToday && (
-                          <span className="text-[9px] px-1.5 py-0.5 rounded-full font-semibold flex-shrink-0"
-                            style={{ background: 'rgba(74,222,128,0.14)', color: '#4ADE80', border: '1px solid rgba(74,222,128,0.3)' }}>
-                            ✓ Done
-                          </span>
-                        )}
                       </div>
                       <div className="flex gap-3 flex-wrap" style={{ fontSize: 10, color: t.sub }}>
                         <span>🔥 {h.streak}d streak</span>
-                        <span>🏆 {h.best}d best</span>
-                        <span>📊 {h.comps} in range</span>
+                        <span>· {h.comps} done in range</span>
                       </div>
                     </div>
                   </div>

@@ -8,13 +8,16 @@ A habit tracker built around consistency, not guilt. Track your habits, journal 
 
 ## Features
 
-- **Habit tracking** — Add up to 15 habits with emoji, priority, and notes. Tap to complete, view monthly calendar grids per habit
-- **Dashboard** — Streak hero, quick-complete chips, winning/losing habit podium, and animated dolphins that swim across your screen
-- **Journal** — Brain dump without filter. Categories (Dump, Journal, Vent, Ideas, Frog, To-do), mood tracking, voice dictation, timeline view with draft auto-save
+- **Habit tracking** — Add up to 15 habits with emoji, priority, and private notes. Swipe to edit or delete, view monthly calendar grids per habit
+- **Dashboard** — Streak hero, quick-complete chips, winning/losing habit podium, needs-attention list, and animated dolphins
+- **Analytics** — Today's progress ring, 7/30/90-day trend charts, per-habit performance rings (green = done today, yellow = streak active, red = no streak), day-of-week heatmap
+- **Journal** — Brain dump without filter. Categories (Dump, Journal, Vent, Ideas, Frog, To-do), mood tracking, voice dictation (tap-to-toggle, works on all major browsers), timeline view with draft auto-save
 - **Calendar** — Monthly view with per-day completion dots and streak visualization
-- **Gamification** — Streak tracking, winning/losing habit podium, quick-complete chips with burst animations
+- **Statistics** — Accessible from the Me page and profile dropdown
+- **Auth** — Email/password, Google OAuth, Apple OAuth, phone OTP
 - **Dark/light mode** — Persisted per user, toggle from the profile menu
 - **PWA** — Installable on mobile, works offline for cached content
+- **Legal** — In-app Privacy Policy and Terms of Use (accessible without login)
 
 ## Tech Stack
 
@@ -78,9 +81,10 @@ supabase/migrations/002_add_category.sql
 habitat/
 ├── web/
 │   ├── src/
-│   │   ├── components/    # NavBar, CommitGrid, DolphinLogo, etc.
-│   │   ├── pages/         # Dashboard, Habits, Calendar, Journal, Profile
-│   │   ├── hooks/         # useHabits, useJournal, useStreaks, useXP
+│   │   ├── components/    # NavBar, HabitCard, DolphinLogo, Footer, etc.
+│   │   ├── pages/         # Dashboard, Habits, Calendar, Journal, Analytics, Profile
+│   │   ├── pages/auth/    # Login, Signup, ForgotPassword
+│   │   ├── hooks/         # useHabits, useJournal, useStreaks
 │   │   ├── store/         # Zustand stores (auth, ui)
 │   │   └── lib/           # supabase client, types, utils, quotes
 │   └── public/            # PWA icons, manifest
