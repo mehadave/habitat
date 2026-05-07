@@ -110,42 +110,42 @@ export default function Calendar() {
   return (
     <div className="app-bg min-h-screen" style={{ paddingTop: 76, paddingBottom: 80 }}>
       <div className="px-4 pt-8 page-inner">
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-bold" style={{ color: t.text }}>Calendar</h1>
+        <h1 className="text-2xl font-bold mb-2" style={{ color: t.text }}>Calendar</h1>
 
-          {/* Habit filter chips — emoji only, right-aligned */}
-          {habits.length > 0 && (
-            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
-              <button
-                onClick={() => setFilterIds([])}
-                className="flex-shrink-0 px-2.5 py-1 rounded-full text-xs font-semibold transition-all"
-                style={{
-                  background: filterIds.length === 0 ? 'rgba(37,99,235,0.25)' : t.inputBg,
-                  color: filterIds.length === 0 ? '#93C5FD' : t.textMuted,
-                  border: filterIds.length === 0 ? '1.5px solid #2563EB' : '1px solid var(--border)',
-                }}
-              >All</button>
-              {habits.map((h, i) => {
-                const active = filterIds.includes(h.id)
-                const color = HABIT_COLORS[i % HABIT_COLORS.length]
-                return (
-                  <button
-                    key={h.id}
-                    onClick={() => toggleFilter(h.id)}
-                    className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-base transition-all"
-                    style={{
-                      background: active ? `${color}22` : t.inputBg,
-                      border: active ? `1.5px solid ${color}88` : '1px solid var(--border)',
-                    }}
-                    title={h.name}
-                  >
-                    {h.emoji}
-                  </button>
-                )
-              })}
-            </div>
-          )}
-        </div>
+        {/* Habit filter chips — compact scrollable row */}
+        {habits.length > 0 && (
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar mb-4 pb-0.5">
+            <button
+              onClick={() => setFilterIds([])}
+              className="flex-shrink-0 px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all"
+              style={{
+                background: filterIds.length === 0 ? 'rgba(37,99,235,0.25)' : t.inputBg,
+                color: filterIds.length === 0 ? '#93C5FD' : t.textMuted,
+                border: filterIds.length === 0 ? '1.5px solid #2563EB' : '1px solid var(--border)',
+              }}
+            >All</button>
+            {habits.map((h, i) => {
+              const active = filterIds.includes(h.id)
+              const color = HABIT_COLORS[i % HABIT_COLORS.length]
+              return (
+                <button
+                  key={h.id}
+                  onClick={() => toggleFilter(h.id)}
+                  className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center transition-all"
+                  style={{
+                    fontSize: 15,
+                    background: active ? `${color}22` : t.inputBg,
+                    border: active ? `1.5px solid ${color}88` : '1px solid var(--border)',
+                    boxShadow: active ? `0 0 6px ${color}44` : 'none',
+                  }}
+                  title={h.name}
+                >
+                  {h.emoji}
+                </button>
+              )
+            })}
+          </div>
+        )}
 
         {/* Month nav */}
         <div className="flex items-center justify-between mb-4">
