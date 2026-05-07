@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { motion } from 'framer-motion'
+import { motion, useDragControls } from 'framer-motion'
 import { useUIStore } from '../store/uiStore'
 import type { HabitWithStreak } from '../lib/types'
 
@@ -36,6 +36,21 @@ export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
   const [showActions, setShowActions] = useState(false)
   const [hinting, setHinting] = useState(false)
   const hintRan = useRef(false)
+  const dragControls = useDragControls()
+  const pressTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  function startDragTimer(e: React.PointerEvent) {
+    pressTimer.current = setTimeout(() => {
+      dragControls.start(e)
+    }, 180)
+  }
+
+  function cancelDragTimer() {
+    if (pressTimer.current) {
+      clearTimeout(pressTimer.current)
+      pressTimer.current = null
+    }
+  }
 
   useEffect(() => {
     if (hintRan.current) return
@@ -99,6 +114,8 @@ export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
 
       <motion.div
         drag="x"
+        dragListener={false}
+        dragControls={dragControls}
         dragConstraints={{ left: -160, right: 0 }}
         dragElastic={0.05}
         animate={{ x: hinting ? -44 : showActions ? -160 : 0 }}
@@ -106,6 +123,9 @@ export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
         onDragEnd={(_, info) => {
           setShowActions(info.offset.x < -70 || info.velocity.x < -300)
         }}
+        onPointerDown={startDragTimer}
+        onPointerUp={cancelDragTimer}
+        onPointerCancel={cancelDragTimer}
         className="p-4 relative"
         style={{
           background: cardBg,

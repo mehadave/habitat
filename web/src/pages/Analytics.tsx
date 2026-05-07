@@ -113,7 +113,7 @@ export default function Analytics() {
       Math.ceil((Date.now() - new Date(Math.max(new Date(rangeStart).getTime(), new Date(h.created_at).getTime())).getTime()) / (1000 * 60 * 60 * 24)),
       1
     )
-    const rate = Math.round((comps.length / daysInRange) * 100)
+    const rate = Math.min(Math.round((comps.length / daysInRange) * 100), 100)
     return {
       ...h,
       comps: comps.length,

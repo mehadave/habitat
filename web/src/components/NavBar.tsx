@@ -290,12 +290,8 @@ export function NavBar() {
             <Link
               key={to}
               to={to}
-              className="flex-1 flex flex-col items-center py-2.5 gap-1 transition-all mx-1 rounded-2xl"
-              style={{
-                color: active ? tabActiveText : tabInactiveText,
-                background: active ? tabActiveBg : 'transparent',
-                transition: 'background 0.2s ease, color 0.2s ease',
-              }}
+              className="flex-1 flex flex-col items-center py-3 gap-1 transition-all relative"
+              style={{ color: active ? tabActiveText : tabInactiveText }}
             >
               <NavIcon name={icon} size={21} />
               <span style={{ fontSize: 10, fontWeight: active ? 600 : 400, letterSpacing: '0.02em' }}>{label}</span>

@@ -55,12 +55,12 @@ export default function PrivacyPolicy() {
         </div>
       </div>
 
-      <div className="px-4 pt-6 pb-10 max-w-lg mx-auto">
+      <div className="px-3 sm:px-4 pt-6 pb-10 max-w-lg mx-auto w-full">
         {/* Single document card */}
-        <div className="rounded-3xl overflow-hidden" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
+        <div className="rounded-2xl sm:rounded-3xl overflow-hidden" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
 
           {/* Document header */}
-          <div className="px-6 pt-6 pb-5"
+          <div className="px-4 sm:px-6 pt-5 pb-4 sm:pt-6 sm:pb-5"
             style={{
               background: darkMode
                 ? 'linear-gradient(135deg, rgba(37,99,235,0.18), rgba(56,189,248,0.08))'
@@ -75,7 +75,7 @@ export default function PrivacyPolicy() {
           </div>
 
           {/* Body */}
-          <div className="px-6 py-5 space-y-5">
+          <div className="px-4 sm:px-6 py-5 space-y-5">
 
             {/* Intro */}
             <p className="text-sm leading-relaxed" style={{ color: 'var(--text-2)' }}>
