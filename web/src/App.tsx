@@ -28,7 +28,7 @@ import Profile from './pages/Profile'
 
 function AppShell() {
   const { data: habits = [] } = useHabits()
-  const { streakShields, addShield } = useUIStore()
+
   const toggleMutation = useToggleCompletion()
   const navigate = useNavigate()
   const habitsRef = useRef(habits)
@@ -82,14 +82,6 @@ function AppShell() {
       setTimeout(() => clearInterval(interval), 5000)
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Award streak shield on 30-day milestones
-  useEffect(() => {
-    habits.forEach(h => {
-      const s = h.streak?.current_streak ?? 0
-      if (s > 0 && s % 30 === 0 && streakShields < 3) addShield()
-    })
-  }, [habits]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
