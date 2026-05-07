@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
-import { motion, AnimatePresence, Reorder, useDragControls } from 'framer-motion'
+import { motion, AnimatePresence, Reorder } from 'framer-motion'
 import { useHabits, useAddHabit, useUpdateHabit, useDeleteHabit, useToggleCompletion } from '../hooks/useHabits'
 import { useUIStore } from '../store/uiStore'
 import { HabitCard } from '../components/HabitCard'
@@ -131,40 +131,6 @@ function buildTokens(_darkMode?: boolean) {
   }
 }
 
-/* Drag handle wrapper — prevents scroll/drag conflict on touch */
-function DraggableHabitCard({ habit, onEdit, onDelete }: {
-  habit: import('../lib/types').HabitWithStreak
-  onEdit: (h: import('../lib/types').HabitWithStreak) => void
-  onDelete: (id: string) => void
-}) {
-  const controls = useDragControls()
-  return (
-    <Reorder.Item
-      value={habit}
-      initial={false}
-      layout
-      dragControls={controls}
-      dragListener={false}
-      style={{ listStyle: 'none' }}
-    >
-      <div className="flex items-center gap-1">
-        {/* Drag handle — only this triggers reorder */}
-        <div
-          onPointerDown={e => { e.preventDefault(); controls.start(e) }}
-          className="flex-shrink-0 flex flex-col gap-0.5 px-1 py-3 cursor-grab active:cursor-grabbing"
-          style={{ color: 'var(--text-3)', touchAction: 'none', userSelect: 'none' }}
-        >
-          {[0,1,2].map(i => (
-            <div key={i} style={{ width: 16, height: 2, borderRadius: 2, background: 'currentColor' }} />
-          ))}
-        </div>
-        <div className="flex-1 min-w-0">
-          <HabitCard habit={habit} onEdit={onEdit} onDelete={onDelete} />
-        </div>
-      </div>
-    </Reorder.Item>
-  )
-}
 
 const DRUM_ITEM_H = 44
 const DRUM_VISIBLE = 5
@@ -770,12 +736,21 @@ export default function Habits() {
                 style={{ listStyle: 'none', padding: 0, margin: 0 }}
               >
                 {displayHabits.map((habit) => (
-                  <DraggableHabitCard
+                  <Reorder.Item
                     key={habit.id}
-                    habit={habit}
-                    onEdit={(h) => setEditHabit(h)}
-                    onDelete={(id) => setDeleteConfirm(id)}
-                  />
+                    value={habit}
+                    initial={false}
+                    layout
+                    dragMomentum={false}
+                    dragElastic={0}
+                    style={{ listStyle: 'none' }}
+                  >
+                    <HabitCard
+                      habit={habit}
+                      onEdit={(h) => setEditHabit(h)}
+                      onDelete={(id) => setDeleteConfirm(id)}
+                    />
+                  </Reorder.Item>
                 ))}
               </Reorder.Group>
             ) : (
