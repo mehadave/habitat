@@ -669,6 +669,8 @@ export default function Dashboard() {
     return Object.values(days).filter(c => c >= totalHabits && totalHabits > 0).length
   })()
 
+  const quickHabits = habits.filter(h => !h.completions?.includes(todayStr)).slice(0, 10)
+
   function handleToggle(habitId: string, date: string) {
     const habit = habits.find(h => h.id === habitId)
     if (habit) toggleMutation.mutate({ habit, date })
@@ -754,6 +756,37 @@ export default function Dashboard() {
                 </div>
               ))}
             </div>
+
+            {/* Quick complete */}
+            {quickHabits.length > 0 && (
+              <div className="mb-5">
+                <div className="flex items-center justify-between mb-2.5">
+                  <p className="text-[11px] font-semibold tracking-widest uppercase" style={{ color: t.textMuted }}>Quick complete</p>
+                  <p className="text-[11px]" style={{ color: t.textSub }}>{quickHabits.length} left today</p>
+                </div>
+                <div
+                  className="flex gap-2 overflow-x-auto no-scrollbar"
+                  style={{ marginLeft: -16, marginRight: -16, paddingLeft: 16, paddingRight: 16, paddingBottom: 2 }}
+                >
+                  {quickHabits.map((h) => (
+                    <motion.button
+                      key={h.id}
+                      whileTap={{ scale: 0.93 }}
+                      onClick={() => handleToggle(h.id, todayStr)}
+                      className="flex-shrink-0 flex items-center gap-2 px-3 py-2 rounded-2xl"
+                      style={{
+                        background: darkMode ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.85)',
+                        border: darkMode ? '1px solid rgba(255,255,255,0.09)' : '1px solid rgba(11,20,55,0.11)',
+                        boxShadow: darkMode ? 'none' : '0 1px 6px rgba(11,20,55,0.07)',
+                      }}
+                    >
+                      <span style={{ fontSize: 18, lineHeight: 1 }}>{h.emoji}</span>
+                      <span className="text-xs font-medium whitespace-nowrap" style={{ color: t.text }}>{h.name}</span>
+                    </motion.button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Podium — top 3 habits with 3+ day streaks */}
             <PodiumSection habits={habits} onToggle={handleToggle} />
