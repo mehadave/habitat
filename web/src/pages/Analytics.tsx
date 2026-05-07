@@ -436,7 +436,7 @@ export default function Analytics() {
                       </div>
                       <div className="flex gap-3 flex-wrap" style={{ fontSize: 10, color: t.sub }}>
                         <span>🔥 {h.streak}d streak</span>
-                        <span>· {h.comps} done in range</span>
+                        <span>· {h.total} completions till date</span>
                       </div>
                     </div>
                   </div>
