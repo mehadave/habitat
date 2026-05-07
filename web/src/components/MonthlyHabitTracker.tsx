@@ -101,7 +101,7 @@ export function MonthlyHabitTracker({ habits, onToggle }: Props) {
         <td className="px-1 py-1">
           <span
             className="text-[10px]"
-            style={{ color: isToday ? '#93C5FD' : t.textSub, fontWeight: isToday ? 600 : 400 }}
+            style={{ color: isToday ? 'var(--accent-text)' : t.textSub, fontWeight: isToday ? 600 : 400 }}
           >
             {day}
           </span>

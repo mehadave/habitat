@@ -467,7 +467,7 @@ function AddEditSheet({
                       style={{
                         background: form.notifDays.includes(i) ? 'rgba(37,99,235,0.3)' : t.cardBg,
                         border: form.notifDays.includes(i) ? '1.5px solid #2563EB' : t.inputBorder,
-                        color: form.notifDays.includes(i) ? '#93C5FD' : t.textMuted,
+                        color: form.notifDays.includes(i) ? 'var(--accent-text)' : t.textMuted,
                       }}
                     >
                       {label}
@@ -704,7 +704,7 @@ export default function Habits() {
                         onClick={() => { setSortBy(key); setShowSortDropdown(false) }}
                         className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-left transition-all"
                         style={{
-                          color: sortBy === key ? '#93C5FD' : t.textMuted,
+                          color: sortBy === key ? 'var(--accent-text)' : t.textMuted,
                           background: sortBy === key ? 'rgba(37,99,235,0.18)' : 'transparent',
                         }}
                         onMouseEnter={ev => { if (sortBy !== key) (ev.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.04)' }}
@@ -715,7 +715,7 @@ export default function Habits() {
                         </svg>
                         {label}
                         {sortBy === key && (
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#93C5FD" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="ml-auto">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent-text)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="ml-auto">
                             <polyline points="20 6 9 17 4 12"/>
                           </svg>
                         )}

@@ -72,7 +72,7 @@ export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
         <button
           onClick={() => { setShowActions(false); onEdit(habit) }}
           className="flex-1 py-1.5 rounded-lg text-xs font-semibold pointer-events-auto text-center"
-          style={{ background: 'rgba(37,99,235,0.22)', color: '#93C5FD' }}
+          style={{ background: 'rgba(37,99,235,0.22)', color: 'var(--accent-text)' }}
         >
           Edit
         </button>

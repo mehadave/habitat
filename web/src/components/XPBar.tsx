@@ -19,16 +19,16 @@ export function XPBar({ current, max, level, levelName }: XPBarProps) {
   return (
     <div className="w-full">
       <div className="flex items-center justify-between mb-1.5">
-        <span className="text-xs font-medium" style={{ color: '#93C5FD' }}>
+        <span className="text-xs font-medium" style={{ color: 'var(--accent-text)' }}>
           Lv.{level} {levelName}
         </span>
-        <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>
+        <span className="text-xs" style={{ color: 'var(--text-3)' }}>
           {current} / {max} XP
         </span>
       </div>
       <div
         className="w-full h-2 rounded-full overflow-hidden"
-        style={{ background: 'rgba(255,255,255,0.1)' }}
+        style={{ background: 'var(--surface-tint)' }}
       >
         <div
           className="h-full rounded-full transition-all duration-1000 ease-out"

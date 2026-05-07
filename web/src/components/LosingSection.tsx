@@ -66,7 +66,7 @@ export function LosingSection({ habits, onToggle }: Props) {
 
               {/* Line 2: action */}
               {doneToday ? (
-                <p className="text-[10px]" style={{ color: '#93C5FD' }}>✓ Done today</p>
+                <p className="text-[10px]" style={{ color: 'var(--accent-text)' }}>✓ Done today</p>
               ) : (
                 <button
                   onClick={() => onToggle(habit.id, todayStr)}
