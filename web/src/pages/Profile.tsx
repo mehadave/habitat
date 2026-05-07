@@ -116,7 +116,7 @@ function WeeklySummaryModal({ habits, onClose }: {
 export default function Profile() {
   const navigate = useNavigate()
   const { profile, logout, setProfile } = useAuthStore()
-  const { darkMode, toggleDarkMode, streakShields } = useUIStore()
+  const { darkMode, toggleDarkMode } = useUIStore()
 
   const t = {
     bg: 'var(--bg-app)',
@@ -261,13 +261,6 @@ export default function Profile() {
 
           <p className="text-lg font-bold mt-3" style={{ color: t.text }}>{profile?.display_name ?? 'Your name'}</p>
           <p className="text-sm mt-0.5" style={{ color: t.textMuted }}>{profile?.email}</p>
-          {/* Shield count */}
-          {streakShields > 0 && (
-            <div className="mt-2 flex items-center gap-1.5 px-3 py-1 rounded-full text-xs"
-              style={{ background: 'rgba(37,99,235,0.15)', color: '#93C5FD', border: '1px solid rgba(37,99,235,0.3)' }}>
-              🛡 {streakShields} streak shield{streakShields > 1 ? 's' : ''}
-            </div>
-          )}
         </div>
 
         {/* Settings cards */}
