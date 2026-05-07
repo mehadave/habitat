@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useHabits, useToggleCompletion, localDateStr } from '../hooks/useHabits'
 import { useUIStore } from '../store/uiStore'
 import { useAuthStore } from '../store/authStore'
@@ -668,8 +668,6 @@ export default function Dashboard() {
     })
     return Object.values(days).filter(c => c >= totalHabits && totalHabits > 0).length
   })()
-
-  const quickHabits = habits.filter(h => !h.completions?.includes(todayStr)).slice(0, 8)
 
   function handleToggle(habitId: string, date: string) {
     const habit = habits.find(h => h.id === habitId)
