@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { useUIStore } from '../store/uiStore'
 import type { HabitWithStreak } from '../lib/types'
@@ -34,6 +34,18 @@ export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
   const { darkMode } = useUIStore()
   const [revealed, setRevealed] = useState(false)
   const [showActions, setShowActions] = useState(false)
+  const [hinting, setHinting] = useState(false)
+  const hintRan = useRef(false)
+
+  useEffect(() => {
+    if (hintRan.current) return
+    if (localStorage.getItem('swipe-hint-shown')) return
+    hintRan.current = true
+    localStorage.setItem('swipe-hint-shown', '1')
+    const t1 = setTimeout(() => setHinting(true), 900)
+    const t2 = setTimeout(() => setHinting(false), 1700)
+    return () => { clearTimeout(t1); clearTimeout(t2) }
+  }, [])
 
   const streak = habit.streak?.current_streak ?? 0
   const streakColor = streak >= 7 ? '#93C5FD' : streak >= 3 ? '#60A5FA' : streak > 0 ? '#FBBF24' : '#F87171'
@@ -89,7 +101,7 @@ export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
         drag="x"
         dragConstraints={{ left: -160, right: 0 }}
         dragElastic={0.05}
-        animate={{ x: showActions ? -160 : 0 }}
+        animate={{ x: hinting ? -44 : showActions ? -160 : 0 }}
         transition={{ type: 'spring', damping: 28, stiffness: 320 }}
         onDragEnd={(_, info) => {
           setShowActions(info.offset.x < -70 || info.velocity.x < -300)

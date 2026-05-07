@@ -25,6 +25,8 @@ import Calendar from './pages/Calendar'
 import Analytics from './pages/Analytics'
 import Journal from './pages/Journal'
 import Profile from './pages/Profile'
+import PrivacyPolicy from './pages/PrivacyPolicy'
+import TermsOfUse from './pages/TermsOfUse'
 
 function AppShell() {
   const { data: habits = [] } = useHabits()
@@ -133,6 +135,8 @@ export default function App() {
       <Route path="/signup" element={session ? <Navigate to="/dashboard" replace /> : <Signup />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/privacy" element={<PrivacyPolicy />} />
+      <Route path="/terms" element={<TermsOfUse />} />
       <Route
         path="/*"
         element={

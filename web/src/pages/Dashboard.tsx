@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useHabits, useToggleCompletion, localDateStr } from '../hooks/useHabits'
 import { useUIStore } from '../store/uiStore'
 import { useAuthStore } from '../store/authStore'
@@ -243,8 +243,8 @@ function OceanWave({ darkMode, userName }: { darkMode: boolean; userName: string
           }}
         >
           <div className="flex flex-row gap-1">
-            <div>Hey <span style={{ color: '#ec4899', fontWeight: 700 }}>{userName}</span>,</div>
-            <div>You got this!! 🩷</div>
+            <div>Keep going <span style={{ color: '#ec4899', fontWeight: 700 }}>{userName}</span>!</div>
+            <div>🌸</div>
           </div>
         </div>
       </div>
@@ -704,7 +704,7 @@ export default function Dashboard() {
           Habit<span style={{ color: '#38BDF8' }}>·</span>at
         </h1>
         <div className="mb-2 px-2 text-center max-w-xs">
-          <QuoteRotator intervalMs={600000} darkMode={darkMode} />
+          <QuoteRotator intervalMs={45000} darkMode={darkMode} />
         </div>
 
         <StreakHero
@@ -752,28 +752,84 @@ export default function Dashboard() {
               ].map(({ label, value, accent }) => (
                 <div key={label} className="rounded-2xl p-3 text-center glass-card">
                   <p className="text-3xl font-bold leading-none mb-1" style={{ color: accent, letterSpacing: '-0.02em' }}>{value}</p>
-                  <p className="text-[10px] font-semibold tracking-wide uppercase" style={{ color: t.textMuted }}>{label}</p>
+                  <p className="text-[11px] font-semibold tracking-wide uppercase" style={{ color: t.textMuted }}>{label}</p>
                 </div>
               ))}
             </div>
 
-            {/* Quick complete chips */}
+            {/* Quick complete — card carousel */}
             {quickHabits.length > 0 && (
               <div className="mb-6">
-                <p className="text-sm font-semibold mb-2" style={{ color: t.textMuted }}>Quick complete</p>
-                <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
-                  {quickHabits.map((h) => (
-                    <motion.button
-                      key={h.id}
-                      whileTap={{ scale: 0.92 }}
-                      onClick={() => handleToggle(h.id, todayStr)}
-                      className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-full text-sm font-medium flex-shrink-0"
-                      style={{ background: 'rgba(56,189,248,0.12)', border: '1px solid rgba(56,189,248,0.25)', color: '#38BDF8' }}
-                    >
-                      <span>{h.emoji}</span>
-                      <span>{h.name}</span>
-                    </motion.button>
-                  ))}
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-xs font-semibold tracking-wide uppercase" style={{ color: t.textMuted, letterSpacing: '0.07em' }}>
+                    Today's queue
+                  </p>
+                  <p className="text-xs" style={{ color: t.textSub }}>{quickHabits.length} remaining</p>
+                </div>
+                <div className="relative">
+                  {/* Fade-out hint on right edge */}
+                  <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-10 z-10"
+                    style={{ background: `linear-gradient(to left, ${t.bg}, transparent)` }} />
+                  <div
+                    className="flex gap-3 overflow-x-auto no-scrollbar pb-1"
+                    style={{ marginLeft: -16, marginRight: -16, paddingLeft: 16, paddingRight: 24 }}
+                  >
+                    {quickHabits.map((h) => (
+                      <motion.button
+                        key={h.id}
+                        whileTap={{ scale: 0.91 }}
+                        onClick={() => handleToggle(h.id, todayStr)}
+                        className="flex-shrink-0 flex flex-col items-center text-center"
+                        style={{ width: 84 }}
+                      >
+                        {/* Emoji bubble */}
+                        <div
+                          className="w-16 h-16 rounded-2xl flex items-center justify-center mb-2 relative"
+                          style={{
+                            background: darkMode
+                              ? 'linear-gradient(145deg, rgba(37,99,235,0.28) 0%, rgba(56,189,248,0.16) 100%)'
+                              : 'linear-gradient(145deg, rgba(37,99,235,0.12) 0%, rgba(147,197,253,0.22) 100%)',
+                            border: darkMode
+                              ? '1px solid rgba(56,189,248,0.28)'
+                              : '1px solid rgba(37,99,235,0.20)',
+                            boxShadow: darkMode
+                              ? '0 4px 18px rgba(37,99,235,0.22), inset 0 1px 0 rgba(255,255,255,0.08)'
+                              : '0 2px 14px rgba(37,99,235,0.14), inset 0 1px 0 rgba(255,255,255,0.6)',
+                          }}
+                        >
+                          <span style={{ fontSize: 28 }}>{h.emoji}</span>
+                          {/* "+" badge */}
+                          <div
+                            className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center"
+                            style={{
+                              background: 'linear-gradient(135deg, #2563EB, #38BDF8)',
+                              border: `2px solid ${t.bg}`,
+                              fontSize: 12,
+                              color: 'white',
+                              fontWeight: 700,
+                              lineHeight: 1,
+                              boxShadow: '0 2px 6px rgba(37,99,235,0.4)',
+                            }}
+                          >
+                            +
+                          </div>
+                        </div>
+                        <span
+                          className="text-xs font-medium leading-snug"
+                          style={{
+                            color: t.text,
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden',
+                            maxWidth: 80,
+                          } as React.CSSProperties}
+                        >
+                          {h.name}
+                        </span>
+                      </motion.button>
+                    ))}
+                  </div>
                 </div>
               </div>
             )}

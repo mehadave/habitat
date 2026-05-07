@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuthStore } from '../store/authStore'
 import { useUIStore } from '../store/uiStore'
@@ -265,6 +265,27 @@ export default function Profile() {
 
         {/* Settings cards */}
         <div className="space-y-3">
+          {/* Statistics shortcut */}
+          <button
+            onClick={() => navigate('/analytics')}
+            className="w-full flex items-center gap-3 px-4 py-4 rounded-2xl text-left"
+            style={{ background: t.cardBg, border: `1px solid ${t.cardBorder}` }}
+          >
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+              style={{ background: 'rgba(56,189,248,0.12)', border: '1px solid rgba(56,189,248,0.22)' }}>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+              </svg>
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-semibold" style={{ color: t.text }}>Statistics</p>
+              <p className="text-xs" style={{ color: t.textMuted }}>Trends, streaks & insights</p>
+            </div>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" style={{ color: t.textSub }}>
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </button>
+
           {/* Display name */}
           <div className="rounded-2xl p-4"
             style={{ background: t.cardBg, border: `1px solid ${t.cardBorder}` }}>
@@ -366,6 +387,51 @@ export default function Profile() {
               Delete my account →
             </button>
           </div>
+
+          {/* App info */}
+          <div className="rounded-2xl overflow-hidden"
+            style={{ background: t.cardBg, border: `1px solid ${t.cardBorder}` }}>
+            {/* Privacy Policy — in-app route */}
+            <Link
+              to="/privacy"
+              className="flex items-center gap-3 px-4 py-3.5 text-sm"
+              style={{ color: t.textMuted, borderBottom: `1px solid ${t.divider}`, textDecoration: 'none', display: 'flex' }}
+            >
+              <span style={{ fontSize: 16 }}>🔏</span>
+              <span className="flex-1">Privacy Policy</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <path d="M9 18l6-6-6-6"/>
+              </svg>
+            </Link>
+            {/* Terms of Use — in-app route */}
+            <Link
+              to="/terms"
+              className="flex items-center gap-3 px-4 py-3.5 text-sm"
+              style={{ color: t.textMuted, borderBottom: `1px solid ${t.divider}`, textDecoration: 'none', display: 'flex' }}
+            >
+              <span style={{ fontSize: 16 }}>📄</span>
+              <span className="flex-1">Terms of Use</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <path d="M9 18l6-6-6-6"/>
+              </svg>
+            </Link>
+            {/* Support — mailto */}
+            <a
+              href="mailto:davemeha60@gmail.com"
+              className="flex items-center gap-3 px-4 py-3.5 text-sm"
+              style={{ color: t.textMuted, textDecoration: 'none' }}
+            >
+              <span style={{ fontSize: 16 }}>💬</span>
+              <span className="flex-1">Support</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <path d="M9 18l6-6-6-6"/>
+              </svg>
+            </a>
+          </div>
+
+          <p className="text-xs text-center pb-2" style={{ color: t.textSub }}>
+            Habit·at v1.0.0 · Made with 💙
+          </p>
         </div>
       </div>
 

@@ -134,6 +134,18 @@ function ProfileDropdown({ onClose, darkMode }: { onClose: () => void; darkMode:
       </button>
 
       <Link
+        to="/analytics"
+        onClick={onClose}
+        className="flex items-center gap-2.5 px-4 py-3 text-sm"
+        style={{ color: t.linkColor, borderBottom: `1px solid ${t.divider}` }}
+      >
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+        </svg>
+        Statistics
+      </Link>
+
+      <Link
         to="/profile"
         onClick={onClose}
         className="flex items-center gap-2.5 px-4 py-3 text-sm"
@@ -278,8 +290,12 @@ export function NavBar() {
             <Link
               key={to}
               to={to}
-              className="flex-1 flex flex-col items-center py-3 gap-1 transition-all relative"
-              style={{ color: active ? tabActiveText : tabInactiveText }}
+              className="flex-1 flex flex-col items-center py-2.5 gap-1 transition-all mx-1 rounded-2xl"
+              style={{
+                color: active ? tabActiveText : tabInactiveText,
+                background: active ? tabActiveBg : 'transparent',
+                transition: 'background 0.2s ease, color 0.2s ease',
+              }}
             >
               <NavIcon name={icon} size={21} />
               <span style={{ fontSize: 10, fontWeight: active ? 600 : 400, letterSpacing: '0.02em' }}>{label}</span>
