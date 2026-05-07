@@ -120,7 +120,7 @@ export default function Calendar() {
                 className="flex-shrink-0 px-2.5 py-1 rounded-full text-xs font-semibold transition-all"
                 style={{
                   background: filterIds.length === 0 ? 'rgba(37,99,235,0.25)' : t.inputBg,
-                  color: filterIds.length === 0 ? '#93C5FD' : t.textMuted,
+                  color: filterIds.length === 0 ? 'var(--accent-text)' : t.textMuted,
                   border: filterIds.length === 0 ? '1.5px solid #2563EB' : '1px solid var(--border)',
                 }}
               >All</button>
@@ -152,7 +152,7 @@ export default function Calendar() {
                 className="flex-shrink-0 px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all"
                 style={{
                   background: filterIds.length === 0 ? 'rgba(37,99,235,0.25)' : t.inputBg,
-                  color: filterIds.length === 0 ? '#93C5FD' : t.textMuted,
+                  color: filterIds.length === 0 ? 'var(--accent-text)' : t.textMuted,
                   border: filterIds.length === 0 ? '1.5px solid #2563EB' : '1px solid var(--border)',
                 }}
               >All</button>
@@ -221,7 +221,7 @@ export default function Calendar() {
                   cursor: isFuture ? 'default' : 'pointer',
                 }}
               >
-                <span className="text-sm font-medium" style={{ color: isToday ? '#93C5FD' : t.text }}>
+                <span className="text-sm font-medium" style={{ color: isToday ? 'var(--accent-text)' : t.text }}>
                   {day}
                 </span>
                 {completedHabits.length > 0 && (

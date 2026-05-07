@@ -407,7 +407,7 @@ export default function Journal() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               className="flex items-center gap-2 px-3 py-2 rounded-xl mb-3 text-xs font-semibold"
-              style={{ background: 'rgba(96,165,250,0.15)', color: '#93C5FD', border: '1px solid rgba(96,165,250,0.3)' }}
+              style={{ background: 'rgba(96,165,250,0.15)', color: 'var(--accent-text)', border: '1px solid rgba(96,165,250,0.3)' }}
             >
               <span>☁</span>
               <span>Draft restored — pick up where you left off</span>
@@ -643,7 +643,7 @@ export default function Journal() {
             className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold transition-all"
             style={{
               background: filterCat === null ? 'rgba(96,165,250,0.25)' : t.inputBg,
-              color: filterCat === null ? '#93C5FD' : t.textSub,
+              color: filterCat === null ? 'var(--accent-text)' : t.textSub,
               border: filterCat === null ? '1px solid rgba(96,165,250,0.45)' : '1px solid transparent',
             }}
           >All</button>
@@ -821,7 +821,7 @@ export default function Journal() {
                       }}
                     >
                       <span style={{ fontSize: 18 }}>{m.emoji}</span>
-                      <span className="text-[9px] font-semibold" style={{ color: sel ? '#93C5FD' : t.textSub }}>{m.label}</span>
+                      <span className="text-[9px] font-semibold" style={{ color: sel ? 'var(--accent-text)' : t.textSub }}>{m.label}</span>
                     </button>
                   )
                 })}
