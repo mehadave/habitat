@@ -10,45 +10,41 @@ let deferredPrompt: BeforeInstallPromptEvent | null = null
 
 export function InstallPrompt() {
   const { darkMode } = useUIStore()
-  const [show, setShow] = useState(false)
-  const [platform, setPlatform] = useState<'ios' | 'android' | null>(null)
-  const [canInstall, setCanInstall] = useState(false)
-
-  useEffect(() => {
-    if (sessionStorage.getItem('pwa-prompt-dismissed')) return
-
+  const [platform, setPlatform] = useState<'ios' | 'android' | null>(() => {
+    if (typeof window === 'undefined') return null
+    if (sessionStorage.getItem('pwa-prompt-dismissed')) return null
     const isStandalone =
       ('standalone' in navigator && (navigator as { standalone?: boolean }).standalone === true) ||
       window.matchMedia('(display-mode: standalone)').matches
-    if (isStandalone) return
-
+    if (isStandalone) return null
     const ua = navigator.userAgent
-    const isIOS = /iphone|ipad|ipod/i.test(ua)
-    const isAndroid = /android/i.test(ua)
+    if (/iphone|ipad|ipod/i.test(ua)) return 'ios'
+    if (/android/i.test(ua)) return 'android'
+    return null
+  })
+  const [show, setShow] = useState(false)
+  const [canInstall, setCanInstall] = useState(false)
 
-    if (isIOS) {
-      setPlatform('ios')
-      setTimeout(() => setShow(true), 4000)
-    } else if (isAndroid) {
-      // Show Android prompt immediately from UA — no need to wait for beforeinstallprompt
-      setPlatform('android')
-      setTimeout(() => setShow(true), 4000)
-    }
+  useEffect(() => {
+    if (!platform) return
+    const timer = setTimeout(() => setShow(true), 4000)
 
     function handleBeforeInstallPrompt(e: Event) {
       e.preventDefault()
       deferredPrompt = e as BeforeInstallPromptEvent
       setCanInstall(true)
-      // If not already showing Android prompt, show it now (desktop Chrome case)
-      if (!isIOS && !isAndroid) {
+      if (!platform) {
         setPlatform('android')
         setTimeout(() => setShow(true), 4000)
       }
     }
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
-    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
-  }, [])
+    return () => {
+      clearTimeout(timer)
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
+    }
+  }, [platform])
 
   function dismiss() {
     sessionStorage.setItem('pwa-prompt-dismissed', '1')

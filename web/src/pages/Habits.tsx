@@ -1,7 +1,6 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
 import { motion, AnimatePresence, Reorder } from 'framer-motion'
 import { useHabits, useAddHabit, useUpdateHabit, useDeleteHabit, useToggleCompletion } from '../hooks/useHabits'
-import { useUIStore } from '../store/uiStore'
 import { HabitCard } from '../components/HabitCard'
 import { MonthlyHabitTracker } from '../components/MonthlyHabitTracker'
 import { ArchivedHabitsSection } from '../components/ArchivedHabitsSection'
@@ -115,7 +114,7 @@ interface FormWithNotif extends HabitFormData {
   notifDays: number[]
 }
 
-function buildTokens(_darkMode?: boolean) {
+function buildTokens() {
   return {
     bg: 'var(--bg-app)',
     text: 'var(--text-1)',
@@ -497,7 +496,6 @@ function AddEditSheet({
 
 export default function Habits() {
   const { data: habits = [], isLoading } = useHabits()
-  const { darkMode } = useUIStore()
   const addMutation = useAddHabit()
   const updateMutation = useUpdateHabit()
   const deleteMutation = useDeleteHabit()
@@ -519,19 +517,22 @@ export default function Habits() {
   useEffect(() => {
     if (habits.length === 0 || orderInitialized.current) return
     orderInitialized.current = true
+    let restored: HabitWithStreak[] | null = null
     try {
       const saved = localStorage.getItem(HABIT_ORDER_KEY)
       if (saved) {
         const savedIds: string[] = JSON.parse(saved)
         const active = habits.filter(h => h.is_active !== false)
-        const restored = [...active].sort((a, b) => {
+        restored = [...active].sort((a, b) => {
           const ai = savedIds.indexOf(a.id)
           const bi = savedIds.indexOf(b.id)
           return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi)
         })
-        setManualOrder(restored)
       }
-    } catch {}
+    } catch { /* localStorage unavailable */ }
+    // React 18 batches these two updates — no cascading render
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (restored) setManualOrder(restored)
     setOrderReady(true)
   }, [habits])
 
@@ -539,7 +540,7 @@ export default function Habits() {
     setManualOrder(newOrder)
     try {
       localStorage.setItem(HABIT_ORDER_KEY, JSON.stringify(newOrder.map(h => h.id)))
-    } catch {}
+    } catch { /* localStorage unavailable */ }
   }
 
   useEffect(() => {
@@ -552,7 +553,7 @@ export default function Habits() {
     return () => document.removeEventListener('mousedown', handler)
   }, [])
 
-  const t = buildTokens(darkMode)
+  const t = buildTokens()
 
   const activeHabits = habits.filter((h) => h.is_active !== false)
 

@@ -9,7 +9,8 @@ import { NavBar } from './components/NavBar'
 import { StreakCelebration } from './components/StreakCelebration'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { InstallPrompt } from './components/InstallPrompt'
-import { OnboardingModal, hasCompletedOnboarding } from './components/OnboardingModal'
+import { OnboardingModal } from './components/OnboardingModal'
+import { hasCompletedOnboarding } from './lib/onboarding'
 import { syncNotificationsToSW, scheduleWeeklySummary } from './hooks/useNotifications'
 
 // Auth pages
@@ -34,7 +35,7 @@ function AppShell() {
   const toggleMutation = useToggleCompletion()
   const navigate = useNavigate()
   const habitsRef = useRef(habits)
-  habitsRef.current = habits
+  useEffect(() => { habitsRef.current = habits })
 
   const [showOnboarding, setShowOnboarding] = useState(() => !hasCompletedOnboarding())
 
