@@ -32,18 +32,32 @@ const MOODS = [
 /* ── Draft persistence key ───────────────────────────────────────────────── */
 const DRAFT_KEY = 'habitat-journal-draft'
 
+/* ── Minimal types for browser APIs not guaranteed in all TS DOM libs ──────── */
+interface SpeechRecognitionInstance {
+  continuous: boolean
+  interimResults: boolean
+  lang: string
+  start(): void
+  stop(): void
+  onresult: ((e: { resultIndex: number; results: { isFinal: boolean; [i: number]: { transcript: string } }[] }) => void) | null
+  onerror: ((e: { error: string }) => void) | null
+  onend: (() => void) | null
+}
+interface WakeLockHandle { release(): Promise<void> }
+
 /* ── Voice blob hook ─────────────────────────────────────────────────────── */
 function useVoiceBlob(onText: (text: string) => void) {
   const [recording, setRecording] = useState(false)
   const [micBlocked, setMicBlocked] = useState(false)
-  const recognitionRef = useRef<SpeechRecognition | null>(null)
-  const wakeLockRef = useRef<WakeLockSentinel | null>(null)
+  const recognitionRef = useRef<SpeechRecognitionInstance | null>(null)
+  const wakeLockRef = useRef<WakeLockHandle | null>(null)
   const onTextRef = useRef(onText)
   useEffect(() => { onTextRef.current = onText })
 
   function acquireWakeLock() {
     if ('wakeLock' in navigator) {
-      ;(navigator as unknown as { wakeLock: WakeLock }).wakeLock.request('screen')
+      ;(navigator as unknown as { wakeLock: { request(t: string): Promise<WakeLockHandle> } }).wakeLock
+        .request('screen')
         .then((lock) => { wakeLockRef.current = lock })
         .catch(() => { /* not supported or denied */ })
     }
@@ -65,7 +79,7 @@ function useVoiceBlob(onText: (text: string) => void) {
   }, [])
 
   const start = useCallback(async () => {
-    type SpeechRecognitionCtor = new () => SpeechRecognition
+    type SpeechRecognitionCtor = new () => SpeechRecognitionInstance
     const SR: SpeechRecognitionCtor | undefined =
       (window as unknown as { SpeechRecognition?: SpeechRecognitionCtor }).SpeechRecognition ||
       (window as unknown as { webkitSpeechRecognition?: SpeechRecognitionCtor }).webkitSpeechRecognition
@@ -91,7 +105,7 @@ function useVoiceBlob(onText: (text: string) => void) {
     r.interimResults = false
     r.lang = 'en-US'
 
-    r.onresult = (e: SpeechRecognitionEvent) => {
+    r.onresult = (e) => {
       for (let i = e.resultIndex; i < e.results.length; i++) {
         if (e.results[i].isFinal) {
           const text = e.results[i][0].transcript.trim()
@@ -100,7 +114,7 @@ function useVoiceBlob(onText: (text: string) => void) {
       }
     }
 
-    r.onerror = (e: SpeechRecognitionErrorEvent) => {
+    r.onerror = (e) => {
       if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
         setMicBlocked(true)
       }
