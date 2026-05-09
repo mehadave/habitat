@@ -7,6 +7,23 @@ export function useAuthInit() {
   const { setSession, setProfile, setLoading } = useAuthStore()
   const { setDarkMode, isManualOverrideActive } = useUIStore()
 
+  async function fetchProfile(userId: string) {
+    setLoading(true)
+    const { data } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', userId)
+      .single()
+    if (data) {
+      setProfile(data)
+      // Only sync DB preference if user hasn't manually toggled within the last hour
+      if (!isManualOverrideActive()) {
+        setDarkMode(data.dark_mode ?? true)
+      }
+    }
+    setLoading(false)
+  }
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
@@ -28,22 +45,5 @@ export function useAuthInit() {
     })
 
     return () => subscription.unsubscribe()
-  }, [])
-
-  async function fetchProfile(userId: string) {
-    setLoading(true)
-    const { data } = await supabase
-      .from('users')
-      .select('*')
-      .eq('id', userId)
-      .single()
-    if (data) {
-      setProfile(data)
-      // Only sync DB preference if user hasn't manually toggled within the last hour
-      if (!isManualOverrideActive()) {
-        setDarkMode(data.dark_mode ?? true)
-      }
-    }
-    setLoading(false)
-  }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 }

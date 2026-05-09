@@ -36,15 +36,15 @@ const DRAFT_KEY = 'habitat-journal-draft'
 function useVoiceBlob(onText: (text: string) => void) {
   const [recording, setRecording] = useState(false)
   const [micBlocked, setMicBlocked] = useState(false)
-  const recognitionRef = useRef<any>(null)
-  const wakeLockRef = useRef<any>(null)
+  const recognitionRef = useRef<SpeechRecognition | null>(null)
+  const wakeLockRef = useRef<WakeLockSentinel | null>(null)
   const onTextRef = useRef(onText)
-  onTextRef.current = onText
+  useEffect(() => { onTextRef.current = onText })
 
   function acquireWakeLock() {
     if ('wakeLock' in navigator) {
-      ;(navigator as any).wakeLock.request('screen')
-        .then((lock: any) => { wakeLockRef.current = lock })
+      ;(navigator as unknown as { wakeLock: WakeLock }).wakeLock.request('screen')
+        .then((lock) => { wakeLockRef.current = lock })
         .catch(() => { /* not supported or denied */ })
     }
   }
@@ -62,11 +62,13 @@ function useVoiceBlob(onText: (text: string) => void) {
     }
     setRecording(false)
     releaseWakeLock()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const start = useCallback(async () => {
-    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+    type SpeechRecognitionCtor = new () => SpeechRecognition
+    const SR: SpeechRecognitionCtor | undefined =
+      (window as unknown as { SpeechRecognition?: SpeechRecognitionCtor }).SpeechRecognition ||
+      (window as unknown as { webkitSpeechRecognition?: SpeechRecognitionCtor }).webkitSpeechRecognition
     if (!SR) return
 
     // Check permission state if API is available
@@ -89,7 +91,7 @@ function useVoiceBlob(onText: (text: string) => void) {
     r.interimResults = false
     r.lang = 'en-US'
 
-    r.onresult = (e: any) => {
+    r.onresult = (e: SpeechRecognitionEvent) => {
       for (let i = e.resultIndex; i < e.results.length; i++) {
         if (e.results[i].isFinal) {
           const text = e.results[i][0].transcript.trim()
@@ -98,7 +100,7 @@ function useVoiceBlob(onText: (text: string) => void) {
       }
     }
 
-    r.onerror = (e: any) => {
+    r.onerror = (e: SpeechRecognitionErrorEvent) => {
       if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
         setMicBlocked(true)
       }
@@ -123,7 +125,6 @@ function useVoiceBlob(onText: (text: string) => void) {
     recognitionRef.current = r
     setRecording(true)
     acquireWakeLock()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Tap-to-toggle: one tap starts, another tap stops
@@ -348,7 +349,8 @@ export default function Journal() {
     })
   })
   const voiceSupported = !!(
-    (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+    (window as unknown as { SpeechRecognition?: unknown }).SpeechRecognition ||
+    (window as unknown as { webkitSpeechRecognition?: unknown }).webkitSpeechRecognition
   )
 
   /* save / new */

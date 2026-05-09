@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 interface StreakHeroProps {
   streak: number
   startDate?: string
@@ -7,13 +9,19 @@ interface StreakHeroProps {
 }
 
 export function StreakHero({ streak, startDate, darkMode = true, label, sublabel }: StreakHeroProps) {
-  const daysIn = startDate
-    ? Math.floor((Date.now() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24))
-    : null
+  const daysIn = useMemo(
+    () => startDate
+      ? Math.floor((new Date().getTime() - new Date(startDate + 'T00:00:00').getTime()) / (1000 * 60 * 60 * 24))
+      : null,
+    [startDate]
+  )
 
-  const formattedStart = startDate
-    ? new Date(startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-    : null
+  const formattedStart = useMemo(
+    () => startDate
+      ? new Date(startDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+      : null,
+    [startDate]
+  )
 
   const labelColor  = darkMode ? 'rgba(255,255,255,0.42)' : 'rgba(11,20,55,0.55)'
   const subColor    = darkMode ? 'rgba(255,255,255,0.28)' : 'rgba(11,20,55,0.45)'

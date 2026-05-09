@@ -145,7 +145,7 @@ export function useToggleCompletion() {
           .eq('habit_id', habit.id)
           .order('completed_date', { ascending: true })
 
-        const dates = (remaining || []).map((r: any) => r.completed_date as string)
+        const dates = (remaining || []).map((r: { completed_date: string }) => r.completed_date)
         const newStreak = calcCurrentStreak(dates)
         const newLongest = calcLongestStreak(dates)
         const lastDate = dates.length > 0 ? dates[dates.length - 1] : null
@@ -171,7 +171,7 @@ export function useToggleCompletion() {
           .eq('habit_id', habit.id)
           .order('completed_date', { ascending: true })
 
-        const dates = (allDates || []).map((r: any) => r.completed_date as string)
+        const dates = (allDates || []).map((r: { completed_date: string }) => r.completed_date)
         const newStreak = calcCurrentStreak(dates)
         const newLongest = Math.max(calcLongestStreak(dates), habit.streak?.longest_streak ?? 0)
         const lastDate = dates.length > 0 ? dates[dates.length - 1] : null
@@ -192,7 +192,7 @@ export function useToggleCompletion() {
       }
     },
 
-    onError: (_err, _vars, context: any) => {
+    onError: (_err, _vars, context: { previous: HabitWithStreak[] | undefined } | undefined) => {
       // Roll back optimistic update on failure
       if (context?.previous) {
         qc.setQueryData(['habits', session!.user.id], context.previous)

@@ -5,9 +5,9 @@ export const LEVEL_NAMES: Record<number, string> = {
   4: 'Swell',
   5: 'Tide',
   6: 'Deep Dive',
-  7: 'Deep Dive',
+  7: 'Undertow',
   8: 'Navigator',
-  9: 'Navigator',
+  9: 'Sonar',
 }
 
 export function getLevelName(level: number): string {
@@ -75,7 +75,9 @@ export function shouldGetVariableReward(): boolean {
 
 export const IDENTITY_COPY: Record<string, string> = {
   'Pod Leader': "Pod Leaders don't miss twice.",
+  'Sonar': "Sonar finds what others miss.",
   'Navigator': "Navigators chart the course, even in rough waters.",
+  'Undertow': "The undertow is invisible — and unstoppable.",
   'Deep Dive': "Deep Divers go where others won't.",
   'Tide': "Tides are relentless. So are you.",
   'Swell': "Swells build slowly — then they're unstoppable.",

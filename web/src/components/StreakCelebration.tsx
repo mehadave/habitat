@@ -7,7 +7,7 @@ const CONFETTI_COLORS = [
   '#FB923C', '#ffffff', '#93C5FD', '#6EE7B7', '#FDE68A',
 ]
 
-function Particle({ color, x, delay, shape }: { color: string; x: number; delay: number; shape: 'rect' | 'circle' }) {
+function Particle({ color, x, delay, duration, shape }: { color: string; x: number; delay: number; duration: number; shape: 'rect' | 'circle' }) {
   return (
     <motion.div
       className="absolute top-0"
@@ -20,7 +20,7 @@ function Particle({ color, x, delay, shape }: { color: string; x: number; delay:
       }}
       initial={{ y: -20, opacity: 1, rotate: 0, scale: 1 }}
       animate={{ y: '110vh', opacity: 0, rotate: 540, scale: 0.5 }}
-      transition={{ duration: 2.5 + Math.random() * 2, delay, ease: 'easeIn' }}
+      transition={{ duration, delay, ease: 'easeIn' }}
     />
   )
 }
@@ -106,6 +106,7 @@ export function StreakCelebration() {
       color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
       x: Math.random() * 100,
       delay: Math.random() * 1.8,
+      duration: 2.5 + Math.random() * 2,
       shape: (i % 3 === 0 ? 'circle' : 'rect') as 'rect' | 'circle',
     }))
   )
@@ -114,7 +115,7 @@ export function StreakCelebration() {
     if (!celebration) return
     const t = setTimeout(dismissCelebration, 6000)
     return () => clearTimeout(t)
-  }, [celebration])
+  }, [celebration, dismissCelebration])
 
   const config = celebration ? getMilestoneConfig(celebration.days) : null
 
@@ -132,7 +133,7 @@ export function StreakCelebration() {
           {/* Confetti */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
             {particles.map((p) => (
-              <Particle key={p.id} color={p.color} x={p.x} delay={p.delay} shape={p.shape} />
+              <Particle key={p.id} color={p.color} x={p.x} delay={p.delay} duration={p.duration} shape={p.shape} />
             ))}
           </div>
 

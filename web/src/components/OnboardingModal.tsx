@@ -1,16 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { DolphinLogo } from './DolphinLogo'
-
-const STORAGE_KEY = 'habitat-onboarding-complete'
-
-export function hasCompletedOnboarding(): boolean {
-  return localStorage.getItem(STORAGE_KEY) === 'true'
-}
-
-export function markOnboardingComplete() {
-  localStorage.setItem(STORAGE_KEY, 'true')
-}
+import { markOnboardingComplete } from '../lib/onboarding'
 
 interface Step {
   icon: string

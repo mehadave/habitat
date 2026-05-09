@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { useHabits, localDateStr } from '../hooks/useHabits'
 import { useUIStore } from '../store/uiStore'
 import { motion } from 'framer-motion'
@@ -8,6 +8,23 @@ import {
 } from 'recharts'
 
 type Range = '7d' | '30d' | '90d' | 'all'
+
+type ThemeTokens = { alt: string; border: string; text: string }
+
+function CustomTooltip({ active, payload, label, t }: {
+  active?: boolean
+  payload?: Array<{ value: number; name: string }>
+  label?: string
+  t: ThemeTokens
+}) {
+  if (!active || !payload?.length) return null
+  return (
+    <div className="rounded-xl px-3 py-2 text-xs" style={{ background: t.alt, border: `1px solid ${t.border}`, color: t.text }}>
+      <p style={{ color: '#93C5FD', marginBottom: 2 }}>{label}</p>
+      <p>{payload[0].value}{payload[0].name === 'pct' ? '%' : ' completions'}</p>
+    </div>
+  )
+}
 
 function daysAgo(days: number): string {
   const d = new Date()
@@ -107,23 +124,26 @@ export default function Analytics() {
   }, null)
 
   // Per-habit stats
-  const habitStats = habits.map(h => {
-    const comps = h.completions?.filter(d => d >= rangeStart) ?? []
-    const daysInRange = Math.max(
-      Math.ceil((Date.now() - new Date(Math.max(new Date(rangeStart).getTime(), new Date(h.created_at).getTime())).getTime()) / (1000 * 60 * 60 * 24)),
-      1
-    )
-    const rate = Math.min(Math.round((comps.length / daysInRange) * 100), 100)
-    return {
-      ...h,
-      comps: comps.length,
-      rate,
-      streak: h.streak?.current_streak ?? 0,
-      best: h.streak?.longest_streak ?? 0,
-      total: h.completions?.length ?? 0,
-      doneToday: h.completions?.includes(todayStr) ?? false,
-    }
-  }).sort((a, b) => b.rate - a.rate)
+  const habitStats = useMemo(() => {
+    const now = new Date().getTime()
+    return habits.map(h => {
+      const comps = h.completions?.filter(d => d >= rangeStart) ?? []
+      const daysInRange = Math.max(
+        Math.ceil((now - new Date(Math.max(new Date(rangeStart).getTime(), new Date(h.created_at).getTime())).getTime()) / (1000 * 60 * 60 * 24)),
+        1
+      )
+      const rate = Math.min(Math.round((comps.length / daysInRange) * 100), 100)
+      return {
+        ...h,
+        comps: comps.length,
+        rate,
+        streak: h.streak?.current_streak ?? 0,
+        best: h.streak?.longest_streak ?? 0,
+        total: h.completions?.length ?? 0,
+        doneToday: h.completions?.includes(todayStr) ?? false,
+      }
+    }).sort((a, b) => b.rate - a.rate)
+  }, [habits, rangeStart, todayStr])
 
   // Day-of-week analysis
   const DAY_LABELS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
@@ -149,16 +169,6 @@ export default function Analytics() {
     const ds = localDateStr(d)
     return { ds, label: d.toLocaleDateString('en-US', { weekday: 'short' }).slice(0, 1), isToday: ds === todayStr }
   })
-
-  const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: Array<{ value: number; name: string }>; label?: string }) => {
-    if (!active || !payload?.length) return null
-    return (
-      <div className="rounded-xl px-3 py-2 text-xs" style={{ background: t.alt, border: `1px solid ${t.border}`, color: t.text }}>
-        <p style={{ color: '#93C5FD', marginBottom: 2 }}>{label}</p>
-        <p>{payload[0].value}{payload[0].name === 'pct' ? '%' : ' completions'}</p>
-      </div>
-    )
-  }
 
   return (
     <div className="app-bg min-h-screen" style={{ paddingTop: 76, paddingBottom: 100 }}>
@@ -298,7 +308,7 @@ export default function Analytics() {
                 axisLine={false}
                 tickFormatter={v => `${v}%`}
               />
-              <Tooltip content={<CustomTooltip />} />
+              <Tooltip content={<CustomTooltip t={t} />} />
               <Area
                 type="monotone" dataKey="pct" name="pct"
                 stroke="#2563EB" strokeWidth={2.5}
@@ -462,7 +472,7 @@ export default function Analytics() {
                 <XAxis dataKey="date" tick={{ fill: t.sub as string, fontSize: 8 }} tickLine={false} axisLine={false}
                   interval={range === '7d' ? 0 : 4} />
                 <YAxis hide />
-                <Tooltip content={<CustomTooltip />} />
+                <Tooltip content={<CustomTooltip t={t} />} />
                 <Bar dataKey="count" name="count" radius={[3, 3, 0, 0]}>
                   {chartData.map((entry, i) => (
                     <Cell key={i}

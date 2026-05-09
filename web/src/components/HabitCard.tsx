@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { motion, useDragControls } from 'framer-motion'
 import { useUIStore } from '../store/uiStore'
 import type { HabitWithStreak } from '../lib/types'
@@ -65,7 +65,10 @@ export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
   const streak = habit.streak?.current_streak ?? 0
   const streakColor = streak >= 7 ? '#93C5FD' : streak >= 3 ? '#60A5FA' : streak > 0 ? '#FBBF24' : '#F87171'
 
-  const monthsAgo = Math.floor((Date.now() - new Date(habit.created_at).getTime()) / (1000 * 60 * 60 * 24 * 30))
+  const monthsAgo = useMemo(
+    () => Math.floor((new Date().getTime() - new Date(habit.created_at).getTime()) / (1000 * 60 * 60 * 24 * 30)),
+    [habit.created_at]
+  )
   const isPrivate = habit.is_private && !revealed
 
   const cardBg = darkMode ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.9)'

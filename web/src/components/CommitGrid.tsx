@@ -4,7 +4,6 @@ import { useUIStore } from '../store/uiStore'
 import { localDateStr } from '../hooks/useHabits'
 
 interface CommitGridProps {
-  habitId?: string
   habitName: string
   completions: string[]
   onToggle: (date: string) => void

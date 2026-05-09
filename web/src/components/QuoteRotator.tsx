@@ -7,9 +7,13 @@ interface QuoteRotatorProps {
 }
 
 export function QuoteRotator({ intervalMs = 600000, darkMode = true }: QuoteRotatorProps) {
-  const [quote, setQuote] = useState<Quote>(() => QUOTES[Math.floor(Math.random() * QUOTES.length)])
+  const [initialState] = useState(() => {
+    const idx = Math.floor(Math.random() * QUOTES.length)
+    return { idx, quote: QUOTES[idx] }
+  })
+  const [quote, setQuote] = useState<Quote>(initialState.quote)
   const [key, setKey] = useState(0)
-  const idxRef = useRef(Math.floor(Math.random() * QUOTES.length))
+  const idxRef = useRef(initialState.idx)
 
   useEffect(() => {
     const timer = setInterval(() => {
