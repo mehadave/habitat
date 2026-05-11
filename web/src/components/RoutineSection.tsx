@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { motion, AnimatePresence, Reorder } from 'framer-motion'
-import { HabitCard } from './HabitCard'
 import type { Routine, HabitWithStreak } from '../lib/types'
 
 interface RoutineSectionProps {
   routine: Routine
   habits: HabitWithStreak[]
   isDefaultSort: boolean
+  isActive?: boolean
   onEdit: (h: HabitWithStreak) => void
   onDelete: (id: string) => void
   onEditRoutine: (r: Routine) => void
@@ -18,86 +18,176 @@ function localToday() {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
 
-const CARD_H = 56
-const STACK_OFFSET = 12
-const MAX_STACK = 3
+function statusText(habit: HabitWithStreak, done: boolean): string {
+  const streak = habit.streak?.current_streak ?? 0
+  if (done && streak >= 7) return 'Crushed it!'
+  if (done && streak >= 3) return 'Victory!'
+  if (done) return 'Done!'
+  if (streak > 0) return 'Get after it!'
+  return 'Waiting on you...'
+}
+
+function statusColor(done: boolean, streak: number): string {
+  if (done) return 'rgba(129,140,248,0.9)'   // indigo — matches screenshot
+  if (streak > 0) return 'rgba(251,191,36,0.7)'
+  return 'rgba(255,255,255,0.2)'
+}
+
+function RoutineHabitRow({
+  habit,
+  today,
+  onEdit,
+}: {
+  habit: HabitWithStreak
+  today: string
+  onEdit: (h: HabitWithStreak) => void
+}) {
+  const done = habit.completions?.includes(today) ?? false
+  const streak = habit.streak?.current_streak ?? 0
+
+  return (
+    <div
+      className="flex items-center gap-3 py-2.5 px-1"
+      style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}
+    >
+      {/* Circle checkbox */}
+      <div
+        className="flex-shrink-0 flex items-center justify-center rounded-full"
+        style={{
+          width: 28,
+          height: 28,
+          background: done ? 'rgba(129,140,248,0.9)' : 'transparent',
+          border: done ? 'none' : '2px solid rgba(255,255,255,0.2)',
+          transition: 'background 0.2s, border 0.2s',
+        }}
+      >
+        {done && (
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        )}
+      </div>
+
+      {/* Emoji + name + description */}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-1.5">
+          {habit.emoji && (
+            <span style={{ fontSize: 14, lineHeight: 1 }}>{habit.emoji}</span>
+          )}
+          <span
+            className="text-sm font-semibold truncate"
+            style={{ color: done ? 'rgba(255,255,255,0.45)' : 'rgba(255,255,255,0.9)' }}
+          >
+            {habit.name}
+          </span>
+        </div>
+        {habit.description && (
+          <p className="text-xs mt-0.5 truncate" style={{ color: 'rgba(255,255,255,0.3)' }}>
+            {habit.description}
+          </p>
+        )}
+      </div>
+
+      {/* Status text */}
+      <span
+        className="text-xs font-medium flex-shrink-0"
+        style={{ color: statusColor(done, streak) }}
+      >
+        {statusText(habit, done)}
+      </span>
+
+      {/* Edit button */}
+      <button
+        onClick={() => onEdit(habit)}
+        className="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-lg"
+        style={{ background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.25)' }}
+      >
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+          <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        </svg>
+      </button>
+    </div>
+  )
+}
 
 export function RoutineSection({
   routine,
   habits,
   isDefaultSort,
+  isActive = false,
   onEdit,
-  onDelete,
+  onDelete: _onDelete,
   onEditRoutine,
   onReorder,
 }: RoutineSectionProps) {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(true)
   const today = localToday()
   const doneCount = habits.filter(h => h.completions?.includes(today)).length
   const total = habits.length
   const allDone = total > 0 && doneCount === total
-  const pct = total > 0 ? doneCount / total : 0
 
-  const previewHabits = habits.slice(0, MAX_STACK)
-  const hasMore = habits.length > MAX_STACK
-  // height = top card + (n-1) offsets + progress bar area
-  const stackH = habits.length === 0 ? 0 : CARD_H + (previewHabits.length - 1) * STACK_OFFSET + 28
+  const glowStyle = isActive
+    ? {
+        boxShadow: '0 0 0 1.5px rgba(139,92,246,0.55), 0 0 28px rgba(139,92,246,0.22), 0 0 56px rgba(99,102,241,0.1), 0 8px 32px rgba(0,0,0,0.35)',
+        border: '1.5px solid rgba(139,92,246,0.45)',
+      }
+    : {
+        boxShadow: '0 4px 24px rgba(0,0,0,0.25)',
+        border: '1px solid rgba(255,255,255,0.07)',
+      }
 
   return (
-    <div
-      className="mb-3 rounded-2xl"
+    <motion.div
+      className="mb-4 rounded-2xl overflow-hidden"
+      layout
       style={{
-        background: 'rgba(255,255,255,0.03)',
-        border: '1px solid rgba(255,255,255,0.07)',
-        padding: '2px 0 2px',
-        backdropFilter: 'blur(8px)',
+        background: 'rgba(255,255,255,0.04)',
+        backdropFilter: 'blur(16px)',
+        ...glowStyle,
       }}
     >
-      {/* Section header */}
+      {/* Card header */}
       <div
-        className="flex items-center gap-2 px-3 py-2.5 cursor-pointer select-none"
+        className="flex items-center gap-3 px-4 pt-4 pb-3 cursor-pointer select-none"
         onClick={() => setOpen(v => !v)}
       >
-        <span className="text-base leading-none flex-shrink-0">{routine.emoji}</span>
-        <span className="text-sm font-semibold flex-1 truncate" style={{ color: allDone ? '#54e98a' : 'var(--text-1)' }}>
-          {routine.name}
-        </span>
+        <span className="text-xl leading-none flex-shrink-0">{routine.emoji}</span>
 
-        {routine.time_of_day && (
-          <span
-            className="text-[10px] font-medium px-2 py-0.5 rounded-full flex-shrink-0"
-            style={{
-              background: 'rgba(84,233,138,0.08)',
-              color: 'rgba(84,233,138,0.75)',
-              border: '1px solid rgba(84,233,138,0.18)',
-            }}
+        <div className="flex-1 min-w-0">
+          <h3
+            className="text-base font-bold leading-tight truncate"
+            style={{ color: allDone ? 'rgba(129,140,248,0.9)' : 'rgba(255,255,255,0.92)' }}
           >
-            {routine.time_of_day}
-          </span>
-        )}
+            {routine.name}
+          </h3>
+          {routine.time_of_day && (
+            <span className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>
+              {routine.time_of_day}
+            </span>
+          )}
+        </div>
 
-        {/* X/Y done badge */}
+        {/* X/Y badge */}
         <span
-          className="text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0 tabular-nums"
+          className="text-xs font-bold px-2.5 py-1 rounded-full flex-shrink-0 tabular-nums"
           style={{
-            background: allDone ? 'rgba(84,233,138,0.14)' : 'rgba(255,255,255,0.05)',
-            color: allDone ? '#54e98a' : 'var(--text-3)',
-            border: allDone ? '1px solid rgba(84,233,138,0.28)' : '1px solid rgba(255,255,255,0.1)',
+            background: allDone ? 'rgba(129,140,248,0.18)' : 'rgba(255,255,255,0.07)',
+            color: allDone ? 'rgba(129,140,248,0.95)' : 'rgba(255,255,255,0.4)',
+            border: allDone ? '1px solid rgba(139,92,246,0.3)' : '1px solid rgba(255,255,255,0.1)',
           }}
         >
           {doneCount}/{total}
         </span>
 
-        {/* Edit routine */}
+        {/* Edit routine icon */}
         <button
           onClick={e => { e.stopPropagation(); onEditRoutine(routine) }}
-          className="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors"
-          style={{ background: 'transparent', color: 'var(--text-3)' }}
+          className="w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0"
+          style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.3)' }}
           title="Edit routine"
-          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-2)' }}
-          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-3)' }}
         >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
             <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
           </svg>
@@ -105,11 +195,11 @@ export function RoutineSection({
 
         {/* Collapse arrow */}
         <svg
-          width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
           strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
           className="flex-shrink-0"
           style={{
-            color: 'var(--text-3)',
+            color: 'rgba(255,255,255,0.25)',
             transform: open ? 'rotate(0deg)' : 'rotate(-90deg)',
             transition: 'transform 0.2s ease',
           }}
@@ -118,137 +208,20 @@ export function RoutineSection({
         </svg>
       </div>
 
-      {/* Progress bar track */}
+      {/* Progress bar */}
       {total > 0 && (
-        <div
-          className="mx-3 mb-2 rounded-full overflow-hidden"
-          style={{ height: 2, background: 'rgba(255,255,255,0.07)' }}
-        >
+        <div className="mx-4 mb-3 rounded-full overflow-hidden" style={{ height: 2, background: 'rgba(255,255,255,0.07)' }}>
           <motion.div
             className="h-full rounded-full"
-            style={{ background: allDone ? '#54e98a' : 'rgba(84,233,138,0.5)' }}
+            style={{ background: isActive ? 'rgba(139,92,246,0.7)' : 'rgba(129,140,248,0.5)' }}
             initial={false}
-            animate={{ width: `${pct * 100}%` }}
+            animate={{ width: `${(doneCount / total) * 100}%` }}
             transition={{ duration: 0.4, ease: 'easeOut' }}
           />
         </div>
       )}
 
-      {/* Stacked flashcard preview — shown when collapsed */}
-      <AnimatePresence initial={false}>
-        {!open && habits.length > 0 && (
-          <motion.div
-            key="stack"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: stackH }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.22, ease: 'easeInOut' }}
-            style={{ position: 'relative', marginBottom: 4, cursor: 'pointer', marginLeft: 8, marginRight: 8 }}
-            onClick={() => setOpen(true)}
-          >
-            {previewHabits.map((habit, idx) => {
-              const isDone = habit.completions?.includes(today)
-              return (
-                <motion.div
-                  key={habit.id}
-                  initial={{ opacity: 0, y: -6 }}
-                  animate={{ opacity: 1 - idx * 0.18, y: 0 }}
-                  transition={{ delay: idx * 0.04, duration: 0.18 }}
-                  style={{
-                    position: 'absolute',
-                    top: idx * STACK_OFFSET,
-                    left: idx * 5,
-                    right: idx * 5,
-                    height: CARD_H,
-                    // Glassmorphism card - Zenith Productivity palette
-                    background: idx === 0
-                      ? isDone
-                        ? 'rgba(84,233,138,0.07)'
-                        : 'rgba(255,255,255,0.05)'
-                      : `rgba(16,19,26,${0.7 - idx * 0.08})`,
-                    backdropFilter: 'blur(12px)',
-                    border: idx === 0
-                      ? isDone
-                        ? '1px solid rgba(84,233,138,0.25)'
-                        : '1px solid rgba(255,255,255,0.12)'
-                      : `1px solid rgba(255,255,255,${0.07 - idx * 0.02})`,
-                    borderRadius: 14,
-                    boxShadow: idx === 0
-                      ? '0 4px 24px rgba(0,0,0,0.28)'
-                      : `0 ${idx * 2}px ${idx * 8 + 4}px rgba(0,0,0,0.18)`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 10,
-                    padding: '0 14px',
-                    zIndex: MAX_STACK - idx,
-                    scale: 1 - idx * 0.018,
-                    transformOrigin: 'top center',
-                  }}
-                >
-                  {/* Emerald left accent strip on top card */}
-                  {idx === 0 && (
-                    <div
-                      style={{
-                        position: 'absolute',
-                        left: 0,
-                        top: 10,
-                        bottom: 10,
-                        width: 3,
-                        borderRadius: '0 2px 2px 0',
-                        background: isDone ? '#54e98a' : 'rgba(84,233,138,0.35)',
-                      }}
-                    />
-                  )}
-
-                  <span style={{ fontSize: 18, lineHeight: 1, flexShrink: 0, marginLeft: idx === 0 ? 6 : 0 }}>
-                    {habit.emoji ?? '⭐'}
-                  </span>
-                  <span
-                    className="truncate flex-1"
-                    style={{
-                      fontSize: 13,
-                      fontWeight: 600,
-                      color: isDone ? 'rgba(84,233,138,0.85)' : 'var(--text-1)',
-                      textDecoration: isDone ? 'line-through' : 'none',
-                      textDecorationColor: 'rgba(84,233,138,0.4)',
-                    }}
-                  >
-                    {habit.name}
-                  </span>
-                  {isDone && (
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#54e98a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-                      <polyline points="20 6 9 17 4 12"/>
-                    </svg>
-                  )}
-                </motion.div>
-              )
-            })}
-
-            {/* Bottom hint row */}
-            <div
-              style={{
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                right: 0,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                gap: 6,
-                fontSize: 10,
-                color: 'rgba(84,233,138,0.45)',
-                pointerEvents: 'none',
-              }}
-            >
-              {hasMore && <span>+{habits.length - MAX_STACK} more</span>}
-              {hasMore && <span style={{ color: 'rgba(255,255,255,0.15)' }}>·</span>}
-              <span style={{ color: 'rgba(255,255,255,0.25)' }}>tap to expand</span>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Expanded full list */}
+      {/* Habit list */}
       <AnimatePresence initial={false}>
         {open && (
           <motion.div
@@ -256,12 +229,12 @@ export function RoutineSection({
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.22, ease: 'easeInOut' }}
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
             style={{ overflow: 'hidden' }}
           >
-            <div className="px-2 pb-2">
+            <div className="px-4 pb-3">
               {habits.length === 0 ? (
-                <p className="text-xs py-3 text-center" style={{ color: 'var(--text-3)' }}>
+                <p className="text-xs py-4 text-center" style={{ color: 'rgba(255,255,255,0.2)' }}>
                   No habits yet — edit a habit to assign it here
                 </p>
               ) : isDefaultSort ? (
@@ -269,7 +242,6 @@ export function RoutineSection({
                   axis="y"
                   values={habits}
                   onReorder={onReorder}
-                  className="space-y-2"
                   style={{ listStyle: 'none', padding: 0, margin: 0 }}
                 >
                   {habits.map(habit => (
@@ -282,14 +254,14 @@ export function RoutineSection({
                       dragElastic={0}
                       style={{ listStyle: 'none' }}
                     >
-                      <HabitCard habit={habit} onEdit={onEdit} onDelete={onDelete} />
+                      <RoutineHabitRow habit={habit} today={today} onEdit={onEdit} />
                     </Reorder.Item>
                   ))}
                 </Reorder.Group>
               ) : (
-                <div className="space-y-2">
+                <div>
                   {habits.map(habit => (
-                    <HabitCard key={habit.id} habit={habit} onEdit={onEdit} onDelete={onDelete} />
+                    <RoutineHabitRow key={habit.id} habit={habit} today={today} onEdit={onEdit} />
                   ))}
                 </div>
               )}
@@ -297,6 +269,6 @@ export function RoutineSection({
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </motion.div>
   )
 }

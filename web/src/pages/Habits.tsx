@@ -1087,12 +1087,13 @@ export default function Habits() {
 
                 return (
                   <div>
-                    {visibleRoutines.map(routine => (
+                    {visibleRoutines.map((routine, idx) => (
                       <RoutineSection
                         key={routine.id}
                         routine={routine}
                         habits={routineHabits(routine.id)}
                         isDefaultSort={true}
+                        isActive={idx === 0}
                         onEdit={h => setEditHabit(h)}
                         onDelete={id => setDeleteConfirm(id)}
                         onEditRoutine={r => openManageRoutines(r.id)}
