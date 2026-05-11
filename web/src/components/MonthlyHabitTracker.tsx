@@ -31,13 +31,14 @@ interface Props {
 }
 
 export function MonthlyHabitTracker({ habits, onToggle }: Props) {
-  const [expanded, setExpanded] = useState(false)
-
   const now = new Date()
-  const year = now.getFullYear()
-  const month = now.getMonth()
+  const [expanded, setExpanded] = useState(false)
+  const [viewYear, setViewYear] = useState(now.getFullYear())
+  const [viewMonth, setViewMonth] = useState(now.getMonth())
+
   const todayStr = localDateStr()
-  const daysInMonth = getDaysInMonth(year, month)
+  const isCurrentMonth = viewYear === now.getFullYear() && viewMonth === now.getMonth()
+  const daysInMonth = getDaysInMonth(viewYear, viewMonth)
 
   const t = {
     text: 'var(--text-1)',
@@ -52,19 +53,30 @@ export function MonthlyHabitTracker({ habits, onToggle }: Props) {
   }
 
   function dateStr(day: number) {
-    return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+    return `${viewYear}-${String(viewMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+  }
+
+  function prevMonth() {
+    if (viewMonth === 0) { setViewYear(y => y - 1); setViewMonth(11) }
+    else setViewMonth(m => m - 1)
+    setExpanded(true)
+  }
+  function nextMonth() {
+    if (isCurrentMonth) return
+    if (viewMonth === 11) { setViewYear(y => y + 1); setViewMonth(0) }
+    else setViewMonth(m => m + 1)
+    setExpanded(true)
   }
 
   if (habits.length === 0) return null
 
-  // Current week: Sunday through Saturday containing today
+  // Current week days (only relevant when viewing current month)
   const weekStart = getWeekStart(now)
   const weekDays: number[] = []
   for (let i = 0; i < 7; i++) {
     const d = new Date(weekStart)
     d.setDate(weekStart.getDate() + i)
-    // Only include days that belong to this month
-    if (d.getMonth() === month && d.getFullYear() === year) {
+    if (d.getMonth() === viewMonth && d.getFullYear() === viewYear) {
       weekDays.push(d.getDate())
     }
   }
@@ -80,7 +92,7 @@ export function MonthlyHabitTracker({ habits, onToggle }: Props) {
 
   function renderRow(day: number) {
     const ds = dateStr(day)
-    const dayOfWeek = new Date(year, month, day).getDay()
+    const dayOfWeek = new Date(viewYear, viewMonth, day).getDay()
     const isToday = ds === todayStr
     const isFuture = ds > todayStr
 
@@ -142,10 +154,16 @@ export function MonthlyHabitTracker({ habits, onToggle }: Props) {
     <div className="mb-5">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
+          {/* Month nav */}
+          <button onClick={prevMonth} className="w-6 h-6 rounded-lg flex items-center justify-center text-sm"
+            style={{ background: t.expandBg, color: t.expandText }}>‹</button>
           <p className="text-sm font-semibold tracking-wide uppercase" style={{ color: t.textMuted }}>
-            {expanded ? MONTH_NAMES[month] : 'This week'}
+            {isCurrentMonth && !expanded ? 'This week' : MONTH_NAMES[viewMonth]}
           </p>
-          {!expanded && (
+          <button onClick={nextMonth} className="w-6 h-6 rounded-lg flex items-center justify-center text-sm"
+            style={{ background: t.expandBg, color: t.expandText, opacity: isCurrentMonth ? 0.3 : 1 }}
+            disabled={isCurrentMonth}>›</button>
+          {isCurrentMonth && !expanded && (
             <span className="text-xs font-semibold px-2 py-0.5 rounded-full"
               style={{
                 background: weekPct >= 80 ? 'rgba(74,222,128,0.15)' : weekPct >= 50 ? 'rgba(37,99,235,0.15)' : 'rgba(248,113,113,0.12)',
@@ -160,7 +178,7 @@ export function MonthlyHabitTracker({ habits, onToggle }: Props) {
           className="text-xs font-medium px-3 py-1 rounded-lg transition-all"
           style={{ background: t.expandBg, color: t.expandText }}
         >
-          {expanded ? 'Collapse ▴' : `Full month ▾`}
+          {expanded ? 'Collapse ▴' : 'Full month ▾'}
         </button>
       </div>
 
@@ -197,11 +215,9 @@ export function MonthlyHabitTracker({ habits, onToggle }: Props) {
             </tr>
           </thead>
           <tbody>
-            {expanded
-              ? /* Full month 1 → N in strict chronological order */
-                Array.from({ length: daysInMonth }).map((_, i) => renderRow(i + 1))
-              : /* Collapsed: current week only */
-                weekDays.map(day => renderRow(day))
+            {expanded || !isCurrentMonth
+              ? Array.from({ length: daysInMonth }).map((_, i) => renderRow(i + 1))
+              : weekDays.map(day => renderRow(day))
             }
           </tbody>
         </table>
