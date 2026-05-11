@@ -8,6 +8,16 @@ export interface User {
   dark_mode: boolean
 }
 
+export interface Routine {
+  id: string
+  user_id: string
+  name: string
+  emoji: string
+  time_of_day?: string
+  sort_order: number
+  created_at: string
+}
+
 export interface Habit {
   id: string
   user_id: string
@@ -19,6 +29,7 @@ export interface Habit {
   created_at: string
   sort_order: number
   star_rating: number
+  routine_id?: string | null
 }
 
 export interface HabitCompletion {
