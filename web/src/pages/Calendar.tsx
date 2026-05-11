@@ -15,8 +15,21 @@ function getFirstDayOfMonth(year: number, month: number) {
   return new Date(year, month, 1).getDay()
 }
 
+function applyCustomOrder<T extends { id: string }>(items: T[]): T[] {
+  try {
+    const saved = localStorage.getItem('habitat_habit_order')
+    if (!saved) return items
+    const ids: string[] = JSON.parse(saved)
+    return [...items].sort((a, b) => {
+      const ai = ids.indexOf(a.id), bi = ids.indexOf(b.id)
+      return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi)
+    })
+  } catch { return items }
+}
+
 export default function Calendar() {
-  const { data: habits = [] } = useHabits()
+  const { data: rawHabits = [] } = useHabits()
+  const habits = applyCustomOrder(rawHabits)
   const { darkMode } = useUIStore()
   const todayStr = localDateStr()
   const now = new Date()
