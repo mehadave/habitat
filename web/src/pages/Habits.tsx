@@ -1,7 +1,9 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
 import { motion, AnimatePresence, Reorder } from 'framer-motion'
 import { useHabits, useAddHabit, useUpdateHabit, useDeleteHabit, useToggleCompletion } from '../hooks/useHabits'
+import { useRoutines, useAddRoutine, useUpdateRoutine, useDeleteRoutine } from '../hooks/useRoutines'
 import { HabitCard } from '../components/HabitCard'
+import { RoutineSection } from '../components/RoutineSection'
 import { MonthlyHabitTracker } from '../components/MonthlyHabitTracker'
 import { ArchivedHabitsSection } from '../components/ArchivedHabitsSection'
 import {
@@ -10,7 +12,7 @@ import {
   requestNotificationPermission,
   syncNotificationsToSW,
 } from '../hooks/useNotifications'
-import type { HabitWithStreak } from '../lib/types'
+import type { HabitWithStreak, Routine } from '../lib/types'
 
 // Quick-access emojis shown in the horizontal strip
 const QUICK_EMOJIS = ['⭐','🏃','📚','💧','🧘','💪','🍎','😴','🎯','✍️','🎸','🌱','🧹','💊','☀️','🐬','🌊','🏊','🦋','🔥']
@@ -112,6 +114,7 @@ interface FormWithNotif extends HabitFormData {
   notifEnabled: boolean
   notifTime: string
   notifDays: number[]
+  routine_id: string | null
 }
 
 function buildTokens() {
@@ -213,6 +216,7 @@ function AddEditSheet({
   onClose,
   t,
   isSaving,
+  routines = [],
 }: {
   habitId?: string
   initial?: Partial<FormWithNotif>
@@ -220,6 +224,7 @@ function AddEditSheet({
   onClose: () => void
   t: ReturnType<typeof buildTokens>
   isSaving?: boolean
+  routines?: Routine[]
 }) {
   const existingPref = habitId ? getHabitPref(habitId) : { enabled: false, time: '09:00', days: [] }
 
@@ -232,6 +237,7 @@ function AddEditSheet({
     notifEnabled: initial?.notifEnabled ?? existingPref.enabled,
     notifTime: initial?.notifTime ?? existingPref.time,
     notifDays: initial?.notifDays ?? existingPref.days,
+    routine_id: initial?.routine_id ?? null,
   })
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
 
@@ -387,6 +393,40 @@ function AddEditSheet({
           </div>
         </div>
 
+        {/* Routine picker — only shown when routines exist */}
+        {routines.length > 0 && (
+          <div className="flex items-center gap-2 mb-4 flex-wrap">
+            <span className="text-xs flex-shrink-0" style={{ color: t.textMuted }}>Routine:</span>
+            <div className="flex gap-1.5 flex-wrap">
+              <button
+                onClick={() => setForm(f => ({ ...f, routine_id: null }))}
+                className="px-3 py-1 rounded-full text-xs font-medium transition-all"
+                style={{
+                  background: form.routine_id === null ? 'rgba(37,99,235,0.18)' : t.inputBg,
+                  border: `1px solid ${form.routine_id === null ? 'rgba(37,99,235,0.45)' : 'transparent'}`,
+                  color: form.routine_id === null ? 'var(--accent-text)' : t.textSub,
+                }}
+              >
+                None
+              </button>
+              {routines.map(r => (
+                <button
+                  key={r.id}
+                  onClick={() => setForm(f => ({ ...f, routine_id: r.id }))}
+                  className="px-3 py-1 rounded-full text-xs font-medium transition-all"
+                  style={{
+                    background: form.routine_id === r.id ? 'rgba(37,99,235,0.18)' : t.inputBg,
+                    border: `1px solid ${form.routine_id === r.id ? 'rgba(37,99,235,0.45)' : 'transparent'}`,
+                    color: form.routine_id === r.id ? 'var(--accent-text)' : t.textSub,
+                  }}
+                >
+                  {r.emoji} {r.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Privacy toggle */}
         <div className="flex items-center justify-between mb-4 py-3 rounded-xl px-3"
           style={{ background: t.inputBg, border: t.inputBorder }}>
@@ -494,6 +534,318 @@ function AddEditSheet({
   )
 }
 
+const ROUTINE_QUICK_EMOJIS = ['🌅','☀️','🌙','⚡','💪','📚','🧘','🏃','🍎','💧','🎯','✨','🌿','🔥','❤️','🎵','🧹','💊','🛌','🧠']
+
+function ManageRoutinesSheet({ onClose, t, initialEditId }: {
+  onClose: () => void
+  t: ReturnType<typeof buildTokens>
+  initialEditId?: string | null
+}) {
+  const { data: routines = [] } = useRoutines()
+  const addRoutine = useAddRoutine()
+  const updateRoutine = useUpdateRoutine()
+  const deleteRoutine = useDeleteRoutine()
+
+  const [editingId, setEditingId] = useState<string | 'new' | null>(initialEditId ?? null)
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null)
+  const [formName, setFormName] = useState('')
+  const [formEmoji, setFormEmoji] = useState('🌅')
+  const [formTimeOfDay, setFormTimeOfDay] = useState('')
+
+  useEffect(() => {
+    if (initialEditId && initialEditId !== 'new') {
+      const r = routines.find(x => x.id === initialEditId)
+      if (r) { setFormName(r.name); setFormEmoji(r.emoji); setFormTimeOfDay(r.time_of_day ?? '') }
+    }
+  }, [initialEditId, routines])
+
+  function startEdit(r: Routine) {
+    setEditingId(r.id)
+    setFormName(r.name)
+    setFormEmoji(r.emoji)
+    setFormTimeOfDay(r.time_of_day ?? '')
+  }
+
+  function startNew() {
+    setEditingId('new')
+    setFormName('')
+    setFormEmoji('🌅')
+    setFormTimeOfDay('')
+  }
+
+  function cancelForm() {
+    setEditingId(null)
+    setFormName('')
+    setFormEmoji('🌅')
+    setFormTimeOfDay('')
+  }
+
+  async function saveForm() {
+    if (!formName.trim()) return
+    if (editingId === 'new') {
+      await addRoutine.mutateAsync({
+        name: formName.trim(),
+        emoji: formEmoji,
+        time_of_day: formTimeOfDay.trim() || undefined,
+        sort_order: routines.length,
+      })
+    } else if (editingId) {
+      await updateRoutine.mutateAsync({
+        id: editingId,
+        name: formName.trim(),
+        emoji: formEmoji,
+        time_of_day: formTimeOfDay.trim() || undefined,
+      })
+    }
+    cancelForm()
+  }
+
+  async function confirmDelete(id: string) {
+    await deleteRoutine.mutateAsync(id)
+    setDeleteConfirmId(null)
+  }
+
+  const isSaving = addRoutine.isPending || updateRoutine.isPending
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-start justify-center pt-[8vh] px-4 pb-4"
+      style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ scale: 0.92, opacity: 0, y: 20 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.92, opacity: 0, y: 20 }}
+        transition={{ type: 'spring', damping: 24, stiffness: 320 }}
+        className="w-full max-w-md rounded-3xl p-6"
+        style={{
+          background: t.sheetBg,
+          border: `1px solid ${t.cardBorder}`,
+          maxHeight: '80vh',
+          overflowY: 'auto',
+          boxShadow: '0 24px 64px rgba(0,0,0,0.45)',
+        }}
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-xl font-bold" style={{ color: t.text }}>Manage Routines</h2>
+          <button
+            onClick={onClose}
+            className="w-8 h-8 rounded-full flex items-center justify-center text-lg leading-none"
+            style={{ background: t.inputBg, color: t.textMuted, border: t.inputBorder }}
+            aria-label="Close"
+          >
+            ×
+          </button>
+        </div>
+
+        {/* Routine list */}
+        {routines.length === 0 && editingId === null && (
+          <p className="text-sm text-center py-6" style={{ color: t.textMuted }}>
+            No routines yet. Create one to start grouping your habits.
+          </p>
+        )}
+
+        <div className="space-y-2 mb-3">
+          {routines.map(r => (
+            <div key={r.id}>
+              {editingId === r.id ? (
+                /* Inline edit form */
+                <div className="rounded-2xl p-4" style={{ background: t.inputBg, border: t.inputBorder }}>
+                  <div className="flex gap-1.5 overflow-x-auto no-scrollbar mb-3 py-1">
+                    {ROUTINE_QUICK_EMOJIS.map(e => (
+                      <button
+                        key={e}
+                        onClick={() => setFormEmoji(e)}
+                        className="text-xl flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center transition-all"
+                        style={{
+                          background: formEmoji === e ? 'rgba(37,99,235,0.25)' : t.cardBg,
+                          border: formEmoji === e ? '1.5px solid #2563EB' : t.inputBorder,
+                          transform: formEmoji === e ? 'scale(1.1)' : 'scale(1)',
+                        }}
+                      >
+                        {e}
+                      </button>
+                    ))}
+                  </div>
+                  <input
+                    placeholder="Routine name"
+                    value={formName}
+                    onChange={e => setFormName(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl text-sm outline-none mb-2"
+                    style={{ background: t.cardBg, border: t.inputBorder, color: t.inputColor }}
+                    autoFocus
+                  />
+                  <input
+                    placeholder="Time label (e.g. Morning, 6 AM)"
+                    value={formTimeOfDay}
+                    onChange={e => setFormTimeOfDay(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl text-sm outline-none mb-3"
+                    style={{ background: t.cardBg, border: t.inputBorder, color: t.inputColor }}
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      onClick={cancelForm}
+                      className="flex-1 py-2 rounded-xl text-xs font-medium"
+                      style={{ background: t.cardBg, color: t.textMuted }}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={saveForm}
+                      disabled={!formName.trim() || isSaving}
+                      className="flex-1 py-2 rounded-xl text-xs font-semibold text-white"
+                      style={{
+                        background: formName.trim() && !isSaving ? '#2563EB' : t.inputBg,
+                        opacity: formName.trim() && !isSaving ? 1 : 0.5,
+                      }}
+                    >
+                      {isSaving ? 'Saving…' : 'Save'}
+                    </button>
+                  </div>
+                </div>
+              ) : deleteConfirmId === r.id ? (
+                /* Delete confirm */
+                <div className="rounded-2xl p-4" style={{ background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.25)' }}>
+                  <p className="text-xs font-semibold mb-1" style={{ color: t.text }}>Delete "{r.name}"?</p>
+                  <p className="text-xs mb-3" style={{ color: t.textMuted }}>
+                    Habits in this routine become uncategorized. No habit data is lost.
+                  </p>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setDeleteConfirmId(null)}
+                      className="flex-1 py-2 rounded-xl text-xs font-medium"
+                      style={{ background: t.inputBg, color: t.textMuted }}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => confirmDelete(r.id)}
+                      className="flex-1 py-2 rounded-xl text-xs font-semibold"
+                      style={{ background: 'rgba(248,113,113,0.18)', color: '#F87171' }}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                /* Routine row */
+                <div
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-2xl"
+                  style={{ background: t.inputBg, border: t.inputBorder }}
+                >
+                  <span className="text-lg leading-none flex-shrink-0">{r.emoji}</span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold truncate" style={{ color: t.text }}>{r.name}</p>
+                    {r.time_of_day && (
+                      <p className="text-xs" style={{ color: t.textMuted }}>{r.time_of_day}</p>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => startEdit(r)}
+                    className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+                    style={{ background: t.cardBg, color: t.textMuted }}
+                    title="Edit"
+                  >
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                      <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => setDeleteConfirmId(r.id)}
+                    className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+                    style={{ background: 'rgba(248,113,113,0.10)', color: '#F87171' }}
+                    title="Delete"
+                  >
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
+                    </svg>
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Add new routine form / button */}
+        {editingId === 'new' ? (
+          <div className="rounded-2xl p-4" style={{ background: t.inputBg, border: t.inputBorder }}>
+            <div className="flex gap-1.5 overflow-x-auto no-scrollbar mb-3 py-1">
+              {ROUTINE_QUICK_EMOJIS.map(e => (
+                <button
+                  key={e}
+                  onClick={() => setFormEmoji(e)}
+                  className="text-xl flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center transition-all"
+                  style={{
+                    background: formEmoji === e ? 'rgba(37,99,235,0.25)' : t.cardBg,
+                    border: formEmoji === e ? '1.5px solid #2563EB' : t.inputBorder,
+                    transform: formEmoji === e ? 'scale(1.1)' : 'scale(1)',
+                  }}
+                >
+                  {e}
+                </button>
+              ))}
+            </div>
+            <input
+              placeholder="Routine name"
+              value={formName}
+              onChange={e => setFormName(e.target.value)}
+              className="w-full px-3 py-2 rounded-xl text-sm outline-none mb-2"
+              style={{ background: t.cardBg, border: t.inputBorder, color: t.inputColor }}
+              autoFocus
+            />
+            <input
+              placeholder="Time label (e.g. Morning, 6 AM)"
+              value={formTimeOfDay}
+              onChange={e => setFormTimeOfDay(e.target.value)}
+              className="w-full px-3 py-2 rounded-xl text-sm outline-none mb-3"
+              style={{ background: t.cardBg, border: t.inputBorder, color: t.inputColor }}
+            />
+            <div className="flex gap-2">
+              <button
+                onClick={cancelForm}
+                className="flex-1 py-2 rounded-xl text-xs font-medium"
+                style={{ background: t.cardBg, color: t.textMuted }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={saveForm}
+                disabled={!formName.trim() || isSaving}
+                className="flex-1 py-2 rounded-xl text-xs font-semibold text-white"
+                style={{
+                  background: formName.trim() && !isSaving ? '#2563EB' : t.inputBg,
+                  opacity: formName.trim() && !isSaving ? 1 : 0.5,
+                }}
+              >
+                {isSaving ? 'Saving…' : 'Add Routine'}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button
+            onClick={startNew}
+            className="w-full py-2.5 rounded-2xl text-sm font-semibold transition-all"
+            style={{
+              background: 'rgba(37,99,235,0.12)',
+              color: 'var(--accent-text)',
+              border: '1px solid rgba(37,99,235,0.25)',
+            }}
+          >
+            + New Routine
+          </button>
+        )}
+      </motion.div>
+    </motion.div>
+  )
+}
+
 export default function Habits() {
   const { data: habits = [], isLoading } = useHabits()
   const addMutation = useAddHabit()
@@ -501,10 +853,14 @@ export default function Habits() {
   const deleteMutation = useDeleteHabit()
   const toggleMutation = useToggleCompletion()
 
+  const { data: routines = [] } = useRoutines()
+
   const [showAdd, setShowAdd] = useState(false)
   const [editHabit, setEditHabit] = useState<HabitWithStreak | null>(null)
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
   const [sortBy, setSortBy] = useState<'default' | 'streak' | 'name' | 'priority'>('default')
+  const [showManageRoutines, setShowManageRoutines] = useState(false)
+  const [manageRoutinesEditId, setManageRoutinesEditId] = useState<string | null>(null)
   const [showSortDropdown, setShowSortDropdown] = useState(false)
   const sortRef = useRef<HTMLDivElement>(null)
   const [manualOrder, setManualOrder] = useState<HabitWithStreak[]>([])
@@ -541,6 +897,27 @@ export default function Habits() {
     try {
       localStorage.setItem(HABIT_ORDER_KEY, JSON.stringify(newOrder.map(h => h.id)))
     } catch { /* localStorage unavailable */ }
+  }
+
+  function handleSectionReorder(newSectionOrder: HabitWithStreak[]) {
+    const sectionIds = new Set(newSectionOrder.map(h => h.id))
+    const base = manualOrder.length > 0 ? manualOrder : activeHabits
+    const newOrder = [...base]
+    let si = 0
+    for (let i = 0; i < newOrder.length; i++) {
+      if (sectionIds.has(newOrder[i].id)) newOrder[i] = newSectionOrder[si++]
+    }
+    const missing = newSectionOrder.filter(h => !base.find(b => b.id === h.id))
+    const final = [...newOrder, ...missing]
+    setManualOrder(final)
+    try {
+      localStorage.setItem(HABIT_ORDER_KEY, JSON.stringify(final.map(h => h.id)))
+    } catch { /* localStorage unavailable */ }
+  }
+
+  function openManageRoutines(editId?: string) {
+    setManageRoutinesEditId(editId ?? null)
+    setShowManageRoutines(true)
   }
 
   useEffect(() => {
@@ -582,6 +959,7 @@ export default function Habits() {
       star_rating: data.star_rating,
       is_private: data.is_private,
       sort_order: activeHabits.length,
+      routine_id: data.routine_id,
     })
     if (habit && data.notifEnabled) {
       setHabitPref(habit.id, { enabled: true, time: data.notifTime, days: data.notifDays })
@@ -599,6 +977,7 @@ export default function Habits() {
       description: data.description,
       star_rating: data.star_rating,
       is_private: data.is_private,
+      routine_id: data.routine_id,
     })
     setHabitPref(editHabit.id, { enabled: data.notifEnabled, time: data.notifTime, days: data.notifDays })
     syncNotificationsToSW(habits)
@@ -665,6 +1044,22 @@ export default function Habits() {
               <p className="text-xs font-semibold tracking-wide uppercase" style={{ color: t.textMuted }}>
                 Your Habits
               </p>
+              <div className="flex items-center gap-2">
+              {/* Routines button */}
+              <button
+                onClick={() => openManageRoutines()}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all"
+                style={{
+                  background: routines.length > 0 ? 'rgba(37,99,235,0.15)' : t.inputBg,
+                  border: routines.length > 0 ? '1px solid rgba(37,99,235,0.35)' : t.inputBorder,
+                  color: routines.length > 0 ? 'var(--accent-text)' : t.textMuted,
+                }}
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+                </svg>
+                Routines{routines.length > 0 ? ` (${routines.length})` : ''}
+              </button>
               <div className="relative" ref={sortRef}>
                 <button
                   onClick={() => setShowSortDropdown(v => !v)}
@@ -725,47 +1120,113 @@ export default function Habits() {
                   </div>
                 )}
               </div>
+              </div>{/* end flex gap-2 */}
             </div>
 
             {/* Habit cards — hidden until saved order is restored to prevent shuffle */}
-            {orderReady && (sortBy === 'default' ? (
-              <Reorder.Group
-                axis="y"
-                values={displayHabits}
-                onReorder={handleReorder}
-                className="space-y-3"
-                style={{ listStyle: 'none', padding: 0, margin: 0 }}
-              >
-                {displayHabits.map((habit) => (
-                  <Reorder.Item
-                    key={habit.id}
-                    value={habit}
-                    initial={false}
-                    layout
-                    dragMomentum={false}
-                    dragElastic={0}
-                    style={{ listStyle: 'none' }}
-                  >
+            {orderReady && (() => {
+              const useGrouped = routines.length > 0 && sortBy === 'default'
+
+              if (useGrouped) {
+                // Group habits by routine_id
+                const routineHabits = (routineId: string | null) =>
+                  displayHabits.filter(h => (h.routine_id ?? null) === routineId)
+                const visibleRoutines = routines.filter(r => routineHabits(r.id).length > 0)
+                const uncategorized = routineHabits(null)
+
+                return (
+                  <div>
+                    {visibleRoutines.map(routine => (
+                      <RoutineSection
+                        key={routine.id}
+                        routine={routine}
+                        habits={routineHabits(routine.id)}
+                        isDefaultSort={true}
+                        onEdit={h => setEditHabit(h)}
+                        onDelete={id => setDeleteConfirm(id)}
+                        onEditRoutine={r => openManageRoutines(r.id)}
+                        onReorder={handleSectionReorder}
+                      />
+                    ))}
+                    {uncategorized.length > 0 && (
+                      <div>
+                        {visibleRoutines.length > 0 && (
+                          <p className="text-xs font-semibold tracking-wide uppercase px-1 mb-2 mt-3"
+                            style={{ color: 'var(--text-3)' }}>
+                            Other
+                          </p>
+                        )}
+                        <Reorder.Group
+                          axis="y"
+                          values={uncategorized}
+                          onReorder={handleSectionReorder}
+                          className="space-y-3"
+                          style={{ listStyle: 'none', padding: 0, margin: 0 }}
+                        >
+                          {uncategorized.map(habit => (
+                            <Reorder.Item
+                              key={habit.id}
+                              value={habit}
+                              initial={false}
+                              layout
+                              dragMomentum={false}
+                              dragElastic={0}
+                              style={{ listStyle: 'none' }}
+                            >
+                              <HabitCard
+                                habit={habit}
+                                onEdit={h => setEditHabit(h)}
+                                onDelete={id => setDeleteConfirm(id)}
+                              />
+                            </Reorder.Item>
+                          ))}
+                        </Reorder.Group>
+                      </div>
+                    )}
+                  </div>
+                )
+              }
+
+              // Flat view (no routines, or non-default sort)
+              return sortBy === 'default' ? (
+                <Reorder.Group
+                  axis="y"
+                  values={displayHabits}
+                  onReorder={handleReorder}
+                  className="space-y-3"
+                  style={{ listStyle: 'none', padding: 0, margin: 0 }}
+                >
+                  {displayHabits.map((habit) => (
+                    <Reorder.Item
+                      key={habit.id}
+                      value={habit}
+                      initial={false}
+                      layout
+                      dragMomentum={false}
+                      dragElastic={0}
+                      style={{ listStyle: 'none' }}
+                    >
+                      <HabitCard
+                        habit={habit}
+                        onEdit={(h) => setEditHabit(h)}
+                        onDelete={(id) => setDeleteConfirm(id)}
+                      />
+                    </Reorder.Item>
+                  ))}
+                </Reorder.Group>
+              ) : (
+                <div className="space-y-3">
+                  {displayHabits.map((habit) => (
                     <HabitCard
+                      key={habit.id}
                       habit={habit}
                       onEdit={(h) => setEditHabit(h)}
                       onDelete={(id) => setDeleteConfirm(id)}
                     />
-                  </Reorder.Item>
-                ))}
-              </Reorder.Group>
-            ) : (
-              <div className="space-y-3">
-                {displayHabits.map((habit) => (
-                  <HabitCard
-                    key={habit.id}
-                    habit={habit}
-                    onEdit={(h) => setEditHabit(h)}
-                    onDelete={(id) => setDeleteConfirm(id)}
-                  />
-                ))}
-              </div>
-            ))}
+                  ))}
+                </div>
+              )
+            })()}
 
             {/* Archived habits section */}
             <ArchivedHabitsSection />
@@ -776,7 +1237,13 @@ export default function Habits() {
       {/* Add sheet */}
       <AnimatePresence>
         {showAdd && (
-          <AddEditSheet onSave={handleAdd} onClose={() => setShowAdd(false)} t={t} isSaving={addMutation.isPending} />
+          <AddEditSheet
+            onSave={handleAdd}
+            onClose={() => setShowAdd(false)}
+            t={t}
+            isSaving={addMutation.isPending}
+            routines={routines}
+          />
         )}
       </AnimatePresence>
 
@@ -785,10 +1252,22 @@ export default function Habits() {
         {editHabit && (
           <AddEditSheet
             habitId={editHabit.id}
-            initial={editHabit as Partial<FormWithNotif>}
+            initial={{ ...editHabit, routine_id: editHabit.routine_id ?? null } as Partial<FormWithNotif>}
             onSave={handleEdit}
             onClose={() => setEditHabit(null)}
             t={t}
+            routines={routines}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Manage Routines sheet */}
+      <AnimatePresence>
+        {showManageRoutines && (
+          <ManageRoutinesSheet
+            onClose={() => { setShowManageRoutines(false); setManageRoutinesEditId(null) }}
+            t={t}
+            initialEditId={manageRoutinesEditId}
           />
         )}
       </AnimatePresence>
