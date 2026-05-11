@@ -15,7 +15,7 @@ import {
 import type { HabitWithStreak, Routine } from '../lib/types'
 
 // Quick-access emojis shown in the horizontal strip
-const QUICK_EMOJIS = ['⭐','🏃','📚','💧','🧘','💪','🍎','😴','🎯','✍️','🎸','🌱','🧹','💊','☀️','🐬','🌊','🏊','🦋','🔥']
+const QUICK_EMOJIS = ['⭐','🏃','📚','💧','🧘','💪','🍎','😴','🎯','✍️','🎸','🌱','🧹','💊','☀️','🐬','🌊','🏊','🦋','🔥','🎨','🖌️','📖','🎮','♟️','🎵','🥁','🎹','🎺','🎻','🧩','🪴','✈️','🍳','🧗','🏋️','🤸','🎤','📝','🌿']
 
 // Full emoji grid picker data — supports flags, ZWJ sequences, everything
 const EMOJI_CATS: { icon: string; name: string; emojis: string[] }[] = [
@@ -66,6 +66,32 @@ const EMOJI_CATS: { icon: string; name: string; emojis: string[] }[] = [
   { icon: '🍔', name: 'Food', emojis: ['🍎','🍊','🍋','🍇','🍓','🫐','🍈','🍉','🍌','🍍','🥭','🍑','🍒','🍐','🥝','🍅','🫒','🥥','🥑','🍆','🥔','🥕','🌽','🌶','🫑','🥒','🥬','🥦','🧄','🧅','🍄','🥜','🌰','🍞','🥐','🥖','🫓','🥨','🧀','🥚','🍳','🧈','🥞','🧇','🥓','🥩','🍗','🍖','🌭','🍔','🍟','🍕','🫔','🌮','🌯','🥙','🧆','🍜','🍝','🍛','🍲','🫕','🍣','🍱','🥟','🍤','🍙','🍚','🍘','🍥','🥮','🍢','🧁','🍰','🎂','🍮','🍭','🍬','🍫','🍿','🍩','🍪','☕','🫖','🍵','🧃','🥤','🧋','🍺','🍷','🥂','🍾','🥃','🍸','🍹','🧊','🧂'] },
   { icon: '⚽', name: 'Sports', emojis: ['⚽','🏀','🏈','⚾','🥎','🎾','🏐','🏉','🥏','🎱','🏓','🏸','🏒','🏑','🥍','🏏','🪃','🥅','⛳','🪁','🏹','🎣','🤿','🥊','🥋','🎽','🛹','🛼','🛷','⛸','🥌','🎿','⛷','🏂','🪂','🏋️','🤼','🤸','⛹️','🤺','🏇','🧘','🏄','🏊','🚣','🧗','🚵','🚴','🏆','🥇','🥈','🥉','🎖','🏅','🎗','🎪','🎭','🎨','🎬','🎤','🎧','🎼','🎵','🎶','🎹','🥁','🪘','🎷','🎺','🪗','🎸','🪕','🎻','🎲','♟','🎯','🎳','🎮','🎰','🧩','🎠','🎡','🎢'] },
   { icon: '❤️', name: 'Symbols', emojis: ['❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','❣️','💕','💞','💓','💗','💖','💘','💝','⭐','🌟','✨','💫','🔥','💧','🌊','🌈','⚡','❄️','🌙','☀️','🌸','🌺','🌻','🌹','🌷','🍀','🌿','🍃','🍂','🍁','🌱','🌾','🎁','🎀','🎊','🎉','🎈','🎆','🎇','✅','❌','❓','❗','💯','🔴','🟡','🟢','🔵','⚫','⚪','🏆','🎯','🔮','💎','🔑','🗝','🔐','🔒','🔓','⚙️','🔧','🔨','⚒️','🛠','⛏','🪚','🔩','🧲','💡','🔦','🕯','🪔','🧨','🎤','📱','💻','🖥','⌨️','🖨','🖱','💾','💿','📀','📸','📷','🎥','📞','☎️','📟','📠','📺','📻','🧭','⏰','⌚','📡','🔭','🔬','💊','🩺','🩹','🧪','🧫','🧬'] },
+  { icon: '🎨', name: 'Hobbies', emojis: [
+    // Visual arts
+    '🎨','🖌️','🖼️','✏️','🖊️','📝','🖍️','📐','📏','🗒️',
+    // Photography & film
+    '📸','📷','🎥','🎞️','🎬','📽️',
+    // Music
+    '🎸','🥁','🎹','🎺','🎻','🪗','🪘','🎷','🪕','🎵','🎶','🎤','🎧','🎼','🪈',
+    // Writing & reading
+    '📖','📚','📓','📔','📒','📜','🗞️','📰','🖋️',
+    // Gaming & strategy
+    '🎮','🕹️','♟️','🎲','🧩','🃏','🎯','🎳','🎰','🪀','🪁',
+    // Crafts & making
+    '🧶','🪡','🧵','🪢','🪆','🧸','🪡','🪚','🔨','🔧','⚙️','🛠️','🔩','🧲',
+    // Outdoor & nature hobbies
+    '🌱','🪴','🌿','🍃','🌾','🌸','🌺','🌻','🌹','🌷','🍀','🌍','🗺️',
+    // Science & exploration
+    '🔭','🔬','🧪','🧫','🧬','⚗️',
+    // Travel & adventure
+    '✈️','🚂','🚀','⛺','🏕️','🪵','🗻','🏔️','🌄',
+    // Fitness & active hobbies
+    '🏋️','🤸','🧗','🏄','🤾','🏇','🤺','🏹','🎣','🤿','🛹','🛼','⛷️','🏂','🪂','🚵','🤼',
+    // Cooking & food hobbies
+    '🍳','🥘','🫕','🧑‍🍳','🍰','🧁','🍞','🥐','🫙','🧃',
+    // Collecting & misc
+    '🪙','💎','🗝️','🪩','🪄','🎪','🎭',
+  ] },
   { icon: '🇺🇸', name: 'Flags', emojis: ['🇦🇫','🇦🇱','🇩🇿','🇦🇩','🇦🇴','🇦🇬','🇦🇷','🇦🇲','🇦🇺','🇦🇹','🇦🇿','🇧🇸','🇧🇭','🇧🇩','🇧🇧','🇧🇾','🇧🇪','🇧🇿','🇧🇯','🇧🇹','🇧🇴','🇧🇦','🇧🇼','🇧🇷','🇧🇳','🇧🇬','🇧🇫','🇧🇮','🇨🇻','🇰🇭','🇨🇲','🇨🇦','🇨🇫','🇹🇩','🇨🇱','🇨🇳','🇨🇴','🇰🇲','🇨🇬','🇨🇩','🇨🇷','🇨🇮','🇭🇷','🇨🇺','🇨🇾','🇨🇿','🇩🇰','🇩🇯','🇩🇲','🇩🇴','🇪🇨','🇪🇬','🇸🇻','🇬🇶','🇪🇷','🇪🇪','🇸🇿','🇪🇹','🇫🇯','🇫🇮','🇫🇷','🇬🇦','🇬🇲','🇬🇪','🇩🇪','🇬🇭','🇬🇷','🇬🇩','🇬🇹','🇬🇳','🇬🇼','🇬🇾','🇭🇹','🇭🇳','🇭🇺','🇮🇸','🇮🇳','🇮🇩','🇮🇷','🇮🇶','🇮🇪','🇮🇱','🇮🇹','🇯🇲','🇯🇵','🇯🇴','🇰🇿','🇰🇪','🇰🇮','🇰🇼','🇰🇬','🇱🇦','🇱🇻','🇱🇧','🇱🇸','🇱🇷','🇱🇾','🇱🇮','🇱🇹','🇱🇺','🇲🇬','🇲🇼','🇲🇾','🇲🇻','🇲🇱','🇲🇹','🇲🇭','🇲🇷','🇲🇺','🇲🇽','🇫🇲','🇲🇩','🇲🇨','🇲🇳','🇲🇪','🇲🇦','🇲🇿','🇲🇲','🇳🇦','🇳🇷','🇳🇵','🇳🇱','🇳🇿','🇳🇮','🇳🇪','🇳🇬','🇲🇰','🇳🇴','🇴🇲','🇵🇰','🇵🇼','🇵🇸','🇵🇦','🇵🇬','🇵🇾','🇵🇪','🇵🇭','🇵🇱','🇵🇹','🇶🇦','🇷🇴','🇷🇺','🇷🇼','🇰🇳','🇱🇨','🇻🇨','🇼🇸','🇸🇲','🇸🇹','🇸🇦','🇸🇳','🇷🇸','🇸🇨','🇸🇱','🇸🇬','🇸🇰','🇸🇮','🇸🇧','🇸🇴','🇿🇦','🇸🇸','🇪🇸','🇱🇰','🇸🇩','🇸🇷','🇸🇪','🇨🇭','🇸🇾','🇹🇼','🇹🇯','🇹🇿','🇹🇭','🇹🇱','🇹🇬','🇹🇴','🇹🇹','🇹🇳','🇹🇷','🇹🇲','🇹🇻','🇺🇬','🇺🇦','🇦🇪','🇬🇧','🇺🇸','🇺🇾','🇺🇿','🇻🇺','🇻🇪','🇻🇳','🇾🇪','🇿🇲','🇿🇼'] },
 ]
 
@@ -534,7 +560,7 @@ function AddEditSheet({
   )
 }
 
-const ROUTINE_QUICK_EMOJIS = ['🌅','☀️','🌙','⚡','💪','📚','🧘','🏃','🍎','💧','🎯','✨','🌿','🔥','❤️','🎵','🧹','💊','🛌','🧠']
+const ROUTINE_QUICK_EMOJIS = ['🌅','☀️','🌙','⚡','💪','📚','🧘','🏃','🍎','💧','🎯','✨','🌿','🔥','❤️','🎵','🧹','💊','🛌','🧠','🎨','🖌️','📖','🎸','🥁','🎹','🎮','♟️','🧩','✈️','🍳','🧗','🏋️','🤸','🎤','🌱','🪴','🔭','📝','🎬','🛹','⛷️','🏄','🎣','🌊','🌄','🪵','🏕️']
 
 function ManageRoutinesSheet({ onClose, t, initialEditId }: {
   onClose: () => void
@@ -546,11 +572,16 @@ function ManageRoutinesSheet({ onClose, t, initialEditId }: {
   const updateRoutine = useUpdateRoutine()
   const deleteRoutine = useDeleteRoutine()
 
+  // Local order for optimistic drag reorder
+  const [routineOrder, setRoutineOrder] = useState<Routine[]>([])
+  useEffect(() => { setRoutineOrder(routines) }, [routines])
+
   const [editingId, setEditingId] = useState<string | 'new' | null>(initialEditId ?? null)
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null)
   const [formName, setFormName] = useState('')
   const [formEmoji, setFormEmoji] = useState('🌅')
   const [formTimeOfDay, setFormTimeOfDay] = useState('')
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
 
   useEffect(() => {
     if (initialEditId && initialEditId !== 'new') {
@@ -560,44 +591,35 @@ function ManageRoutinesSheet({ onClose, t, initialEditId }: {
   }, [initialEditId, routines])
 
   function startEdit(r: Routine) {
-    setEditingId(r.id)
-    setFormName(r.name)
-    setFormEmoji(r.emoji)
-    setFormTimeOfDay(r.time_of_day ?? '')
+    setEditingId(r.id); setFormName(r.name); setFormEmoji(r.emoji)
+    setFormTimeOfDay(r.time_of_day ?? ''); setShowEmojiPicker(false)
   }
-
   function startNew() {
-    setEditingId('new')
-    setFormName('')
-    setFormEmoji('🌅')
-    setFormTimeOfDay('')
+    setEditingId('new'); setFormName(''); setFormEmoji('🌅')
+    setFormTimeOfDay(''); setShowEmojiPicker(false)
   }
-
   function cancelForm() {
-    setEditingId(null)
-    setFormName('')
-    setFormEmoji('🌅')
-    setFormTimeOfDay('')
+    setEditingId(null); setFormName(''); setFormEmoji('🌅')
+    setFormTimeOfDay(''); setShowEmojiPicker(false)
   }
 
   async function saveForm() {
     if (!formName.trim()) return
     if (editingId === 'new') {
-      await addRoutine.mutateAsync({
-        name: formName.trim(),
-        emoji: formEmoji,
-        time_of_day: formTimeOfDay.trim() || undefined,
-        sort_order: routines.length,
-      })
+      await addRoutine.mutateAsync({ name: formName.trim(), emoji: formEmoji, time_of_day: formTimeOfDay.trim() || undefined, sort_order: routines.length })
     } else if (editingId) {
-      await updateRoutine.mutateAsync({
-        id: editingId,
-        name: formName.trim(),
-        emoji: formEmoji,
-        time_of_day: formTimeOfDay.trim() || undefined,
-      })
+      await updateRoutine.mutateAsync({ id: editingId, name: formName.trim(), emoji: formEmoji, time_of_day: formTimeOfDay.trim() || undefined })
     }
     cancelForm()
+  }
+
+  async function persistRoutineOrder() {
+    await Promise.all(
+      routineOrder.map((r, i) => {
+        if (routines.find(x => x.id === r.id)?.sort_order !== i)
+          return updateRoutine.mutateAsync({ id: r.id, sort_order: i })
+      }).filter(Boolean) as Promise<void>[]
+    )
   }
 
   async function confirmDelete(id: string) {
@@ -606,238 +628,167 @@ function ManageRoutinesSheet({ onClose, t, initialEditId }: {
   }
 
   const isSaving = addRoutine.isPending || updateRoutine.isPending
+  const isEditing = editingId !== null
+  const isDeleting = deleteConfirmId !== null
+  const canReorder = !isEditing && !isDeleting && routineOrder.length > 1
+
+  // Shared emoji strip + optional full picker for routine forms
+  function RoutineEmojiStrip() {
+    return (
+      <>
+        <div className="flex gap-1.5 overflow-x-auto no-scrollbar mb-2 py-1">
+          {ROUTINE_QUICK_EMOJIS.map(e => (
+            <button
+              key={e}
+              onClick={() => { setFormEmoji(e); setShowEmojiPicker(false) }}
+              className="text-xl flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center transition-all"
+              style={{
+                background: formEmoji === e ? 'rgba(37,99,235,0.25)' : t.cardBg,
+                border: formEmoji === e ? '1.5px solid #2563EB' : t.inputBorder,
+                transform: formEmoji === e ? 'scale(1.1)' : 'scale(1)',
+              }}
+            >{e}</button>
+          ))}
+          <button
+            onClick={() => setShowEmojiPicker(v => !v)}
+            className="flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center transition-all font-semibold text-base"
+            style={{
+              background: !ROUTINE_QUICK_EMOJIS.includes(formEmoji) ? 'rgba(37,99,235,0.25)' : showEmojiPicker ? 'rgba(37,99,235,0.15)' : t.cardBg,
+              border: !ROUTINE_QUICK_EMOJIS.includes(formEmoji) ? '1.5px solid #2563EB' : showEmojiPicker ? '1.5px solid rgba(37,99,235,0.5)' : t.inputBorder,
+              color: t.textMuted,
+            }}
+          >{!ROUTINE_QUICK_EMOJIS.includes(formEmoji) ? formEmoji : '＋'}</button>
+        </div>
+        {showEmojiPicker && (
+          <EmojiPicker t={t} onSelect={e => setFormEmoji(e)} onClose={() => setShowEmojiPicker(false)} />
+        )}
+      </>
+    )
+  }
+
+  function RoutineForm({ isNew }: { isNew: boolean }) {
+    return (
+      <div className="rounded-2xl p-4 mb-2" style={{ background: t.inputBg, border: t.inputBorder }}>
+        <RoutineEmojiStrip />
+        <input placeholder="Routine name" value={formName} onChange={e => setFormName(e.target.value)}
+          className="w-full px-3 py-2 rounded-xl text-sm outline-none mb-2"
+          style={{ background: t.cardBg, border: t.inputBorder, color: t.inputColor }} autoFocus />
+        <input placeholder="Time label (e.g. Morning, 6 AM)" value={formTimeOfDay} onChange={e => setFormTimeOfDay(e.target.value)}
+          className="w-full px-3 py-2 rounded-xl text-sm outline-none mb-3"
+          style={{ background: t.cardBg, border: t.inputBorder, color: t.inputColor }} />
+        <div className="flex gap-2">
+          <button onClick={cancelForm} className="flex-1 py-2 rounded-xl text-xs font-medium"
+            style={{ background: t.cardBg, color: t.textMuted }}>Cancel</button>
+          <button onClick={saveForm} disabled={!formName.trim() || isSaving}
+            className="flex-1 py-2 rounded-xl text-xs font-semibold text-white"
+            style={{ background: formName.trim() && !isSaving ? '#2563EB' : t.inputBg, opacity: formName.trim() && !isSaving ? 1 : 0.5 }}>
+            {isSaving ? 'Saving…' : isNew ? 'Add Routine' : 'Save'}
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  function RoutineRow({ r }: { r: Routine }) {
+    if (deleteConfirmId === r.id) {
+      return (
+        <div className="rounded-2xl p-4" style={{ background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.25)' }}>
+          <p className="text-xs font-semibold mb-1" style={{ color: t.text }}>Delete "{r.name}"?</p>
+          <p className="text-xs mb-3" style={{ color: t.textMuted }}>Habits become uncategorized. No data is lost.</p>
+          <div className="flex gap-2">
+            <button onClick={() => setDeleteConfirmId(null)} className="flex-1 py-2 rounded-xl text-xs font-medium"
+              style={{ background: t.inputBg, color: t.textMuted }}>Cancel</button>
+            <button onClick={() => confirmDelete(r.id)} className="flex-1 py-2 rounded-xl text-xs font-semibold"
+              style={{ background: 'rgba(248,113,113,0.18)', color: '#F87171' }}>Delete</button>
+          </div>
+        </div>
+      )
+    }
+    if (editingId === r.id) return <RoutineForm isNew={false} />
+    return (
+      <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-2xl" style={{ background: t.inputBg, border: t.inputBorder }}>
+        {canReorder && (
+          <div style={{ color: t.textMuted, cursor: 'grab', flexShrink: 0, touchAction: 'none' }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <circle cx="9" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/>
+              <circle cx="15" cy="5" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="15" cy="19" r="1.5"/>
+            </svg>
+          </div>
+        )}
+        <span className="text-lg leading-none flex-shrink-0">{r.emoji}</span>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-semibold truncate" style={{ color: t.text }}>{r.name}</p>
+          {r.time_of_day && <p className="text-xs" style={{ color: t.textMuted }}>{r.time_of_day}</p>}
+        </div>
+        <button onClick={() => startEdit(r)} className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+          style={{ background: t.cardBg, color: t.textMuted }} title="Edit">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+            <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          </svg>
+        </button>
+        <button onClick={() => setDeleteConfirmId(r.id)} className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+          style={{ background: 'rgba(248,113,113,0.10)', color: '#F87171' }} title="Delete">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+            <path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
+          </svg>
+        </button>
+      </div>
+    )
+  }
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       className="fixed inset-0 z-50 flex items-start justify-center pt-[8vh] px-4 pb-4"
       style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
       onClick={onClose}
     >
       <motion.div
-        initial={{ scale: 0.92, opacity: 0, y: 20 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        exit={{ scale: 0.92, opacity: 0, y: 20 }}
-        transition={{ type: 'spring', damping: 24, stiffness: 320 }}
+        initial={{ scale: 0.92, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.92, opacity: 0, y: 20 }} transition={{ type: 'spring', damping: 24, stiffness: 320 }}
         className="w-full max-w-md rounded-3xl p-6"
-        style={{
-          background: t.sheetBg,
-          border: `1px solid ${t.cardBorder}`,
-          maxHeight: '80vh',
-          overflowY: 'auto',
-          boxShadow: '0 24px 64px rgba(0,0,0,0.45)',
-        }}
+        style={{ background: t.sheetBg, border: `1px solid ${t.cardBorder}`, maxHeight: '80vh', overflowY: 'auto', boxShadow: '0 24px 64px rgba(0,0,0,0.45)' }}
         onClick={e => e.stopPropagation()}
       >
-        {/* Header */}
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-xl font-bold" style={{ color: t.text }}>Manage Routines</h2>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-lg leading-none"
-            style={{ background: t.inputBg, color: t.textMuted, border: t.inputBorder }}
-            aria-label="Close"
-          >
-            ×
-          </button>
+          <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center text-lg leading-none"
+            style={{ background: t.inputBg, color: t.textMuted, border: t.inputBorder }} aria-label="Close">×</button>
         </div>
 
-        {/* Routine list */}
-        {routines.length === 0 && editingId === null && (
+        {routines.length === 0 && !isEditing && (
           <p className="text-sm text-center py-6" style={{ color: t.textMuted }}>
             No routines yet. Create one to start grouping your habits.
           </p>
         )}
 
-        <div className="space-y-2 mb-3">
-          {routines.map(r => (
-            <div key={r.id}>
-              {editingId === r.id ? (
-                /* Inline edit form */
-                <div className="rounded-2xl p-4" style={{ background: t.inputBg, border: t.inputBorder }}>
-                  <div className="flex gap-1.5 overflow-x-auto no-scrollbar mb-3 py-1">
-                    {ROUTINE_QUICK_EMOJIS.map(e => (
-                      <button
-                        key={e}
-                        onClick={() => setFormEmoji(e)}
-                        className="text-xl flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center transition-all"
-                        style={{
-                          background: formEmoji === e ? 'rgba(37,99,235,0.25)' : t.cardBg,
-                          border: formEmoji === e ? '1.5px solid #2563EB' : t.inputBorder,
-                          transform: formEmoji === e ? 'scale(1.1)' : 'scale(1)',
-                        }}
-                      >
-                        {e}
-                      </button>
-                    ))}
-                  </div>
-                  <input
-                    placeholder="Routine name"
-                    value={formName}
-                    onChange={e => setFormName(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl text-sm outline-none mb-2"
-                    style={{ background: t.cardBg, border: t.inputBorder, color: t.inputColor }}
-                    autoFocus
-                  />
-                  <input
-                    placeholder="Time label (e.g. Morning, 6 AM)"
-                    value={formTimeOfDay}
-                    onChange={e => setFormTimeOfDay(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl text-sm outline-none mb-3"
-                    style={{ background: t.cardBg, border: t.inputBorder, color: t.inputColor }}
-                  />
-                  <div className="flex gap-2">
-                    <button
-                      onClick={cancelForm}
-                      className="flex-1 py-2 rounded-xl text-xs font-medium"
-                      style={{ background: t.cardBg, color: t.textMuted }}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={saveForm}
-                      disabled={!formName.trim() || isSaving}
-                      className="flex-1 py-2 rounded-xl text-xs font-semibold text-white"
-                      style={{
-                        background: formName.trim() && !isSaving ? '#2563EB' : t.inputBg,
-                        opacity: formName.trim() && !isSaving ? 1 : 0.5,
-                      }}
-                    >
-                      {isSaving ? 'Saving…' : 'Save'}
-                    </button>
-                  </div>
-                </div>
-              ) : deleteConfirmId === r.id ? (
-                /* Delete confirm */
-                <div className="rounded-2xl p-4" style={{ background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.25)' }}>
-                  <p className="text-xs font-semibold mb-1" style={{ color: t.text }}>Delete "{r.name}"?</p>
-                  <p className="text-xs mb-3" style={{ color: t.textMuted }}>
-                    Habits in this routine become uncategorized. No habit data is lost.
-                  </p>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => setDeleteConfirmId(null)}
-                      className="flex-1 py-2 rounded-xl text-xs font-medium"
-                      style={{ background: t.inputBg, color: t.textMuted }}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={() => confirmDelete(r.id)}
-                      className="flex-1 py-2 rounded-xl text-xs font-semibold"
-                      style={{ background: 'rgba(248,113,113,0.18)', color: '#F87171' }}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                /* Routine row */
-                <div
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-2xl"
-                  style={{ background: t.inputBg, border: t.inputBorder }}
-                >
-                  <span className="text-lg leading-none flex-shrink-0">{r.emoji}</span>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold truncate" style={{ color: t.text }}>{r.name}</p>
-                    {r.time_of_day && (
-                      <p className="text-xs" style={{ color: t.textMuted }}>{r.time_of_day}</p>
-                    )}
-                  </div>
-                  <button
-                    onClick={() => startEdit(r)}
-                    className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
-                    style={{ background: t.cardBg, color: t.textMuted }}
-                    title="Edit"
-                  >
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
-                      <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                    </svg>
-                  </button>
-                  <button
-                    onClick={() => setDeleteConfirmId(r.id)}
-                    className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
-                    style={{ background: 'rgba(248,113,113,0.10)', color: '#F87171' }}
-                    title="Delete"
-                  >
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
-                    </svg>
-                  </button>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-
-        {/* Add new routine form / button */}
-        {editingId === 'new' ? (
-          <div className="rounded-2xl p-4" style={{ background: t.inputBg, border: t.inputBorder }}>
-            <div className="flex gap-1.5 overflow-x-auto no-scrollbar mb-3 py-1">
-              {ROUTINE_QUICK_EMOJIS.map(e => (
-                <button
-                  key={e}
-                  onClick={() => setFormEmoji(e)}
-                  className="text-xl flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center transition-all"
-                  style={{
-                    background: formEmoji === e ? 'rgba(37,99,235,0.25)' : t.cardBg,
-                    border: formEmoji === e ? '1.5px solid #2563EB' : t.inputBorder,
-                    transform: formEmoji === e ? 'scale(1.1)' : 'scale(1)',
-                  }}
-                >
-                  {e}
-                </button>
-              ))}
-            </div>
-            <input
-              placeholder="Routine name"
-              value={formName}
-              onChange={e => setFormName(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl text-sm outline-none mb-2"
-              style={{ background: t.cardBg, border: t.inputBorder, color: t.inputColor }}
-              autoFocus
-            />
-            <input
-              placeholder="Time label (e.g. Morning, 6 AM)"
-              value={formTimeOfDay}
-              onChange={e => setFormTimeOfDay(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl text-sm outline-none mb-3"
-              style={{ background: t.cardBg, border: t.inputBorder, color: t.inputColor }}
-            />
-            <div className="flex gap-2">
-              <button
-                onClick={cancelForm}
-                className="flex-1 py-2 rounded-xl text-xs font-medium"
-                style={{ background: t.cardBg, color: t.textMuted }}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={saveForm}
-                disabled={!formName.trim() || isSaving}
-                className="flex-1 py-2 rounded-xl text-xs font-semibold text-white"
-                style={{
-                  background: formName.trim() && !isSaving ? '#2563EB' : t.inputBg,
-                  opacity: formName.trim() && !isSaving ? 1 : 0.5,
-                }}
-              >
-                {isSaving ? 'Saving…' : 'Add Routine'}
-              </button>
-            </div>
-          </div>
+        {/* Routine list — draggable when no edit/delete active */}
+        {canReorder ? (
+          <Reorder.Group axis="y" values={routineOrder} onReorder={setRoutineOrder}
+            className="space-y-2 mb-3" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+            {routineOrder.map(r => (
+              <Reorder.Item key={r.id} value={r} onDragEnd={persistRoutineOrder}
+                style={{ listStyle: 'none' }} dragMomentum={false} dragElastic={0}>
+                <RoutineRow r={r} />
+              </Reorder.Item>
+            ))}
+          </Reorder.Group>
         ) : (
-          <button
-            onClick={startNew}
-            className="w-full py-2.5 rounded-2xl text-sm font-semibold transition-all"
-            style={{
-              background: 'rgba(37,99,235,0.12)',
-              color: 'var(--accent-text)',
-              border: '1px solid rgba(37,99,235,0.25)',
-            }}
-          >
+          <div className="space-y-2 mb-3">
+            {(isEditing || isDeleting ? routines : routineOrder).map(r => (
+              <RoutineRow key={r.id} r={r} />
+            ))}
+          </div>
+        )}
+
+        {/* New routine form or add button */}
+        {editingId === 'new' ? (
+          <RoutineForm isNew={true} />
+        ) : !isEditing && (
+          <button onClick={startNew} className="w-full py-2.5 rounded-2xl text-sm font-semibold transition-all"
+            style={{ background: 'rgba(37,99,235,0.12)', color: 'var(--accent-text)', border: '1px solid rgba(37,99,235,0.25)' }}>
             + New Routine
           </button>
         )}
