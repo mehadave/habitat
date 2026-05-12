@@ -814,9 +814,19 @@ export default function Habits() {
   const [routineDisplayOrder, setRoutineDisplayOrder] = useState<Routine[]>([])
   const routineOrderInit = useRef(false)
   useEffect(() => {
-    if (routineOrderInit.current && routines.length === routineDisplayOrder.length) return
-    routineOrderInit.current = true
-    setRoutineDisplayOrder(routines)
+    if (!routineOrderInit.current) {
+      routineOrderInit.current = true
+      setRoutineDisplayOrder(routines)
+      return
+    }
+    // Preserve drag order but update each routine's data (name/emoji/time changes)
+    setRoutineDisplayOrder(prev => {
+      const map = new Map(routines.map(r => [r.id, r]))
+      const updated = prev.filter(r => map.has(r.id)).map(r => map.get(r.id)!)
+      const prevIds = new Set(prev.map(r => r.id))
+      routines.filter(r => !prevIds.has(r.id)).forEach(r => updated.push(r))
+      return updated
+    })
   }, [routines]) // eslint-disable-line react-hooks/exhaustive-deps
 
   async function handleRoutineReorder(newOrder: Routine[]) {
