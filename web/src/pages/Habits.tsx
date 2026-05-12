@@ -463,7 +463,7 @@ function AddEditSheet({
           <button
             onClick={() => setForm({ ...form, is_private: !form.is_private })}
             className="w-11 h-6 rounded-full relative transition-colors flex-shrink-0"
-            style={{ background: form.is_private ? '#2563EB' : t.cardBorder }}
+            style={{ background: form.is_private ? 'var(--glass-sel-bg)' : t.cardBorder, border: form.is_private ? '1px solid var(--glass-sel-border)' : '1px solid transparent' }}
           >
             <div className="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all"
               style={{ left: form.is_private ? '22px' : '2px' }} />
@@ -483,7 +483,7 @@ function AddEditSheet({
             <button
               onClick={handleNotifToggle}
               className="w-11 h-6 rounded-full relative transition-colors flex-shrink-0"
-              style={{ background: form.notifEnabled ? '#2563EB' : t.cardBorder }}
+              style={{ background: form.notifEnabled ? 'var(--glass-sel-bg)' : t.cardBorder, border: form.notifEnabled ? '1px solid var(--glass-sel-border)' : '1px solid transparent' }}
             >
               <div className="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all"
                 style={{ left: form.notifEnabled ? '22px' : '2px' }} />
@@ -547,9 +547,14 @@ function AddEditSheet({
         <button
           onClick={() => { if (form.name.trim() && !isSaving) onSave(form) }}
           disabled={!form.name.trim() || isSaving}
-          className="w-full py-3 rounded-xl text-sm font-semibold text-white transition-all"
+          className="w-full py-3 rounded-xl text-sm font-semibold transition-all"
           style={{
-            background: form.name.trim() && !isSaving ? '#2563EB' : t.inputBg,
+            background: form.name.trim() && !isSaving ? 'var(--glass-btn-bg)' : t.inputBg,
+            border: form.name.trim() && !isSaving ? '1px solid var(--glass-btn-border)' : '1px solid transparent',
+            color: form.name.trim() && !isSaving ? 'var(--accent-text)' : 'var(--text-3)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            boxShadow: form.name.trim() && !isSaving ? '0 2px 16px var(--glass-btn-glow)' : 'none',
             opacity: form.name.trim() && !isSaving ? 1 : 0.5,
           }}
         >
@@ -680,8 +685,14 @@ function ManageRoutinesSheet({ onClose, t, initialEditId }: {
           <button onClick={cancelForm} className="flex-1 py-2 rounded-xl text-xs font-medium"
             style={{ background: t.cardBg, color: t.textMuted }}>Cancel</button>
           <button onClick={saveForm} disabled={!formName.trim() || isSaving}
-            className="flex-1 py-2 rounded-xl text-xs font-semibold text-white"
-            style={{ background: formName.trim() && !isSaving ? '#2563EB' : t.inputBg, opacity: formName.trim() && !isSaving ? 1 : 0.5 }}>
+            className="flex-1 py-2 rounded-xl text-xs font-semibold"
+            style={{
+              background: formName.trim() && !isSaving ? 'var(--glass-btn-bg)' : t.inputBg,
+              border: formName.trim() && !isSaving ? '1px solid var(--glass-btn-border)' : '1px solid transparent',
+              color: formName.trim() && !isSaving ? 'var(--accent-text)' : 'var(--text-3)',
+              backdropFilter: 'blur(8px)',
+              opacity: formName.trim() && !isSaving ? 1 : 0.5,
+            }}>
             {isSaving ? 'Saving…' : isNew ? 'Add Routine' : 'Save'}
           </button>
         </div>
@@ -885,6 +896,16 @@ export default function Habits() {
 
   const activeHabits = habits.filter((h) => h.is_active !== false)
 
+  // Always-custom-ordered habits for views that ignore sortBy (tracker, calendar)
+  const customOrderedHabits = useMemo(() => {
+    if (manualOrder.length === 0) return activeHabits
+    const idOrder = manualOrder.map(h => h.id)
+    return [...activeHabits].sort((a, b) => {
+      const ai = idOrder.indexOf(a.id), bi = idOrder.indexOf(b.id)
+      return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi)
+    })
+  }, [activeHabits, manualOrder])
+
   // Keep manual order in sync when habits load/change
   const orderedHabits = useMemo(() => {
     if (manualOrder.length === 0 || sortBy !== 'default') return activeHabits
@@ -956,11 +977,15 @@ export default function Habits() {
             whileTap={{ scale: 0.94 }}
             onClick={() => activeHabits.length < 15 && setShowAdd(true)}
             disabled={activeHabits.length >= 15}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold text-white"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold"
             style={{
-              background: activeHabits.length >= 15 ? t.inputBg : '#2563EB',
+              background: activeHabits.length >= 15 ? t.inputBg : 'var(--glass-btn-bg)',
+              border: activeHabits.length >= 15 ? '1px solid transparent' : '1px solid var(--glass-btn-border)',
+              color: activeHabits.length >= 15 ? 'var(--text-3)' : 'var(--accent-text)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
+              boxShadow: activeHabits.length < 15 ? '0 2px 16px var(--glass-btn-glow)' : 'none',
               opacity: activeHabits.length >= 15 ? 0.5 : 1,
-              boxShadow: activeHabits.length < 15 ? '0 2px 8px rgba(37,99,235,0.35)' : 'none',
             }}
           >
             + Add
@@ -970,7 +995,7 @@ export default function Habits() {
         {isLoading ? (
           <div className="flex justify-center py-12">
             <div className="w-6 h-6 rounded-full border-2 animate-spin"
-              style={{ borderColor: '#2563EB', borderTopColor: 'transparent' }} />
+              style={{ borderColor: 'var(--glass-btn-border)', borderTopColor: 'transparent' }} />
           </div>
         ) : activeHabits.length === 0 ? (
           <div className="text-center py-20">
@@ -979,8 +1004,15 @@ export default function Habits() {
             <p className="text-xs mb-5" style={{ color: t.textMuted }}>Your first habit is one tap away.</p>
             <button
               onClick={() => setShowAdd(true)}
-              className="px-6 py-2.5 rounded-xl text-sm font-semibold text-white"
-              style={{ background: '#2563EB', boxShadow: '0 2px 8px rgba(37,99,235,0.35)' }}
+              className="px-6 py-2.5 rounded-xl text-sm font-semibold"
+              style={{
+                background: 'var(--glass-btn-bg)',
+                border: '1px solid var(--glass-btn-border)',
+                color: 'var(--accent-text)',
+                backdropFilter: 'blur(12px)',
+                WebkitBackdropFilter: 'blur(12px)',
+                boxShadow: '0 2px 16px var(--glass-btn-glow)',
+              }}
             >
               Add your first habit
             </button>
@@ -988,7 +1020,7 @@ export default function Habits() {
         ) : (
           <>
             {/* Monthly tracker at the top */}
-            <MonthlyHabitTracker habits={activeHabits} onToggle={handleToggle} />
+            <MonthlyHabitTracker habits={customOrderedHabits} onToggle={handleToggle} />
 
             {/* Sort bar */}
             <div className="flex items-center justify-between mb-3">
@@ -1001,9 +1033,10 @@ export default function Habits() {
                 onClick={() => openManageRoutines()}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all"
                 style={{
-                  background: routines.length > 0 ? 'rgba(37,99,235,0.15)' : t.inputBg,
-                  border: routines.length > 0 ? '1px solid rgba(37,99,235,0.35)' : t.inputBorder,
+                  background: routines.length > 0 ? 'var(--glass-btn-bg)' : t.inputBg,
+                  border: routines.length > 0 ? '1px solid var(--glass-btn-border)' : t.inputBorder,
                   color: routines.length > 0 ? 'var(--accent-text)' : t.textMuted,
+                  backdropFilter: routines.length > 0 ? 'blur(8px)' : 'none',
                 }}
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1052,10 +1085,10 @@ export default function Habits() {
                         className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-left transition-all"
                         style={{
                           color: sortBy === key ? 'var(--accent-text)' : t.textMuted,
-                          background: sortBy === key ? 'rgba(37,99,235,0.18)' : 'transparent',
+                          background: sortBy === key ? 'var(--glass-sel-bg)' : 'transparent',
                         }}
                         onMouseEnter={ev => { if (sortBy !== key) (ev.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.04)' }}
-                        onMouseLeave={ev => { (ev.currentTarget as HTMLButtonElement).style.background = sortBy === key ? 'rgba(37,99,235,0.18)' : 'transparent' }}
+                        onMouseLeave={ev => { (ev.currentTarget as HTMLButtonElement).style.background = sortBy === key ? 'var(--glass-sel-bg)' : 'transparent' }}
                       >
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <path d={icon}/>

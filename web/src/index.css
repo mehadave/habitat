@@ -19,6 +19,12 @@
   --today-bg:     rgba(37,99,235,0.08);
   --card-shadow:  none;
   --accent-text:  #93C5FD;
+  /* Glass accent tokens — dark */
+  --glass-btn-bg:     rgba(147,197,253,0.10);
+  --glass-btn-border: rgba(147,197,253,0.22);
+  --glass-btn-glow:   rgba(147,197,253,0.14);
+  --glass-sel-bg:     rgba(147,197,253,0.12);
+  --glass-sel-border: rgba(147,197,253,0.28);
 }
 
 html, body {
@@ -193,6 +199,12 @@ body.light-mode {
   --today-bg:     rgba(37,99,235,0.06);
   --card-shadow:  0 2px 12px rgba(11,20,55,0.11);
   --accent-text:  #2563EB;
+  /* Glass accent tokens — light */
+  --glass-btn-bg:     rgba(37,99,235,0.08);
+  --glass-btn-border: rgba(37,99,235,0.22);
+  --glass-btn-glow:   rgba(37,99,235,0.12);
+  --glass-sel-bg:     rgba(37,99,235,0.11);
+  --glass-sel-border: rgba(37,99,235,0.28);
 }
 
 /* Auth pages keep dark look in both modes */
