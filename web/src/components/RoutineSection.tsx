@@ -51,9 +51,9 @@ export function RoutineSection({
           <span
             className="text-[10px] font-medium px-2 py-0.5 rounded-full flex-shrink-0"
             style={{
-              background: 'rgba(37,99,235,0.10)',
+              background: 'var(--glass-btn-bg)',
               color: 'var(--accent-text)',
-              border: '1px solid rgba(37,99,235,0.22)',
+              border: '1px solid var(--glass-btn-border)',
             }}
           >
             {routine.time_of_day}

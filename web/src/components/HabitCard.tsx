@@ -36,51 +36,13 @@ export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
   const [showActions, setShowActions] = useState(false)
   const [hinting, setHinting] = useState(false)
   const hintRan = useRef(false)
-
-  // Native touch tracking for reliable mobile/PWA swipe
-  const touchStartX = useRef(0)
-  const touchStartY = useRef(0)
-  const isHSwipe = useRef<boolean | null>(null)
   const x = useMotionValue(0)
 
   function snapTo(target: number) {
     animate(x, target, { type: 'spring', damping: 30, stiffness: 340 })
   }
 
-  function handleTouchStart(e: React.TouchEvent) {
-    const t = e.touches[0]
-    touchStartX.current = t.clientX
-    touchStartY.current = t.clientY
-    isHSwipe.current = null
-  }
-
-  function handleTouchMove(e: React.TouchEvent) {
-    const t = e.touches[0]
-    const dx = t.clientX - touchStartX.current
-    const dy = t.clientY - touchStartY.current
-
-    if (isHSwipe.current === null) {
-      if (Math.abs(dx) < 4 && Math.abs(dy) < 4) return
-      isHSwipe.current = Math.abs(dx) > Math.abs(dy)
-    }
-
-    if (!isHSwipe.current) return
-
-    const base = showActions ? -160 : 0
-    const raw = base + dx
-    // clamp: allow slight overdrag on both ends
-    const clamped = Math.min(8, Math.max(-172, raw))
-    x.set(clamped)
-  }
-
-  function handleTouchEnd() {
-    if (!isHSwipe.current) return
-    const cur = x.get()
-    const shouldReveal = cur < -70
-    setShowActions(shouldReveal)
-    snapTo(shouldReveal ? -160 : 0)
-  }
-
+  // Sync programmatic snap when showActions or hinting changes
   useEffect(() => {
     snapTo(showActions ? -160 : hinting ? -44 : 0)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -122,7 +84,7 @@ export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
 
   return (
     <div className="relative rounded-2xl" style={{ isolation: 'isolate' }}>
-      {/* Swipe actions — revealed as card slides left */}
+      {/* Swipe actions behind the card */}
       <div
         className="absolute inset-y-0 right-0 flex items-center gap-2 px-4 rounded-2xl"
         style={{
@@ -137,7 +99,7 @@ export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
         <button
           onClick={() => { setShowActions(false); snapTo(0); onEdit(habit) }}
           className="flex-1 py-1.5 rounded-lg text-xs font-semibold text-center"
-          style={{ background: 'rgba(37,99,235,0.22)', color: 'var(--accent-text)' }}
+          style={{ background: 'var(--glass-sel-bg)', color: 'var(--accent-text)', border: '1px solid var(--glass-sel-border)' }}
         >
           Edit
         </button>
@@ -150,7 +112,11 @@ export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
         </button>
       </div>
 
+      {/* Card — drag left to reveal actions (works on mouse + touch) */}
       <motion.div
+        drag="x"
+        dragConstraints={{ left: -160, right: 0 }}
+        dragElastic={0.05}
         style={{
           x,
           background: cardBg,
@@ -162,17 +128,19 @@ export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
           touchAction: 'pan-y',
           userSelect: 'none',
           WebkitUserSelect: 'none',
+          cursor: 'grab',
         }}
         className="p-4"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        // Dismiss on click-outside when revealed
-        onClick={showActions ? () => { setShowActions(false); snapTo(0) } : undefined}
+        onDragEnd={(_, info) => {
+          const shouldReveal = info.offset.x < -60 || info.velocity.x < -250
+          setShowActions(shouldReveal)
+          if (!shouldReveal) snapTo(0)
+        }}
+        onClick={showActions ? (e) => { e.stopPropagation(); setShowActions(false); snapTo(0) } : undefined}
+        whileDrag={{ cursor: 'grabbing' }}
       >
         {/* Header row */}
         <div className="flex items-start gap-3">
-          {/* Emoji + name */}
           <div className="flex items-center gap-2.5 flex-1 min-w-0">
             <span
               className="text-2xl flex-shrink-0 leading-none"
@@ -193,7 +161,6 @@ export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
             </div>
           </div>
 
-          {/* Right side: edit + stars + streak */}
           <div
             className="flex items-center gap-2 flex-shrink-0"
             onClick={e => e.stopPropagation()}
@@ -207,24 +174,17 @@ export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
             </button>
             <div className="flex flex-col items-end gap-1">
               <PriorityBadge rating={habit.star_rating} />
-              <span
-                className="text-xs font-semibold"
-                style={{ color: streakColor }}
-              >
-                {streak}d
-              </span>
+              <span className="text-xs font-semibold" style={{ color: streakColor }}>{streak}d</span>
             </div>
           </div>
         </div>
 
-        {/* Description */}
         {habit.description && (
           <div className="mt-2 px-3 py-2 rounded-xl" style={{ background: descBg, border: descBorder }}>
             <p className="text-xs leading-relaxed" style={{ color: textMuted }}>{habit.description}</p>
           </div>
         )}
 
-        {/* Privacy tag */}
         {habit.is_private && (
           <div className="flex items-center gap-2 mt-2">
             <button

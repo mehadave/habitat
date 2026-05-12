@@ -739,7 +739,7 @@ export default function Dashboard() {
         {isLoading ? (
           <div className="flex justify-center py-12">
             <div className="w-6 h-6 rounded-full border-2 animate-spin"
-              style={{ borderColor: '#2563EB', borderTopColor: 'transparent' }} />
+              style={{ borderColor: 'var(--glass-btn-border)', borderTopColor: 'transparent' }} />
           </div>
         ) : (
           <>
@@ -802,7 +802,13 @@ export default function Dashboard() {
                 <button
                   onClick={() => setShowSuggestions(true)}
                   className="px-5 py-2 rounded-xl text-sm font-semibold text-white"
-                  style={{ background: '#2563EB', boxShadow: '0 2px 8px rgba(37,99,235,0.35)' }}
+                  style={{
+                    background: 'var(--glass-btn-bg)',
+                    border: '1px solid var(--glass-btn-border)',
+                    color: 'var(--accent-text)',
+                    backdropFilter: 'blur(8px)',
+                    boxShadow: '0 2px 12px var(--glass-btn-glow)',
+                  }}
                 >
                   See habit ideas →
                 </button>
