@@ -42,6 +42,20 @@ export function RoutineSection({
         className="flex items-center gap-2 px-1 py-1.5 mb-1 cursor-pointer select-none rounded-xl"
         onClick={() => setOpen(v => !v)}
       >
+        {/* Drag handle — always shown so user can grab from anywhere on the row */}
+        <svg
+          width="12" height="16" viewBox="0 0 12 16" fill="none"
+          className="flex-shrink-0"
+          style={{ color: 'var(--text-3)', cursor: 'grab', touchAction: 'none' }}
+          onPointerDown={e => e.stopPropagation()}
+        >
+          {[0, 5, 10].map(y => (
+            <g key={y}>
+              <circle cx="3" cy={3 + y} r="1.2" fill="currentColor" />
+              <circle cx="9" cy={3 + y} r="1.2" fill="currentColor" />
+            </g>
+          ))}
+        </svg>
         <span className="text-base leading-none flex-shrink-0">{routine.emoji}</span>
         <span className="text-sm font-semibold flex-1 truncate" style={{ color: 'var(--text-1)' }}>
           {routine.name}
