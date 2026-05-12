@@ -718,14 +718,6 @@ function ManageRoutinesSheet({ onClose, t, initialEditId }: {
     if (editingId === r.id) return <RoutineForm isNew={false} />
     return (
       <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-2xl" style={{ background: t.inputBg, border: t.inputBorder }}>
-        {canReorder && (
-          <div style={{ color: t.textMuted, cursor: 'grab', flexShrink: 0, touchAction: 'none' }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-              <circle cx="9" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/>
-              <circle cx="15" cy="5" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="15" cy="19" r="1.5"/>
-            </svg>
-          </div>
-        )}
         <span className="text-lg leading-none flex-shrink-0">{r.emoji}</span>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold truncate" style={{ color: t.text }}>{r.name}</p>
