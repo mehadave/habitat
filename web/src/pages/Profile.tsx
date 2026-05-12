@@ -234,7 +234,7 @@ export default function Profile() {
             <button
               onClick={() => fileRef.current?.click()}
               className="relative w-20 h-20 rounded-full overflow-hidden flex items-center justify-center"
-              style={{ background: '#2563EB' }}
+              style={{ background: 'var(--glass-btn-bg)', border: '1px solid var(--glass-btn-border)' }}
             >
               {profile?.avatar_url ? (
                 <img src={profile.avatar_url} alt="avatar" className="w-full h-full object-cover" />
@@ -250,7 +250,7 @@ export default function Profile() {
               )}
             </button>
             <div className="absolute bottom-0 right-0 w-7 h-7 rounded-full flex items-center justify-center"
-              style={{ background: '#2563EB', border: `2px solid ${t.bg}`, boxShadow: '0 2px 8px rgba(37,99,235,0.5)' }}>
+              style={{ background: 'var(--glass-btn-bg)', border: `2px solid ${t.bg}`, backdropFilter: 'blur(8px)' }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
                 <circle cx="12" cy="13" r="4" />
@@ -300,8 +300,14 @@ export default function Profile() {
               <button
                 onClick={handleSaveName}
                 disabled={saving}
-                className="px-4 py-2 rounded-xl text-xs font-medium text-white"
-                style={{ background: '#2563EB', opacity: saving ? 0.6 : 1 }}
+                className="px-4 py-2 rounded-xl text-xs font-medium"
+                style={{
+                  background: 'var(--glass-btn-bg)',
+                  border: '1px solid var(--glass-btn-border)',
+                  color: 'var(--accent-text)',
+                  backdropFilter: 'blur(8px)',
+                  opacity: saving ? 0.6 : 1,
+                }}
               >
                 {saved ? '✓' : 'Save'}
               </button>
@@ -318,7 +324,7 @@ export default function Profile() {
             <button
               onClick={toggleDarkMode}
               className="w-12 h-6 rounded-full relative transition-colors"
-              style={{ background: darkMode ? '#2563EB' : t.inputBg }}
+              style={{ background: darkMode ? 'var(--glass-sel-bg)' : t.inputBg, border: darkMode ? '1px solid var(--glass-sel-border)' : '1px solid transparent' }}
             >
               <div className="absolute top-0.5 w-5 h-5 rounded-full bg-white transition-all"
                 style={{ left: darkMode ? '50%' : '2px' }} />
@@ -338,7 +344,7 @@ export default function Profile() {
               <button
                 onClick={handleWeeklySummaryToggle}
                 className="w-12 h-6 rounded-full relative transition-colors flex-shrink-0"
-                style={{ background: weeklySummary ? '#2563EB' : t.inputBg }}
+                style={{ background: weeklySummary ? 'var(--glass-sel-bg)' : t.inputBg, border: weeklySummary ? '1px solid var(--glass-sel-border)' : '1px solid transparent' }}
               >
                 <div className="absolute top-0.5 w-5 h-5 rounded-full bg-white transition-all"
                   style={{ left: weeklySummary ? '50%' : '2px' }} />
