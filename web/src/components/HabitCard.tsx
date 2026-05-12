@@ -76,7 +76,9 @@ export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
   const textMuted = darkMode ? 'rgba(255,255,255,0.4)' : 'rgba(11,20,55,0.85)'
   const descBg = darkMode ? 'rgba(255,255,255,0.04)' : 'rgba(11,20,55,0.03)'
   const descBorder = darkMode ? '1px solid rgba(255,255,255,0.07)' : '1px solid rgba(11,20,55,0.13)'
-  const swipeActionsBg = darkMode ? '#0F1B45' : '#E8EFFF'
+  const swipeActionsBg = darkMode
+    ? 'rgba(255,255,255,0.04)'
+    : 'rgba(11,20,55,0.04)'
   const badgeBg = darkMode ? 'rgba(255,255,255,0.07)' : 'rgba(11,20,55,0.11)'
   const badgeColor = darkMode ? 'rgba(255,255,255,0.45)' : 'rgba(11,20,55,0.85)'
   const editBtnBg = darkMode ? 'rgba(255,255,255,0.06)' : 'rgba(11,20,55,0.09)'
@@ -89,6 +91,9 @@ export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
         className="absolute inset-y-0 right-0 flex items-center gap-2 px-4 rounded-2xl"
         style={{
           background: swipeActionsBg,
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          border: '1px solid var(--border)',
           width: 160,
           zIndex: 0,
           pointerEvents: showActions ? 'auto' : 'none',

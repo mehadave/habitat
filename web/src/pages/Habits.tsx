@@ -816,6 +816,26 @@ export default function Habits() {
   const toggleMutation = useToggleCompletion()
 
   const { data: routines = [] } = useRoutines()
+  const updateRoutineOrder = useUpdateRoutine()
+
+  // Local routine order for drag reorder in main view
+  const [routineDisplayOrder, setRoutineDisplayOrder] = useState<Routine[]>([])
+  const routineOrderInit = useRef(false)
+  useEffect(() => {
+    if (routineOrderInit.current && routines.length === routineDisplayOrder.length) return
+    routineOrderInit.current = true
+    setRoutineDisplayOrder(routines)
+  }, [routines]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  async function handleRoutineReorder(newOrder: Routine[]) {
+    setRoutineDisplayOrder(newOrder)
+    await Promise.all(
+      newOrder.map((r, i) => {
+        if (routines.find(x => x.id === r.id)?.sort_order !== i)
+          return updateRoutineOrder.mutateAsync({ id: r.id, sort_order: i })
+      }).filter(Boolean) as Promise<void>[]
+    )
+  }
 
   const [showAdd, setShowAdd] = useState(false)
   const [editHabit, setEditHabit] = useState<HabitWithStreak | null>(null)
@@ -1115,23 +1135,41 @@ export default function Habits() {
                 // Group habits by routine_id
                 const routineHabits = (routineId: string | null) =>
                   displayHabits.filter(h => (h.routine_id ?? null) === routineId)
-                const visibleRoutines = routines.filter(r => routineHabits(r.id).length > 0)
+                const orderedRoutines = routineDisplayOrder.length > 0 ? routineDisplayOrder : routines
+                const visibleRoutines = orderedRoutines.filter(r => routineHabits(r.id).length > 0)
                 const uncategorized = routineHabits(null)
 
                 return (
                   <div>
+                    <Reorder.Group
+                      axis="y"
+                      values={visibleRoutines}
+                      onReorder={newOrder => setRoutineDisplayOrder(newOrder)}
+                      style={{ listStyle: 'none', padding: 0, margin: 0 }}
+                    >
                     {visibleRoutines.map(routine => (
-                      <RoutineSection
+                      <Reorder.Item
                         key={routine.id}
-                        routine={routine}
-                        habits={routineHabits(routine.id)}
-                        isDefaultSort={true}
-                        onEdit={h => setEditHabit(h)}
-                        onDelete={id => setDeleteConfirm(id)}
-                        onEditRoutine={r => openManageRoutines(r.id)}
-                        onReorder={handleSectionReorder}
-                      />
+                        value={routine}
+                        initial={false}
+                        layout
+                        dragMomentum={false}
+                        dragElastic={0}
+                        onDragEnd={() => handleRoutineReorder(visibleRoutines)}
+                        style={{ listStyle: 'none' }}
+                      >
+                        <RoutineSection
+                          routine={routine}
+                          habits={routineHabits(routine.id)}
+                          isDefaultSort={true}
+                          onEdit={h => setEditHabit(h)}
+                          onDelete={id => setDeleteConfirm(id)}
+                          onEditRoutine={r => openManageRoutines(r.id)}
+                          onReorder={handleSectionReorder}
+                        />
+                      </Reorder.Item>
                     ))}
+                    </Reorder.Group>
                     {uncategorized.length > 0 && (
                       <div>
                         {visibleRoutines.length > 0 && (
