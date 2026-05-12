@@ -132,9 +132,10 @@ export default function Calendar() {
                 onClick={() => setFilterIds([])}
                 className="flex-shrink-0 px-2.5 py-1 rounded-full text-xs font-semibold transition-all"
                 style={{
-                  background: filterIds.length === 0 ? 'rgba(37,99,235,0.25)' : t.inputBg,
+                  background: filterIds.length === 0 ? 'var(--glass-sel-bg)' : t.inputBg,
                   color: filterIds.length === 0 ? 'var(--accent-text)' : t.textMuted,
-                  border: filterIds.length === 0 ? '1.5px solid #2563EB' : '1px solid var(--border)',
+                  border: filterIds.length === 0 ? '1px solid var(--glass-sel-border)' : '1px solid var(--border)',
+                  backdropFilter: filterIds.length === 0 ? 'blur(8px)' : 'none',
                 }}
               >All</button>
               {habits.map((h, i) => {
@@ -164,9 +165,10 @@ export default function Calendar() {
                 onClick={() => setFilterIds([])}
                 className="flex-shrink-0 px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all"
                 style={{
-                  background: filterIds.length === 0 ? 'rgba(37,99,235,0.25)' : t.inputBg,
+                  background: filterIds.length === 0 ? 'var(--glass-sel-bg)' : t.inputBg,
                   color: filterIds.length === 0 ? 'var(--accent-text)' : t.textMuted,
-                  border: filterIds.length === 0 ? '1.5px solid #2563EB' : '1px solid var(--border)',
+                  border: filterIds.length === 0 ? '1px solid var(--glass-sel-border)' : '1px solid var(--border)',
+                  backdropFilter: filterIds.length === 0 ? 'blur(8px)' : 'none',
                 }}
               >All</button>
               {habits.map((h, i) => {

@@ -374,7 +374,7 @@ export default function Analytics() {
                           <div style={{
                             width: 16, height: 16, borderRadius: 4,
                             background: done
-                              ? d.isToday ? '#2563EB' : darkMode ? 'rgba(37,99,235,0.72)' : 'rgba(37,99,235,0.60)'
+                              ? d.isToday ? 'var(--glass-sel-bg)' : darkMode ? 'rgba(147,197,253,0.35)' : 'rgba(37,99,235,0.35)'
                               : darkMode ? 'rgba(255,255,255,0.05)' : 'rgba(11,20,55,0.06)',
                             border: done ? 'none' : `1px solid ${t.border}`,
                             boxShadow: done && d.isToday ? '0 0 6px rgba(37,99,235,0.5)' : 'none',
