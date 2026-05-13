@@ -790,10 +790,12 @@ function ManageRoutinesSheet({ onClose, t, initialEditId }: {
         {editingId === 'new' ? (
           <RoutineForm isNew={true} />
         ) : !isEditing && (
-          <button onClick={startNew} className="w-full py-2.5 rounded-2xl text-sm font-semibold transition-all"
-            style={{ background: 'rgba(37,99,235,0.12)', color: 'var(--accent-text)', border: '1px solid rgba(37,99,235,0.25)' }}>
-            + New Routine
-          </button>
+          <div className="mt-4 pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
+            <button onClick={startNew} className="w-full py-2.5 rounded-2xl text-sm font-semibold transition-all"
+              style={{ background: 'rgba(37,99,235,0.12)', color: 'var(--accent-text)', border: '1px solid rgba(37,99,235,0.25)' }}>
+              New Routine
+            </button>
+          </div>
         )}
       </motion.div>
     </motion.div>
@@ -984,7 +986,7 @@ export default function Habits() {
   }
 
   return (
-    <div className="app-bg min-h-screen" style={{ paddingTop: 76, paddingBottom: 80 }}>
+    <div className="app-bg min-h-screen" style={{ paddingTop: 76, paddingBottom: 120 }}>
       <div className="px-4 pt-8 page-inner">
 
         {/* Header */}

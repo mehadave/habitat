@@ -23,7 +23,7 @@ export function ArchivedHabitsSection() {
     <div className="mt-8">
       <button
         onClick={() => setExpanded(e => !e)}
-        className="flex items-center gap-2 mb-3 text-xs font-semibold tracking-wide uppercase transition-colors"
+        className="flex items-center gap-2 mb-3 text-xs font-semibold tracking-wide uppercase transition-opacity opacity-70 hover:opacity-100"
         style={{ color: t.textMuted }}
       >
         <span>📦 Archived ({archived.length})</span>
@@ -39,7 +39,7 @@ export function ArchivedHabitsSection() {
             transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            <div className="space-y-2">
+            <div className="space-y-2 pb-4">
               {archived.map(habit => (
                 <div
                   key={habit.id}
