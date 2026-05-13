@@ -930,6 +930,19 @@ export default function Habits() {
     })
   }, [activeHabits, manualOrder])
 
+  // Tracker order mirrors the grouped list view when routines are active so
+  // columns stay consistent with what the user sees in the habit list.
+  const trackerOrderedHabits = useMemo(() => {
+    if (routines.length === 0 || sortBy !== 'default') return customOrderedHabits
+    const orderedRoutines = routineDisplayOrder.length > 0 ? routineDisplayOrder : routines
+    const result: typeof customOrderedHabits = []
+    for (const r of orderedRoutines) {
+      result.push(...customOrderedHabits.filter(h => (h.routine_id ?? null) === r.id))
+    }
+    result.push(...customOrderedHabits.filter(h => (h.routine_id ?? null) === null))
+    return result
+  }, [customOrderedHabits, routines, routineDisplayOrder, sortBy])
+
   // Keep manual order in sync when habits load/change
   const orderedHabits = useMemo(() => {
     if (manualOrder.length === 0 || sortBy !== 'default') return activeHabits
@@ -1044,7 +1057,7 @@ export default function Habits() {
         ) : (
           <>
             {/* Monthly tracker at the top */}
-            <MonthlyHabitTracker habits={customOrderedHabits} onToggle={handleToggle} />
+            <MonthlyHabitTracker habits={trackerOrderedHabits} onToggle={handleToggle} />
 
             {/* Sort bar */}
             <div className="flex items-center justify-between mb-3">
