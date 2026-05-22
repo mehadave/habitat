@@ -58,8 +58,8 @@ html, body {
 }
 body.light-mode .glass-card {
   background: linear-gradient(135deg, rgba(255,255,255,0.88) 0%, rgba(255,255,255,0.72) 100%);
-  border: 1px solid rgba(11,20,55,0.10);
-  box-shadow: 0 4px 24px rgba(11,20,55,0.08), inset 0 1px 0 rgba(255,255,255,0.9);
+  border: 1px solid rgba(37,99,235,0.15);
+  box-shadow: 0 4px 24px rgba(37,99,235,0.08), inset 0 1px 0 rgba(255,255,255,0.9);
 }
 
 /* ── Skeleton shimmer for loading states ── */
@@ -190,21 +190,21 @@ body.light-mode {
   --text-3:       rgba(11,20,55,0.65);
   --surface:      rgba(255,255,255,0.88);
   --surface-alt:  #E8EFFF;
-  --surface-tint: rgba(11,20,55,0.05);
-  --border:       rgba(11,20,55,0.10);
-  --input-bg:     rgba(11,20,55,0.05);
-  --input-border: rgba(11,20,55,0.12);
-  --divider:      rgba(11,20,55,0.09);
+  --surface-tint: rgba(37,99,235,0.05);
+  --border:       rgba(37,99,235,0.16);
+  --input-bg:     rgba(37,99,235,0.04);
+  --input-border: rgba(37,99,235,0.20);
+  --divider:      rgba(37,99,235,0.11);
   --nav-bg:       rgba(239,244,255,0.92);
-  --today-bg:     rgba(37,99,235,0.06);
-  --card-shadow:  0 2px 12px rgba(11,20,55,0.11);
+  --today-bg:     rgba(37,99,235,0.07);
+  --card-shadow:  0 2px 12px rgba(37,99,235,0.10);
   --accent-text:  #2563EB;
   /* Glass accent tokens — light */
   --glass-btn-bg:     rgba(37,99,235,0.08);
-  --glass-btn-border: rgba(37,99,235,0.22);
-  --glass-btn-glow:   rgba(37,99,235,0.12);
-  --glass-sel-bg:     rgba(37,99,235,0.11);
-  --glass-sel-border: rgba(37,99,235,0.28);
+  --glass-btn-border: rgba(37,99,235,0.30);
+  --glass-btn-glow:   rgba(37,99,235,0.14);
+  --glass-sel-bg:     rgba(37,99,235,0.12);
+  --glass-sel-border: rgba(37,99,235,0.42);
 }
 
 /* Auth pages keep dark look in both modes */
@@ -232,19 +232,19 @@ body.light-mode .app-bg::after {
 /* Light mode: nav bars */
 body.light-mode .nav-bar-top {
   background: rgba(240,244,255,0.92) !important;
-  border-bottom-color: rgba(11,20,55,0.1) !important;
+  border-bottom-color: rgba(37,99,235,0.13) !important;
 }
 body.light-mode .nav-bar-bottom {
   background: rgba(240,244,255,0.95) !important;
-  border-top-color: rgba(11,20,55,0.1) !important;
+  border-top-color: rgba(37,99,235,0.13) !important;
 }
 
 /* Light mode: cards */
 body.light-mode .app-bg .habit-card,
 body.light-mode .app-bg .card {
   background: rgba(255,255,255,0.88) !important;
-  border-color: rgba(11,20,55,0.09) !important;
-  box-shadow: 0 2px 12px rgba(11,20,55,0.06);
+  border-color: rgba(37,99,235,0.14) !important;
+  box-shadow: 0 2px 12px rgba(37,99,235,0.07);
 }
 
 body.light-mode * {

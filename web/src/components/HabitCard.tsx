@@ -12,19 +12,19 @@ interface HabitCardProps {
 function PriorityBadge({ rating }: { rating: number }) {
   if (rating >= 4) return (
     <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
-      style={{ background: 'rgba(248,113,113,0.13)', color: '#F87171', border: '1px solid rgba(248,113,113,0.30)' }}>
+      style={{ background: 'rgba(248,113,113,0.13)', color: '#F87171', border: '1px solid rgba(248,113,113,0.40)' }}>
       High
     </span>
   )
   if (rating >= 2) return (
     <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
-      style={{ background: 'rgba(251,191,36,0.12)', color: '#FBBF24', border: '1px solid rgba(251,191,36,0.30)' }}>
+      style={{ background: 'rgba(251,191,36,0.12)', color: '#FBBF24', border: '1px solid rgba(251,191,36,0.40)' }}>
       Med
     </span>
   )
   return (
     <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
-      style={{ background: 'rgba(96,165,250,0.12)', color: '#60A5FA', border: '1px solid rgba(96,165,250,0.25)' }}>
+      style={{ background: 'rgba(96,165,250,0.12)', color: '#60A5FA', border: '1px solid rgba(96,165,250,0.38)' }}>
       Low
     </span>
   )
@@ -70,8 +70,8 @@ export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
   const cardBg = darkMode ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.9)'
   const cardShadow = darkMode ? 'none' : '0 2px 12px rgba(11,20,55,0.13)'
   const cardBorder = streak < 3 && streak > 0
-    ? '1px solid rgba(248,113,113,0.2)'
-    : darkMode ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(11,20,55,0.14)'
+    ? '1px solid rgba(248,113,113,0.32)'
+    : darkMode ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(37,99,235,0.16)'
   const textColor = darkMode ? '#ffffff' : '#0B1437'
   const textMuted = darkMode ? 'rgba(255,255,255,0.4)' : 'rgba(11,20,55,0.85)'
   const descBg = darkMode ? 'rgba(255,255,255,0.04)' : 'rgba(11,20,55,0.03)'
