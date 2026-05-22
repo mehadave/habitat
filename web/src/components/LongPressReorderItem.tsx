@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { Reorder, useDragControls } from 'framer-motion'
 
 interface Props {
@@ -27,6 +27,7 @@ export function LongPressReorderItem({
   const timer = useRef<ReturnType<typeof setTimeout>>()
   const startPos = useRef({ x: 0, y: 0 })
   const dragging = useRef(false)
+  const [active, setActive] = useState(false)
 
   function onPointerDown(e: React.PointerEvent) {
     startPos.current = { x: e.clientX, y: e.clientY }
@@ -34,6 +35,7 @@ export function LongPressReorderItem({
     const nativeEvent = e.nativeEvent
     timer.current = setTimeout(() => {
       dragging.current = true
+      setActive(true)
       navigator.vibrate?.(15)
       dragControls.start(nativeEvent)
     }, LONG_PRESS_MS)
@@ -52,17 +54,23 @@ export function LongPressReorderItem({
     clearTimeout(timer.current)
   }
 
+  function handleDragEnd() {
+    setActive(false)
+    dragging.current = false
+    onDragEnd?.()
+  }
+
   return (
     <Reorder.Item
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       value={value as any}
       dragListener={false}
       dragControls={dragControls}
-      onDragEnd={onDragEnd}
+      onDragEnd={handleDragEnd}
       dragMomentum={false}
       dragElastic={0}
       style={style}
-      className={className}
+      className={`${active ? 'lp-reorder-active' : 'lp-reorder-idle'} ${className ?? ''}`}
       initial={initial}
       layout={layout}
       onPointerDown={onPointerDown}

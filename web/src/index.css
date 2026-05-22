@@ -333,6 +333,10 @@ body.light-mode ::-webkit-scrollbar-thumb { background: rgba(11,20,55,0.15); }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+/* Reorder items: allow native scroll until long-press activates drag */
+.lp-reorder-idle { touch-action: pan-y !important; }
+.lp-reorder-active { touch-action: none !important; }
+
 .commit-cell {
   transition: transform 0.2s ease, background-color 0.2s ease;
   cursor: pointer;
