@@ -11,16 +11,17 @@ type Range = '7d' | '30d' | '90d' | 'all'
 
 type ThemeTokens = { alt: string; border: string; text: string }
 
-function CustomTooltip({ active, payload, label, t }: {
+function CustomTooltip({ active, payload, label, t, darkMode }: {
   active?: boolean
   payload?: Array<{ value: number; name: string }>
   label?: string
   t: ThemeTokens
+  darkMode?: boolean
 }) {
   if (!active || !payload?.length) return null
   return (
     <div className="rounded-xl px-3 py-2 text-xs" style={{ background: t.alt, border: `1px solid ${t.border}`, color: t.text }}>
-      <p style={{ color: '#93C5FD', marginBottom: 2 }}>{label}</p>
+      <p style={{ color: darkMode ? '#93C5FD' : '#2563EB', marginBottom: 2 }}>{label}</p>
       <p>{payload[0].value}{payload[0].name === 'pct' ? '%' : ' completions'}</p>
     </div>
   )
@@ -95,7 +96,7 @@ export default function Analytics() {
 
   const doneToday = habits.filter(h => h.completions?.includes(todayStr)).length
   const todayPct = totalHabits > 0 ? Math.round((doneToday / totalHabits) * 100) : 0
-  const todayColor = todayPct >= 80 ? '#4ADE80' : todayPct >= 50 ? '#38BDF8' : '#F87171'
+  const todayColor = todayPct >= 80 ? (darkMode ? '#4ADE80' : '#16A34A') : todayPct >= 50 ? (darkMode ? '#38BDF8' : '#0284C7') : (darkMode ? '#F87171' : '#DC2626')
 
   const rangeStart = range === '7d' ? daysAgo(7)
     : range === '30d' ? daysAgo(30)
@@ -190,7 +191,7 @@ export default function Analytics() {
         {/* Header + range selector */}
         <div className="flex items-center justify-between mb-5">
           <div>
-            <p className="text-[10px] font-semibold tracking-widest uppercase mb-0.5" style={{ color: '#38BDF8' }}>Your Data</p>
+            <p className="text-[10px] font-semibold tracking-widest uppercase mb-0.5" style={{ color: darkMode ? '#38BDF8' : '#0284C7' }}>Your Data</p>
             <h1 className="text-2xl font-bold" style={{ color: t.text, letterSpacing: '-0.02em' }}>Statistics</h1>
           </div>
           <div className="flex gap-1 rounded-2xl p-1" style={{ background: t.tint, border: `1px solid ${t.border}` }}>
@@ -225,7 +226,7 @@ export default function Analytics() {
           <div className="absolute top-0 right-0 w-40 h-40 pointer-events-none"
             style={{ background: 'radial-gradient(circle, rgba(56,189,248,0.14) 0%, transparent 70%)', transform: 'translate(25%, -25%)' }} />
 
-          <p className="text-[10px] font-semibold tracking-widest uppercase mb-4" style={{ color: '#38BDF8' }}>Today's Pulse</p>
+          <p className="text-[10px] font-semibold tracking-widest uppercase mb-4" style={{ color: darkMode ? '#38BDF8' : '#0284C7' }}>Today's Pulse</p>
 
           <div className="flex items-center gap-5">
             <RingProgress pct={todayPct} size={92} strokeWidth={9} color={todayColor}>
@@ -262,13 +263,13 @@ export default function Analytics() {
         {/* 3-stat quick summary */}
         <div className="grid grid-cols-3 gap-2.5 mb-5">
           {[
-            { label: 'This Week', value: `${weekPct}%`, sub: `${weekDone} sessions`, color: '#FBBF24', icon: '📅' },
-            { label: 'This Month', value: monthDone, sub: 'completions', color: '#4ADE80', icon: '🗓' },
+            { label: 'This Week', value: `${weekPct}%`, sub: `${weekDone} sessions`, color: darkMode ? '#FBBF24' : '#B45309', icon: '📅' },
+            { label: 'This Month', value: monthDone, sub: 'completions', color: darkMode ? '#4ADE80' : '#16A34A', icon: '🗓' },
             {
               label: 'Top Streak',
               value: bestStreak ? `${bestStreak.streak?.current_streak ?? 0}d` : '—',
               sub: bestStreak ? bestStreak.name : 'No habits',
-              color: '#38BDF8',
+              color: darkMode ? '#38BDF8' : '#0284C7',
               icon: '🔥',
             },
           ].map(({ label, value, sub, color, icon }, i) => (
@@ -321,13 +322,13 @@ export default function Analytics() {
                 axisLine={false}
                 tickFormatter={v => `${v}%`}
               />
-              <Tooltip content={<CustomTooltip t={t} />} />
+              <Tooltip content={<CustomTooltip t={t} darkMode={darkMode} />} />
               <Area
                 type="monotone" dataKey="pct" name="pct"
                 stroke="#2563EB" strokeWidth={2.5}
                 fill="url(#areaGrad)"
-                dot={range === '7d' ? { fill: '#38BDF8', r: 3.5, strokeWidth: 0 } : false}
-                activeDot={{ fill: '#38BDF8', r: 4.5, strokeWidth: 0 }}
+                dot={range === '7d' ? { fill: darkMode ? '#38BDF8' : '#0284C7', r: 3.5, strokeWidth: 0 } : false}
+                activeDot={{ fill: darkMode ? '#38BDF8' : '#0284C7', r: 4.5, strokeWidth: 0 }}
               />
             </AreaChart>
           </ResponsiveContainer>
@@ -352,10 +353,10 @@ export default function Analytics() {
                   <div style={{ width: 68, flexShrink: 0 }} />
                   {heatmapDates.map((d, i) => (
                     <div key={i} className="flex-1 flex flex-col items-center gap-0.5">
-                      <span style={{ fontSize: 8, fontWeight: d.isToday ? 700 : 400, color: d.isToday ? '#38BDF8' : t.sub }}>
+                      <span style={{ fontSize: 8, fontWeight: d.isToday ? 700 : 400, color: d.isToday ? (darkMode ? '#38BDF8' : '#0284C7') : t.sub }}>
                         {d.label}
                       </span>
-                      {d.isToday && <div style={{ width: 3, height: 3, borderRadius: '50%', background: '#38BDF8' }} />}
+                      {d.isToday && <div style={{ width: 3, height: 3, borderRadius: '50%', background: darkMode ? '#38BDF8' : '#0284C7' }} />}
                     </div>
                   ))}
                 </div>
@@ -405,7 +406,7 @@ export default function Analytics() {
               const isTop = rate === maxDow && rate > 0
               return (
                 <div key={day} className="flex-1 flex flex-col items-center justify-end gap-1.5">
-                  <span style={{ fontSize: 8, fontWeight: 600, color: isTop ? '#FBBF24' : t.sub }}>{rate}%</span>
+                  <span style={{ fontSize: 8, fontWeight: 600, color: isTop ? (darkMode ? '#FBBF24' : '#B45309') : t.sub }}>{rate}%</span>
                   <div style={{
                     width: '100%', height: barH,
                     background: isTop
@@ -416,7 +417,7 @@ export default function Analytics() {
                     boxShadow: isTop ? '0 2px 8px rgba(251,191,36,0.45)' : 'none',
                     transition: 'height 0.8s ease',
                   }} />
-                  <span style={{ fontSize: 9, fontWeight: isTop ? 700 : 400, color: isTop ? '#FBBF24' : t.muted }}>{day}</span>
+                  <span style={{ fontSize: 9, fontWeight: isTop ? 700 : 400, color: isTop ? (darkMode ? '#FBBF24' : '#B45309') : t.muted }}>{day}</span>
                 </div>
               )
             })}
@@ -435,7 +436,7 @@ export default function Analytics() {
         ) : (
           <div className="space-y-2.5 pb-2">
             {habitStats.map((h, i) => {
-              const ringColor = h.doneToday ? '#4ADE80' : h.streak > 0 ? '#FBBF24' : '#F87171'
+              const ringColor = h.doneToday ? (darkMode ? '#4ADE80' : '#16A34A') : h.streak > 0 ? (darkMode ? '#FBBF24' : '#B45309') : (darkMode ? '#F87171' : '#DC2626')
               return (
                 <motion.div
                   key={h.id}
@@ -485,11 +486,11 @@ export default function Analytics() {
                 <XAxis dataKey="date" tick={{ fill: t.sub as string, fontSize: 8 }} tickLine={false} axisLine={false}
                   interval={range === '7d' ? 0 : 4} />
                 <YAxis hide />
-                <Tooltip content={<CustomTooltip t={t} />} />
+                <Tooltip content={<CustomTooltip t={t} darkMode={darkMode} />} />
                 <Bar dataKey="count" name="count" radius={[3, 3, 0, 0]}>
                   {chartData.map((entry, i) => (
                     <Cell key={i}
-                      fill={entry.ds === todayStr ? '#38BDF8' : entry.count === Math.max(...chartData.map(d => d.count)) && entry.count > 0 ? '#60A5FA' : '#2563EB'}
+                      fill={entry.ds === todayStr ? (darkMode ? '#38BDF8' : '#0284C7') : entry.count === Math.max(...chartData.map(d => d.count)) && entry.count > 0 ? (darkMode ? '#60A5FA' : '#1D4ED8') : '#2563EB'}
                       fillOpacity={entry.count === 0 ? 0.2 : 1}
                     />
                   ))}

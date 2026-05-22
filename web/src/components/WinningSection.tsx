@@ -56,14 +56,14 @@ export function WinningSection({ habits, onToggle }: Props) {
                 </span>
                 <span
                   className="text-xs font-semibold flex-shrink-0 px-2 py-0.5 rounded-full"
-                  style={{ background: 'rgba(56,189,248,0.12)', color: '#38BDF8', border: '1px solid rgba(56,189,248,0.25)' }}
+                  style={{ background: darkMode ? 'rgba(56,189,248,0.12)' : 'rgba(2,132,199,0.10)', color: darkMode ? '#38BDF8' : '#0284C7', border: `1px solid ${darkMode ? 'rgba(56,189,248,0.25)' : 'rgba(2,132,199,0.28)'}` }}
                 >
                   {streak}d 🔥
                 </span>
               </div>
 
               {doneToday ? (
-                <p className="text-xs font-medium" style={{ color: '#38BDF8' }}>✓ Done today</p>
+                <p className="text-xs font-medium" style={{ color: darkMode ? '#38BDF8' : '#0284C7' }}>✓ Done today</p>
               ) : (
                 <button
                   onClick={() => onToggle(habit.id, todayStr)}

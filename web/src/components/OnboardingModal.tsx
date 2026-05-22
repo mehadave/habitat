@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { DolphinLogo } from './DolphinLogo'
 import { markOnboardingComplete } from '../lib/onboarding'
+import { useUIStore } from '../store/uiStore'
 
 interface Step {
   icon: string
@@ -36,6 +37,7 @@ interface Props {
 }
 
 export function OnboardingModal({ onClose }: Props) {
+  const { darkMode } = useUIStore()
   const [step, setStep] = useState(0)
 
   const t = {
@@ -103,7 +105,7 @@ export function OnboardingModal({ onClose }: Props) {
         </div>
 
         <p className="text-center text-xs uppercase tracking-widest font-semibold mb-1"
-          style={{ color: '#38BDF8' }}>
+          style={{ color: darkMode ? '#38BDF8' : '#0284C7' }}>
           Welcome to Habit<span style={{ color: t.textSub }}>·</span>at
         </p>
 
@@ -126,7 +128,7 @@ export function OnboardingModal({ onClose }: Props) {
             </p>
             <div
               className="text-xs rounded-xl px-3 py-2 mb-1"
-              style={{ background: t.tipBg, border: `1px solid ${t.tipBorder}`, color: '#38BDF8' }}
+              style={{ background: t.tipBg, border: `1px solid ${t.tipBorder}`, color: darkMode ? '#38BDF8' : '#0284C7' }}
             >
               💡 {current.tip}
             </div>
@@ -142,7 +144,7 @@ export function OnboardingModal({ onClose }: Props) {
               style={{
                 width: i === step ? 20 : 6,
                 height: 6,
-                background: i === step ? '#38BDF8' : t.dotInactive,
+                background: i === step ? (darkMode ? '#38BDF8' : '#0284C7') : t.dotInactive,
               }}
             />
           ))}

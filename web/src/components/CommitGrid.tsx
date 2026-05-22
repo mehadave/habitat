@@ -99,7 +99,7 @@ export function CommitGrid({ habitName, completions, onToggle, isLoading }: Comm
     return completions.includes(dateStr) ? '#2563EB' : emptyBg
   }
   function getCellBorder(dateStr: string): string {
-    if (dateStr === todayStr) return '1px solid #60A5FA'
+    if (dateStr === todayStr) return `1px solid ${darkMode ? '#60A5FA' : '#2563EB'}`
     return completions.includes(dateStr) ? '1px solid #2563EB' : emptyBorder
   }
 

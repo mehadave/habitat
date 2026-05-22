@@ -19,6 +19,7 @@ function WeeklySummaryModal({ habits, onClose }: {
   habits: HabitWithStreak[]
   onClose: () => void
 }) {
+  const { darkMode } = useUIStore()
   const t = { bg: 'var(--surface-alt)', text: 'var(--text-1)', muted: 'var(--text-2)', card: 'var(--surface)', border: 'var(--border)' }
 
   const today = new Date()
@@ -52,7 +53,7 @@ function WeeklySummaryModal({ habits, onClose }: {
       >
         <div className="flex items-center justify-between mb-5">
           <div>
-            <p className="text-xs font-semibold tracking-widest uppercase mb-0.5" style={{ color: '#38BDF8' }}>Weekly Summary</p>
+            <p className="text-xs font-semibold tracking-widest uppercase mb-0.5" style={{ color: darkMode ? '#38BDF8' : '#0284C7' }}>Weekly Summary</p>
             <h2 className="text-lg font-bold" style={{ color: t.text }}>Your 7-day report</h2>
           </div>
           <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center text-lg"
@@ -60,7 +61,7 @@ function WeeklySummaryModal({ habits, onClose }: {
         </div>
 
         <div className="rounded-2xl p-4 mb-4 text-center" style={{ background: 'linear-gradient(135deg, rgba(37,99,235,0.25), rgba(56,189,248,0.15))', border: '1px solid rgba(56,189,248,0.25)' }}>
-          <p className="font-display text-5xl leading-none mb-1" style={{ color: '#38BDF8', letterSpacing: '-0.03em' }}>{pct}%</p>
+          <p className="font-display text-5xl leading-none mb-1" style={{ color: darkMode ? '#38BDF8' : '#0284C7', letterSpacing: '-0.03em' }}>{pct}%</p>
           <p className="text-xs font-semibold tracking-wide uppercase" style={{ color: t.muted }}>completion this week</p>
           <p className="text-xs mt-1" style={{ color: t.muted }}>{totalDone} of {totalPossible} sessions done</p>
         </div>
@@ -97,7 +98,7 @@ function WeeklySummaryModal({ habits, onClose }: {
 
         {bestHabit && (
           <div className="rounded-2xl p-3 mb-3" style={{ background: t.card, border: `1px solid ${t.border}` }}>
-            <p className="text-xs font-semibold mb-1" style={{ color: '#FBBF24' }}>⭐ Star of the week</p>
+            <p className="text-xs font-semibold mb-1" style={{ color: darkMode ? '#FBBF24' : '#B45309' }}>⭐ Star of the week</p>
             <p className="text-sm font-semibold" style={{ color: t.text }}>{bestHabit.emoji} {bestHabit.name}</p>
             <p className="text-xs" style={{ color: t.muted }}>
               {weekDates.filter(d => bestHabit.completions?.includes(d)).length}/7 days completed
@@ -272,8 +273,8 @@ export default function Profile() {
             style={{ background: t.cardBg, border: `1px solid ${t.cardBorder}` }}
           >
             <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-              style={{ background: 'rgba(56,189,248,0.12)', border: '1px solid rgba(56,189,248,0.22)' }}>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              style={{ background: darkMode ? 'rgba(56,189,248,0.12)' : 'rgba(2,132,199,0.10)', border: `1px solid ${darkMode ? 'rgba(56,189,248,0.22)' : 'rgba(2,132,199,0.25)'}` }}>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke={darkMode ? '#38BDF8' : '#0284C7'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
               </svg>
             </div>
@@ -353,7 +354,7 @@ export default function Profile() {
             <button
               onClick={() => setShowWeeklySummaryModal(true)}
               className="mt-3 flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-xl transition-all"
-              style={{ background: 'rgba(56,189,248,0.10)', color: '#38BDF8', border: '1px solid rgba(56,189,248,0.20)' }}
+              style={{ background: darkMode ? 'rgba(56,189,248,0.10)' : 'rgba(2,132,199,0.08)', color: darkMode ? '#38BDF8' : '#0284C7', border: `1px solid ${darkMode ? 'rgba(56,189,248,0.20)' : 'rgba(2,132,199,0.25)'}` }}
             >
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="3" y="4" width="18" height="18" rx="2.5"/>
@@ -369,10 +370,10 @@ export default function Profile() {
             style={{ background: t.cardBg, border: `1px solid ${t.cardBorder}` }}>
             <p className="text-sm mb-2" style={{ color: t.text }}>Account</p>
             <button onClick={handlePasswordReset} className="text-sm"
-              style={{ color: '#60A5FA' }}>
+              style={{ color: darkMode ? '#60A5FA' : '#2563EB' }}>
               Change password →
             </button>
-            {error && <p className="text-xs mt-1" style={{ color: '#93C5FD' }}>{error}</p>}
+            {error && <p className="text-xs mt-1" style={{ color: darkMode ? '#93C5FD' : '#DC2626' }}>{error}</p>}
           </div>
 
           {/* Logout */}
@@ -389,7 +390,7 @@ export default function Profile() {
             style={{ background: 'rgba(248,113,113,0.06)', border: '1px solid rgba(248,113,113,0.2)' }}>
             <p className="text-sm font-medium mb-2" style={{ color: t.text }}>Danger zone</p>
             <button onClick={() => setShowDeleteConfirm(true)} className="text-xs"
-              style={{ color: '#F87171' }}>
+              style={{ color: darkMode ? '#F87171' : '#DC2626' }}>
               Delete my account →
             </button>
           </div>
@@ -468,7 +469,7 @@ export default function Profile() {
               className="w-full max-w-xs rounded-2xl p-6"
               style={{ background: t.sheetBg, border: '1px solid rgba(248,113,113,0.3)' }}
             >
-              <h3 className="text-sm font-medium mb-1" style={{ color: '#F87171' }}>Delete account?</h3>
+              <h3 className="text-sm font-medium mb-1" style={{ color: darkMode ? '#F87171' : '#DC2626' }}>Delete account?</h3>
               <p className="text-xs mb-3" style={{ color: t.textMuted }}>
                 This is permanent. All your habits, streaks, and journal entries will be lost.
               </p>
@@ -492,7 +493,7 @@ export default function Profile() {
                   onClick={handleDeleteAccount}
                   disabled={deleteInput !== 'DELETE'}
                   className="flex-1 py-2 rounded-xl text-xs font-medium"
-                  style={{ background: deleteInput === 'DELETE' ? 'rgba(248,113,113,0.3)' : t.inputBg, color: '#F87171' }}>
+                  style={{ background: deleteInput === 'DELETE' ? 'rgba(248,113,113,0.3)' : t.inputBg, color: darkMode ? '#F87171' : '#DC2626' }}>
                   Delete
                 </button>
               </div>

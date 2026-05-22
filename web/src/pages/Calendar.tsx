@@ -108,7 +108,7 @@ export default function Calendar() {
   function heatmapColor(count: number): string {
     if (count === 0) return darkMode ? 'rgba(255,255,255,0.05)' : 'rgba(11,20,55,0.11)'
     const ratio = count / maxCount
-    if (ratio < 0.33) return '#93C5FD'   // few habits — lightest
+    if (ratio < 0.33) return darkMode ? '#93C5FD' : '#3B82F6'   // few habits — lightest
     if (ratio < 0.66) return '#2563EB'   // moderate — medium
     return '#1e3a8a'                     // most habits — darkest
   }
@@ -231,7 +231,7 @@ export default function Calendar() {
                 className="flex flex-col items-center py-2 rounded-xl relative"
                 style={{
                   background: isSelected ? 'rgba(37,99,235,0.3)' : isToday ? 'rgba(37,99,235,0.15)' : t.cardBg,
-                  border: perfect ? '1px solid #FBBF24' : isToday ? '1px solid rgba(37,99,235,0.5)' : '1px solid transparent',
+                  border: perfect ? `1px solid ${darkMode ? '#FBBF24' : '#B45309'}` : isToday ? '1px solid rgba(37,99,235,0.5)' : '1px solid transparent',
                   opacity: isFuture ? 0.2 : 1,
                   cursor: isFuture ? 'default' : 'pointer',
                 }}
@@ -276,7 +276,7 @@ export default function Calendar() {
                         style={{ background: HABIT_COLORS[idx % HABIT_COLORS.length] }} />
                       <span>{h.emoji}</span>
                       <span style={{ color: t.text }}>{h.name}</span>
-                      <span style={{ color: '#4ADE80' }}>✓</span>
+                      <span style={{ color: darkMode ? '#4ADE80' : '#16A34A' }}>✓</span>
                     </div>
                   )
                 })}
@@ -296,7 +296,7 @@ export default function Calendar() {
                   )
                 })}
                 {isPerfectDay(selectedDate) && visibleHabits.length > 0 && (
-                  <p className="text-sm mt-2" style={{ color: '#FBBF24' }}>⭐ Perfect day!</p>
+                  <p className="text-sm mt-2" style={{ color: darkMode ? '#FBBF24' : '#B45309' }}>⭐ Perfect day!</p>
                 )}
               </div>
             )}
@@ -314,7 +314,7 @@ export default function Calendar() {
           </div>
           <div className="flex items-center gap-2 mt-2">
             <span className="text-xs" style={{ color: t.textSub }}>Less</span>
-            {[heatmapColor(0), '#93C5FD', '#2563EB', '#1e3a8a'].map((c, idx) => (
+            {[heatmapColor(0), darkMode ? '#93C5FD' : '#3B82F6', '#2563EB', '#1e3a8a'].map((c, idx) => (
               <div key={idx} style={{ width: 10, height: 10, borderRadius: 2, background: c }} />
             ))}
             <span className="text-xs" style={{ color: t.textSub }}>More</span>

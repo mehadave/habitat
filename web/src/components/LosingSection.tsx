@@ -58,7 +58,7 @@ export function LosingSection({ habits, onToggle }: Props) {
                 </span>
                 <span
                   className="text-[10px] font-medium flex-shrink-0 px-1.5 py-0.5 rounded-full"
-                  style={{ background: 'rgba(248,113,113,0.10)', color: '#F87171', border: '1px solid rgba(248,113,113,0.20)' }}
+                  style={{ background: 'rgba(248,113,113,0.10)', color: darkMode ? '#F87171' : '#DC2626', border: `1px solid ${darkMode ? 'rgba(248,113,113,0.20)' : 'rgba(220,38,38,0.30)'}` }}
                 >
                   {streak}d
                 </span>
