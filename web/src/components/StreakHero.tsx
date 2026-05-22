@@ -29,9 +29,9 @@ export function StreakHero({ streak, startDate, darkMode = true, label, sublabel
   // Solid color per milestone — avoids WebkitBackgroundClip:text rendering bug
   // on Android browsers (shows a gradient rectangle instead of clipping to text)
   const numColor = streak >= 30
-    ? '#FBBF24'                                          // gold
+    ? darkMode ? '#FBBF24' : '#B45309'                   // gold / dark amber
     : streak >= 7
-      ? '#38BDF8'                                        // sky blue
+      ? darkMode ? '#38BDF8' : '#0284C7'                 // sky blue / strong cyan
       : streak > 0
         ? darkMode ? '#93C5FD' : '#2563EB'               // soft blue / strong blue
         : darkMode ? 'rgba(255,255,255,0.45)' : 'rgba(11,20,55,0.40)'  // muted

@@ -61,14 +61,14 @@ export function ArchivedHabitsSection() {
                     onClick={() => restoreMutation.mutate(habit.id)}
                     disabled={restoreMutation.isPending}
                     className="px-3 py-1.5 rounded-lg text-xs font-semibold flex-shrink-0"
-                    style={{ background: 'rgba(56,189,248,0.15)', color: '#38BDF8', border: '1px solid rgba(56,189,248,0.3)' }}
+                    style={{ background: darkMode ? 'rgba(56,189,248,0.15)' : 'rgba(2,132,199,0.10)', color: darkMode ? '#38BDF8' : '#0284C7', border: `1px solid ${darkMode ? 'rgba(56,189,248,0.3)' : 'rgba(2,132,199,0.30)'}` }}
                   >
                     Restore
                   </button>
                   <button
                     onClick={() => setConfirmDelete(habit.id)}
                     className="px-2 py-1.5 rounded-lg text-xs font-semibold flex-shrink-0"
-                    style={{ background: 'rgba(248,113,113,0.1)', color: '#F87171', border: '1px solid rgba(248,113,113,0.2)' }}
+                    style={{ background: 'rgba(248,113,113,0.1)', color: darkMode ? '#F87171' : '#DC2626', border: `1px solid ${darkMode ? 'rgba(248,113,113,0.2)' : 'rgba(220,38,38,0.28)'}` }}
                   >
                     ✕
                   </button>
@@ -104,7 +104,7 @@ export function ArchivedHabitsSection() {
               }}
               onClick={e => e.stopPropagation()}
             >
-              <h3 className="text-sm font-bold mb-2" style={{ color: '#F87171' }}>
+              <h3 className="text-sm font-bold mb-2" style={{ color: darkMode ? '#F87171' : '#DC2626' }}>
                 Delete forever?
               </h3>
               <p className="text-xs mb-5" style={{ color: t.textMuted }}>

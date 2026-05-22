@@ -269,6 +269,7 @@ function PodiumSection({ habits, onToggle }: {
   habits: HabitWithStreak[]
   onToggle: (habitId: string, date: string) => void
 }) {
+  const { darkMode } = useUIStore()
   const todayStr = localDateStr()
   const ranked = [...habits]
     .sort((a, b) => {
@@ -330,12 +331,12 @@ function PodiumSection({ habits, onToggle }: {
               <span className="text-2xl mb-1">{habit.emoji || '⭐'}</span>
               <span className="text-xs font-semibold text-center truncate w-full mb-1"
                 style={{ color: textColor }}>{habit.name}</span>
-              <span className="font-bold" style={{ fontSize: 22, color: '#38BDF8', letterSpacing: '-0.02em' }}>
-                {streak}<span className="font-sans text-xs font-semibold ml-0.5" style={{ color: 'rgba(56,189,248,0.65)' }}>d</span>
+              <span className="font-bold" style={{ fontSize: 22, color: darkMode ? '#38BDF8' : '#0284C7', letterSpacing: '-0.02em' }}>
+                {streak}<span className="font-sans text-xs font-semibold ml-0.5" style={{ color: darkMode ? 'rgba(56,189,248,0.65)' : 'rgba(2,132,199,0.8)' }}>d</span>
               </span>
 
               {doneToday ? (
-                <span className="text-[10px] font-medium mb-2" style={{ color: '#4ADE80' }}>✓ Done</span>
+                <span className="text-[10px] font-medium mb-2" style={{ color: darkMode ? '#4ADE80' : '#16A34A' }}>✓ Done</span>
               ) : (
                 <button onClick={() => onToggle(habit.id, todayStr)}
                   className="text-[10px] font-medium mb-2" style={{ color: mutedColor }}>
@@ -370,6 +371,7 @@ function NeedsAttentionSection({ habits, onToggle }: {
   habits: HabitWithStreak[]
   onToggle: (habitId: string, date: string) => void
 }) {
+  const { darkMode } = useUIStore()
   const todayStr = localDateStr()
   const sorted = [...habits].sort((a, b) => (a.streak?.current_streak ?? 0) - (b.streak?.current_streak ?? 0))
   const belowTwo = sorted.filter(h => (h.streak?.current_streak ?? 0) < 2)
@@ -402,17 +404,17 @@ function NeedsAttentionSection({ habits, onToggle }: {
               <span className="text-base flex-shrink-0">{habit.emoji || '⭐'}</span>
               <span className="text-sm flex-1 truncate" style={{ color: textColor }}>{habit.name}</span>
               {doneToday ? (
-                <span className="text-xs font-medium" style={{ color: '#4ADE80' }}>✓</span>
+                <span className="text-xs font-medium" style={{ color: darkMode ? '#4ADE80' : '#16A34A' }}>✓</span>
               ) : (
                 <button
                   onClick={() => onToggle(habit.id, todayStr)}
                   className="text-xs font-medium px-2.5 py-1 rounded-full"
-                  style={{ background: 'rgba(248,113,113,0.10)', color: '#F87171', border: '1px solid rgba(248,113,113,0.2)' }}
+                  style={{ background: 'rgba(248,113,113,0.10)', color: darkMode ? '#F87171' : '#DC2626', border: `1px solid ${darkMode ? 'rgba(248,113,113,0.2)' : 'rgba(220,38,38,0.3)'}` }}
                 >
                   Do it
                 </button>
               )}
-              <span className="text-xs font-medium flex-shrink-0" style={{ color: streak > 0 ? '#FBBF24' : '#F87171' }}>
+              <span className="text-xs font-medium flex-shrink-0" style={{ color: streak > 0 ? (darkMode ? '#FBBF24' : '#B45309') : (darkMode ? '#F87171' : '#DC2626') }}>
                 {streak}d
               </span>
             </div>
@@ -431,6 +433,7 @@ function StreakDashboardModal({ habits, onClose }: {
   habits: HabitWithStreak[]
   onClose: () => void
 }) {
+  const { darkMode } = useUIStore()
   const textColor = 'var(--text-1)'
   const mutedColor = 'var(--text-2)'
   const sheetBg = 'var(--surface-alt)'
@@ -492,7 +495,7 @@ function StreakDashboardModal({ habits, onClose }: {
                     {habit.name}
                   </span>
                   {medal && <span className="text-base">{medal}</span>}
-                  <span className="text-sm font-bold" style={{ color: '#38BDF8' }}>{streak}d</span>
+                  <span className="text-sm font-bold" style={{ color: darkMode ? '#38BDF8' : '#0284C7' }}>{streak}d</span>
                 </div>
                 <div className="w-full h-2.5 rounded-full overflow-hidden" style={{ background: barTrack }}>
                   <motion.div
@@ -551,6 +554,7 @@ const HABIT_SUGGESTIONS = [
 ]
 
 function HabitSuggestionsModal({ onClose }: { onClose: () => void }) {
+  const { darkMode } = useUIStore()
   const t = { bg: 'var(--surface-alt)', text: 'var(--text-1)', muted: 'var(--text-2)', card: 'var(--surface)', border: 'var(--border)' }
   const cats = [...new Set(HABIT_SUGGESTIONS.map(h => h.cat))]
 
@@ -570,7 +574,7 @@ function HabitSuggestionsModal({ onClose }: { onClose: () => void }) {
       >
         <div className="flex items-center justify-between mb-4">
           <div>
-            <p className="text-xs font-semibold tracking-widest uppercase mb-0.5" style={{ color: '#38BDF8' }}>Get started</p>
+            <p className="text-xs font-semibold tracking-widest uppercase mb-0.5" style={{ color: darkMode ? '#38BDF8' : '#0284C7' }}>Get started</p>
             <h2 className="text-lg font-bold" style={{ color: t.text }}>Popular habit ideas</h2>
           </div>
           <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center"
@@ -701,7 +705,7 @@ export default function Dashboard() {
           <DolphinLogo size={56} />
         </div>
         <h1 className="text-2xl font-bold mb-3" style={{ color: t.text }}>
-          Habit<span style={{ color: '#38BDF8' }}>·</span>at
+          Habit<span style={{ color: darkMode ? '#38BDF8' : '#0284C7' }}>·</span>at
         </h1>
         <div className="mb-2 px-2 text-center max-w-xs">
           <QuoteRotator intervalMs={45000} darkMode={darkMode} />
@@ -721,9 +725,9 @@ export default function Dashboard() {
             onClick={() => setShowStreaks(true)}
             className="mt-1 text-xs font-semibold px-4 py-1.5 rounded-full transition-all relative"
             style={{
-              background: 'rgba(56,189,248,0.12)',
-              border: '1px solid rgba(56,189,248,0.25)',
-              color: '#38BDF8',
+              background: darkMode ? 'rgba(56,189,248,0.12)' : 'rgba(2,132,199,0.08)',
+              border: darkMode ? '1px solid rgba(56,189,248,0.25)' : '1px solid rgba(2,132,199,0.28)',
+              color: darkMode ? '#38BDF8' : '#0284C7',
               zIndex: 20,
             }}
           >
@@ -746,9 +750,9 @@ export default function Dashboard() {
             {/* Stats row */}
             <div className="grid grid-cols-3 gap-2 mb-3">
               {[
-                { label: 'Habits', value: totalHabits, accent: '#38BDF8' },
-                { label: 'This month', value: `${completionPct}%`, accent: '#4ADE80' },
-                { label: 'Perfect days', value: perfectDays, accent: '#FBBF24' },
+                { label: 'Habits', value: totalHabits, accent: darkMode ? '#38BDF8' : '#0284C7' },
+                { label: 'This month', value: `${completionPct}%`, accent: darkMode ? '#4ADE80' : '#16A34A' },
+                { label: 'Perfect days', value: perfectDays, accent: darkMode ? '#FBBF24' : '#B45309' },
               ].map(({ label, value, accent }) => (
                 <div key={label} className="rounded-2xl p-3 text-center glass-card">
                   <p className="text-3xl font-bold leading-none mb-1" style={{ color: accent, letterSpacing: '-0.02em' }}>{value}</p>

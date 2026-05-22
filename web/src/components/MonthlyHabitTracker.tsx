@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { localDateStr } from '../hooks/useHabits'
 import type { HabitWithStreak } from '../lib/types'
+import { useUIStore } from '../store/uiStore'
 
 const HABIT_COLORS = [
   '#F87171','#FB923C','#FBBF24','#4ADE80','#22D3EE',
@@ -31,6 +32,7 @@ interface Props {
 }
 
 export function MonthlyHabitTracker({ habits, onToggle }: Props) {
+  const { darkMode } = useUIStore()
   const now = new Date()
   const [expanded, setExpanded] = useState(false)
   const [viewYear, setViewYear] = useState(now.getFullYear())
@@ -106,7 +108,7 @@ export function MonthlyHabitTracker({ habits, onToggle }: Props) {
         }}
       >
         <td className="px-2 py-1">
-          <span className="text-[10px] font-medium" style={{ color: isToday ? '#60A5FA' : t.textSub }}>
+          <span className="text-[10px] font-medium" style={{ color: isToday ? (darkMode ? '#60A5FA' : '#2563EB') : t.textSub }}>
             {DAY_INITIALS[dayOfWeek]}
           </span>
         </td>
@@ -167,7 +169,7 @@ export function MonthlyHabitTracker({ habits, onToggle }: Props) {
             <span className="text-xs font-semibold px-2 py-0.5 rounded-full"
               style={{
                 background: weekPct >= 80 ? 'rgba(74,222,128,0.15)' : weekPct >= 50 ? 'rgba(37,99,235,0.15)' : 'rgba(248,113,113,0.12)',
-                color: weekPct >= 80 ? '#4ADE80' : weekPct >= 50 ? '#60A5FA' : '#F87171',
+                color: weekPct >= 80 ? (darkMode ? '#4ADE80' : '#16A34A') : weekPct >= 50 ? (darkMode ? '#60A5FA' : '#2563EB') : (darkMode ? '#F87171' : '#DC2626'),
               }}>
               {weekPct}%
             </span>
