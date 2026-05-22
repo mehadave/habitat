@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { motion, AnimatePresence, Reorder } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
+import type { DragEndEvent } from '@dnd-kit/core'
+import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable'
 import { HabitCard } from './HabitCard'
-import { LongPressReorderItem } from './LongPressReorderItem'
+import { SortableItem } from './SortableItem'
 import type { Routine, HabitWithStreak } from '../lib/types'
-
-
 
 interface RoutineSectionProps {
   routine: Routine
@@ -14,6 +15,7 @@ interface RoutineSectionProps {
   onDelete: (id: string) => void
   onEditRoutine: (r: Routine) => void
   onReorder: (newOrder: HabitWithStreak[]) => void
+  dragHandleProps?: Record<string, unknown>
 }
 
 function localToday() {
@@ -29,6 +31,7 @@ export function RoutineSection({
   onDelete,
   onEditRoutine,
   onReorder,
+  dragHandleProps,
 }: RoutineSectionProps) {
   const [open, setOpen] = useState(false)
   const today = localToday()
@@ -36,12 +39,28 @@ export function RoutineSection({
   const total = habits.length
   const allDone = total > 0 && doneCount === total
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { delay: 1500, tolerance: 5 },
+    })
+  )
+
+  function handleDragEnd({ active, over }: DragEndEvent) {
+    if (!over || active.id === over.id) return
+    const oldIdx = habits.findIndex(h => h.id === active.id)
+    const newIdx = habits.findIndex(h => h.id === over.id)
+    if (oldIdx !== -1 && newIdx !== -1) {
+      onReorder(arrayMove(habits, oldIdx, newIdx))
+    }
+  }
+
   return (
     <div className="mb-2">
-      {/* Section header — plain row, no card background */}
+      {/* Section header — drag handle for section reordering */}
       <div
         className="flex items-center gap-2 px-1 py-1.5 mb-1 cursor-pointer select-none rounded-xl"
         onClick={() => setOpen(v => !v)}
+        {...(dragHandleProps as React.HTMLAttributes<HTMLDivElement>)}
       >
         <span className="text-base leading-none flex-shrink-0">{routine.emoji}</span>
         <span className="text-sm font-semibold flex-1 truncate" style={{ color: 'var(--text-1)' }}>
@@ -127,25 +146,24 @@ export function RoutineSection({
                   No habits yet — edit a habit to assign it here
                 </p>
               ) : isDefaultSort ? (
-                <Reorder.Group
-                  axis="y"
-                  values={habits}
-                  onReorder={onReorder}
-                  className="space-y-3"
-                  style={{ listStyle: 'none', padding: 0, margin: 0 }}
+                <DndContext
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={handleDragEnd}
                 >
-                  {habits.map(habit => (
-                    <LongPressReorderItem
-                      key={habit.id}
-                      value={habit}
-                      initial={false}
-                      layout
-                      style={{ listStyle: 'none' }}
-                    >
-                      <HabitCard habit={habit} onEdit={onEdit} onDelete={onDelete} />
-                    </LongPressReorderItem>
-                  ))}
-                </Reorder.Group>
+                  <SortableContext
+                    items={habits.map(h => h.id)}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    <div className="space-y-3">
+                      {habits.map(habit => (
+                        <SortableItem key={habit.id} id={habit.id}>
+                          <HabitCard habit={habit} onEdit={onEdit} onDelete={onDelete} />
+                        </SortableItem>
+                      ))}
+                    </div>
+                  </SortableContext>
+                </DndContext>
               ) : (
                 <div className="space-y-3">
                   {habits.map(habit => (
