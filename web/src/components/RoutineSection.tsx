@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence, Reorder } from 'framer-motion'
 import { HabitCard } from './HabitCard'
+import { LongPressReorderItem } from './LongPressReorderItem'
 import type { Routine, HabitWithStreak } from '../lib/types'
 
 
@@ -134,17 +135,15 @@ export function RoutineSection({
                   style={{ listStyle: 'none', padding: 0, margin: 0 }}
                 >
                   {habits.map(habit => (
-                    <Reorder.Item
+                    <LongPressReorderItem
                       key={habit.id}
                       value={habit}
                       initial={false}
                       layout
-                      dragMomentum={false}
-                      dragElastic={0}
                       style={{ listStyle: 'none' }}
                     >
                       <HabitCard habit={habit} onEdit={onEdit} onDelete={onDelete} />
-                    </Reorder.Item>
+                    </LongPressReorderItem>
                   ))}
                 </Reorder.Group>
               ) : (
