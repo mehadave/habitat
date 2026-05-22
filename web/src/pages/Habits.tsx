@@ -4,6 +4,7 @@ import { useHabits, useAddHabit, useUpdateHabit, useDeleteHabit, useToggleComple
 import { useRoutines, useAddRoutine, useUpdateRoutine, useDeleteRoutine } from '../hooks/useRoutines'
 import { HabitCard } from '../components/HabitCard'
 import { RoutineSection } from '../components/RoutineSection'
+import { LongPressReorderItem } from '../components/LongPressReorderItem'
 import { MonthlyHabitTracker } from '../components/MonthlyHabitTracker'
 import { ArchivedHabitsSection } from '../components/ArchivedHabitsSection'
 import {
@@ -772,10 +773,10 @@ function ManageRoutinesSheet({ onClose, t, initialEditId }: {
           <Reorder.Group axis="y" values={routineOrder} onReorder={setRoutineOrder}
             className="space-y-2 mb-3" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
             {routineOrder.map(r => (
-              <Reorder.Item key={r.id} value={r} onDragEnd={persistRoutineOrder}
-                style={{ listStyle: 'none' }} dragMomentum={false} dragElastic={0}>
+              <LongPressReorderItem key={r.id} value={r} onDragEnd={persistRoutineOrder}
+                style={{ listStyle: 'none' }}>
                 <RoutineRow r={r} />
-              </Reorder.Item>
+              </LongPressReorderItem>
             ))}
           </Reorder.Group>
         ) : (
@@ -1165,13 +1166,11 @@ export default function Habits() {
                       style={{ listStyle: 'none', padding: 0, margin: 0 }}
                     >
                     {visibleRoutines.map(routine => (
-                      <Reorder.Item
+                      <LongPressReorderItem
                         key={routine.id}
                         value={routine}
                         initial={false}
                         layout
-                        dragMomentum={false}
-                        dragElastic={0}
                         onDragEnd={() => handleRoutineReorder(visibleRoutines)}
                         style={{ listStyle: 'none' }}
                       >
@@ -1184,7 +1183,7 @@ export default function Habits() {
                           onEditRoutine={r => openManageRoutines(r.id)}
                           onReorder={handleSectionReorder}
                         />
-                      </Reorder.Item>
+                      </LongPressReorderItem>
                     ))}
                     </Reorder.Group>
                     {uncategorized.length > 0 && (
@@ -1203,13 +1202,11 @@ export default function Habits() {
                           style={{ listStyle: 'none', padding: 0, margin: 0 }}
                         >
                           {uncategorized.map(habit => (
-                            <Reorder.Item
+                            <LongPressReorderItem
                               key={habit.id}
                               value={habit}
                               initial={false}
                               layout
-                              dragMomentum={false}
-                              dragElastic={0}
                               style={{ listStyle: 'none' }}
                             >
                               <HabitCard
@@ -1217,7 +1214,7 @@ export default function Habits() {
                                 onEdit={h => setEditHabit(h)}
                                 onDelete={id => setDeleteConfirm(id)}
                               />
-                            </Reorder.Item>
+                            </LongPressReorderItem>
                           ))}
                         </Reorder.Group>
                       </div>
@@ -1236,13 +1233,11 @@ export default function Habits() {
                   style={{ listStyle: 'none', padding: 0, margin: 0 }}
                 >
                   {displayHabits.map((habit) => (
-                    <Reorder.Item
+                    <LongPressReorderItem
                       key={habit.id}
                       value={habit}
                       initial={false}
                       layout
-                      dragMomentum={false}
-                      dragElastic={0}
                       style={{ listStyle: 'none' }}
                     >
                       <HabitCard
@@ -1250,7 +1245,7 @@ export default function Habits() {
                         onEdit={(h) => setEditHabit(h)}
                         onDelete={(id) => setDeleteConfirm(id)}
                       />
-                    </Reorder.Item>
+                    </LongPressReorderItem>
                   ))}
                 </Reorder.Group>
               ) : (
