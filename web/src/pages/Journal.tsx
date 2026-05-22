@@ -7,12 +7,12 @@ import type { JournalEntry } from '../lib/types'
 
 /* ── Categories ──────────────────────────────────────────────────────────── */
 const CATEGORIES = [
-  { id: 'brain-dump',   label: 'Dump',    emoji: '🧠', color: '#60A5FA', bg: 'rgba(96,165,250,0.15)',   border: 'rgba(96,165,250,0.38)'   },
-  { id: 'journalling',  label: 'Journal', emoji: '📖', color: '#93C5FD', bg: 'rgba(147,197,253,0.13)',  border: 'rgba(147,197,253,0.32)'  },
-  { id: 'vent',         label: 'Vent',    emoji: '🌀', color: '#A78BFA', bg: 'rgba(167,139,250,0.13)',  border: 'rgba(167,139,250,0.32)'  },
-  { id: 'ideas',        label: 'Ideas',   emoji: '💡', color: '#FBBF24', bg: 'rgba(251,191,36,0.13)',   border: 'rgba(251,191,36,0.32)'   },
-  { id: 'morning-frog', label: 'Frog',    emoji: '🐸', color: '#34D399', bg: 'rgba(52,211,153,0.13)',   border: 'rgba(52,211,153,0.32)'   },
-  { id: 'to-do',        label: 'To-do',   emoji: '✅', color: '#6EE7B7', bg: 'rgba(110,231,183,0.13)',  border: 'rgba(110,231,183,0.32)'  },
+  { id: 'brain-dump',   label: 'Dump',    emoji: '🧠', color: '#60A5FA', lightColor: '#2563EB', bg: 'rgba(96,165,250,0.15)',   border: 'rgba(96,165,250,0.38)'   },
+  { id: 'journalling',  label: 'Journal', emoji: '📖', color: '#93C5FD', lightColor: '#3B82F6', bg: 'rgba(147,197,253,0.13)',  border: 'rgba(147,197,253,0.32)'  },
+  { id: 'vent',         label: 'Vent',    emoji: '🌀', color: '#A78BFA', lightColor: '#7C3AED', bg: 'rgba(167,139,250,0.13)',  border: 'rgba(167,139,250,0.32)'  },
+  { id: 'ideas',        label: 'Ideas',   emoji: '💡', color: '#FBBF24', lightColor: '#D97706', bg: 'rgba(251,191,36,0.13)',   border: 'rgba(251,191,36,0.32)'   },
+  { id: 'morning-frog', label: 'Frog',    emoji: '🐸', color: '#34D399', lightColor: '#059669', bg: 'rgba(52,211,153,0.13)',   border: 'rgba(52,211,153,0.32)'   },
+  { id: 'to-do',        label: 'To-do',   emoji: '✅', color: '#6EE7B7', lightColor: '#10B981', bg: 'rgba(110,231,183,0.13)',  border: 'rgba(110,231,183,0.32)'  },
 ] as const
 type CategoryId = typeof CATEGORIES[number]['id']
 
@@ -160,15 +160,18 @@ function TimelineEntry({
   onEdit,
   isFirst,
   t,
+  darkMode,
 }: {
   entry: JournalEntry
   onDelete: (id: string) => void
   onEdit: (entry: JournalEntry) => void
   isFirst: boolean
   t: Record<string, string>
+  darkMode: boolean
 }) {
   const [expanded, setExpanded] = useState(false)
   const cat = catById(entry.category)
+  const catColor = darkMode ? cat.color : cat.lightColor
   const preview = entry.content.slice(0, 110)
   const needsExpand = entry.content.length > 110
 
@@ -188,8 +191,8 @@ function TimelineEntry({
             width: 10,
             height: 10,
             borderRadius: '50%',
-            background: cat.color,
-            boxShadow: isFirst ? `0 0 8px ${cat.color}` : 'none',
+            background: catColor,
+            boxShadow: isFirst ? `0 0 8px ${catColor}` : 'none',
             border: `2px solid ${t.bg}`,
             flexShrink: 0,
             marginTop: 4,
@@ -205,7 +208,7 @@ function TimelineEntry({
           <div className="flex items-center gap-2">
             <span
               className="text-[9px] font-bold uppercase tracking-widest"
-              style={{ color: isFirst ? cat.color : t.text }}
+              style={{ color: isFirst ? catColor : t.text }}
             >
               {isFirst ? `Today · ${dateLabel}` : dateLabel}
             </span>
@@ -215,7 +218,7 @@ function TimelineEntry({
             {/* Category chip */}
             <span
               className="text-[9px] font-semibold px-1.5 py-0.5 rounded-full"
-              style={{ background: cat.bg, color: cat.color, border: `1px solid ${cat.border}` }}
+              style={{ background: cat.bg, color: catColor, border: `1px solid ${cat.border}` }}
             >
               {cat.emoji} {cat.label}
             </span>
@@ -251,8 +254,8 @@ function TimelineEntry({
           {needsExpand && (
             <button
               onClick={() => setExpanded(e => !e)}
-              className="text-xs mt-1.5"
-              style={{ color: cat.color }}
+              className="text-xs mt-1.5 font-semibold"
+              style={{ color: catColor }}
             >
               {expanded ? 'Show less' : 'Read more'}
             </button>
@@ -402,6 +405,7 @@ export default function Journal() {
   )
 
   const activeCat = catById(category)
+  const catTextColor = (cat: typeof CATEGORIES[number]) => darkMode ? cat.color : cat.lightColor
 
   return (
     <div className="app-bg min-h-screen" style={{ paddingTop: 76, paddingBottom: 80 }}>
@@ -449,7 +453,7 @@ export default function Journal() {
                   className="flex-1 flex flex-col items-center gap-0.5 py-1.5 rounded-xl font-semibold transition-all"
                   style={{
                     background: sel ? cat.bg : t.inputBg,
-                    color: sel ? cat.color : t.textSub,
+                    color: sel ? catTextColor(cat) : t.textSub,
                     border: `1px solid ${sel ? cat.border : 'transparent'}`,
                     boxShadow: sel ? `0 0 8px ${cat.color}33` : 'none',
                     minWidth: 0,
@@ -582,7 +586,7 @@ export default function Journal() {
                   disabled={!content.trim() || saving}
                   className="px-4 py-2 rounded-xl text-xs font-semibold transition-all"
                   style={{
-                    background: content.trim() ? activeCat.color : t.inputBg,
+                    background: content.trim() ? catTextColor(activeCat) : t.inputBg,
                     color: content.trim() ? '#fff' : t.textSub,
                     opacity: saving ? 0.6 : 1,
                   }}
@@ -668,7 +672,7 @@ export default function Journal() {
               className="flex-shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold transition-all"
               style={{
                 background: filterCat === cat.id ? cat.bg : t.inputBg,
-                color: filterCat === cat.id ? cat.color : t.textSub,
+                color: filterCat === cat.id ? catTextColor(cat) : t.textSub,
                 border: filterCat === cat.id ? `1px solid ${cat.border}` : '1px solid transparent',
               }}
             >
@@ -705,6 +709,7 @@ export default function Journal() {
                   onDelete={id => setDeleteConfirmId(id)}
                   onEdit={e => setEditingEntry({ ...e })}
                   t={t}
+                  darkMode={darkMode}
                 />
               ))}
             </div>
@@ -798,7 +803,7 @@ export default function Journal() {
                       className="flex-1 flex flex-col items-center gap-0.5 py-1.5 rounded-xl font-semibold transition-all"
                       style={{
                         background: sel ? cat.bg : t.inputBg,
-                        color: sel ? cat.color : t.textSub,
+                        color: sel ? catTextColor(cat) : t.textSub,
                         border: `1px solid ${sel ? cat.border : 'transparent'}`,
                         fontSize: 9,
                         minWidth: 0,
