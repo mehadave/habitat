@@ -194,7 +194,7 @@ export function NavBar() {
   const topBarBg = darkMode
     ? 'linear-gradient(180deg, rgba(8,14,28,0.72) 0%, rgba(8,14,28,0.60) 100%)'
     : 'linear-gradient(180deg, rgba(248,250,255,0.97) 0%, rgba(240,244,255,0.92) 100%)'
-  const topBarBorder = darkMode ? 'rgba(255,255,255,0.07)' : 'rgba(11,20,55,0.09)'
+  const topBarBorder = darkMode ? 'rgba(255,255,255,0.07)' : 'rgba(37,99,235,0.13)'
   const tabActiveBg  = darkMode ? 'rgba(56,189,248,0.13)' : 'rgba(37,99,235,0.10)'
   const tabActiveText = darkMode ? '#38BDF8' : '#2563EB'
   const tabInactiveText = darkMode ? 'rgba(255,255,255,0.38)' : 'rgba(11,20,55,0.55)'
@@ -257,7 +257,7 @@ export function NavBar() {
                 : 'linear-gradient(135deg, #2563EB 0%, #1d4ed8 100%)',
               border: showDropdown
                 ? '2px solid #38BDF8'
-                : `2px solid ${darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(11,20,55,0.12)'}`,
+                : `2px solid ${darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(37,99,235,0.22)'}`,
               overflow: 'hidden',
               boxShadow: showDropdown ? '0 0 0 4px rgba(56,189,248,0.15)' : 'none',
               transition: 'all 0.2s ease',
@@ -278,7 +278,7 @@ export function NavBar() {
           background: darkMode ? 'rgba(8,14,28,0.95)' : 'rgba(248,250,255,0.96)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
-          borderTop: `1px solid ${darkMode ? 'rgba(255,255,255,0.07)' : 'rgba(11,20,55,0.09)'}`,
+          borderTop: `1px solid ${darkMode ? 'rgba(255,255,255,0.07)' : 'rgba(37,99,235,0.13)'}`,
           paddingBottom: 'env(safe-area-inset-bottom)',
           display: 'flex',
           alignItems: 'center',
