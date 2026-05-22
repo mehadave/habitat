@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useGamificationStore } from '../store/gamificationStore'
+import { useUIStore } from '../store/uiStore'
 
 const CONFETTI_COLORS = [
   '#FBBF24', '#F472B6', '#34D399', '#60A5FA', '#A78BFA',
@@ -100,6 +101,7 @@ function getMilestoneConfig(days: number): {
 
 export function StreakCelebration() {
   const { celebration, dismissCelebration } = useGamificationStore()
+  const { darkMode } = useUIStore()
   const [particles] = useState(() =>
     Array.from({ length: 80 }, (_, i) => ({
       id: i,
@@ -127,7 +129,11 @@ export function StreakCelebration() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden"
-          style={{ background: 'rgba(6,8,24,0.96)', backdropFilter: 'blur(4px)' }}
+          style={{
+            background: darkMode ? 'rgba(6,8,24,0.96)' : 'rgba(224,232,255,0.88)',
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)',
+          }}
           onClick={dismissCelebration}
         >
           {/* Confetti */}
@@ -145,9 +151,15 @@ export function StreakCelebration() {
             transition={{ type: 'spring', damping: 12 }}
             className="relative text-center px-8 py-10 rounded-3xl mx-4"
             style={{
-              background: 'linear-gradient(145deg, #0B1030 0%, #0E1640 60%, #0A122E 100%)',
-              border: '1px solid rgba(148,163,220,0.22)',
-              boxShadow: '0 0 60px rgba(37,99,235,0.18), 0 24px 64px rgba(0,0,0,0.5)',
+              background: darkMode
+                ? 'linear-gradient(145deg, #0B1030 0%, #0E1640 60%, #0A122E 100%)'
+                : 'linear-gradient(145deg, #FFFFFF 0%, #EEF3FF 60%, #E8EFFF 100%)',
+              border: darkMode
+                ? '1px solid rgba(148,163,220,0.22)'
+                : '1px solid rgba(37,99,235,0.20)',
+              boxShadow: darkMode
+                ? '0 0 60px rgba(37,99,235,0.18), 0 24px 64px rgba(0,0,0,0.5)'
+                : '0 0 60px rgba(37,99,235,0.12), 0 24px 64px rgba(37,99,235,0.10)',
               maxWidth: 340,
             }}
             onClick={(e) => e.stopPropagation()}
@@ -155,7 +167,9 @@ export function StreakCelebration() {
             {/* Subtle inner glow */}
             <div style={{
               position: 'absolute', inset: 0, borderRadius: 24, pointerEvents: 'none',
-              background: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(56,189,248,0.07) 0%, transparent 70%)',
+              background: darkMode
+                ? 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(56,189,248,0.07) 0%, transparent 70%)'
+                : 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(37,99,235,0.06) 0%, transparent 70%)',
             }} />
 
             <motion.div
@@ -166,24 +180,27 @@ export function StreakCelebration() {
               {config.emoji}
             </motion.div>
 
-            <h2 className="text-3xl font-bold text-white mb-1">
+            <h2 className="text-3xl font-bold mb-1" style={{ color: darkMode ? '#ffffff' : '#0B1437' }}>
               Wohoooo!
             </h2>
-            <p className="text-base font-semibold mb-1" style={{ color: '#93C5FD' }}>
+            <p className="text-base font-semibold mb-1" style={{ color: darkMode ? '#93C5FD' : '#2563EB' }}>
               {config.sub}
             </p>
 
             {/* Habit badge */}
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full mb-3"
-              style={{ background: 'rgba(37,99,235,0.18)', border: '1px solid rgba(96,165,250,0.3)' }}>
+              style={{
+                background: darkMode ? 'rgba(37,99,235,0.18)' : 'rgba(37,99,235,0.09)',
+                border: darkMode ? '1px solid rgba(96,165,250,0.3)' : '1px solid rgba(37,99,235,0.25)',
+              }}>
               <span className="text-sm">{celebration.habitEmoji}</span>
-              <span className="text-xs font-semibold" style={{ color: '#93C5FD' }}>{celebration.habitName}</span>
+              <span className="text-xs font-semibold" style={{ color: darkMode ? '#93C5FD' : '#2563EB' }}>{celebration.habitName}</span>
             </div>
 
-            <p className="text-sm mb-1" style={{ color: 'rgba(255,255,255,0.65)' }}>
+            <p className="text-sm mb-1" style={{ color: darkMode ? 'rgba(255,255,255,0.65)' : 'rgba(11,20,55,0.70)' }}>
               Absolute main character energy.
             </p>
-            <p className="text-xs italic mb-6" style={{ color: 'rgba(255,255,255,0.38)' }}>
+            <p className="text-xs italic mb-6" style={{ color: darkMode ? 'rgba(255,255,255,0.38)' : 'rgba(11,20,55,0.45)' }}>
               {config.wit}
             </p>
 
