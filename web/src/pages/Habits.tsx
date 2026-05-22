@@ -1,10 +1,14 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
-import { motion, AnimatePresence, Reorder } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
+import type { DragEndEvent } from '@dnd-kit/core'
+import { SortableContext, verticalListSortingStrategy, arrayMove, useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import { useHabits, useAddHabit, useUpdateHabit, useDeleteHabit, useToggleCompletion } from '../hooks/useHabits'
 import { useRoutines, useAddRoutine, useUpdateRoutine, useDeleteRoutine } from '../hooks/useRoutines'
 import { HabitCard } from '../components/HabitCard'
 import { RoutineSection } from '../components/RoutineSection'
-import { LongPressReorderItem } from '../components/LongPressReorderItem'
+import { SortableItem } from '../components/SortableItem'
 import { MonthlyHabitTracker } from '../components/MonthlyHabitTracker'
 import { ArchivedHabitsSection } from '../components/ArchivedHabitsSection'
 import {
@@ -619,13 +623,28 @@ function ManageRoutinesSheet({ onClose, t, initialEditId }: {
     cancelForm()
   }
 
-  async function persistRoutineOrder() {
+  const sheetSensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { delay: 1500, tolerance: 5 } })
+  )
+
+  async function persistRoutineOrder(order: typeof routineOrder) {
     await Promise.all(
-      routineOrder.map((r, i) => {
+      order.map((r, i) => {
         if (routines.find(x => x.id === r.id)?.sort_order !== i)
           return updateRoutine.mutateAsync({ id: r.id, sort_order: i })
       }).filter(Boolean) as Promise<void>[]
     )
+  }
+
+  function handleSheetDragEnd({ active, over }: DragEndEvent) {
+    if (!over || active.id === over.id) return
+    setRoutineOrder(prev => {
+      const oldIdx = prev.findIndex(r => r.id === active.id)
+      const newIdx = prev.findIndex(r => r.id === over.id)
+      const next = arrayMove(prev, oldIdx, newIdx)
+      persistRoutineOrder(next)
+      return next
+    })
   }
 
   async function confirmDelete(id: string) {
@@ -770,15 +789,17 @@ function ManageRoutinesSheet({ onClose, t, initialEditId }: {
 
         {/* Routine list — draggable when no edit/delete active */}
         {canReorder ? (
-          <Reorder.Group axis="y" values={routineOrder} onReorder={setRoutineOrder}
-            className="space-y-2 mb-3" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-            {routineOrder.map(r => (
-              <LongPressReorderItem key={r.id} value={r} onDragEnd={persistRoutineOrder}
-                style={{ listStyle: 'none' }}>
-                <RoutineRow r={r} />
-              </LongPressReorderItem>
-            ))}
-          </Reorder.Group>
+          <DndContext sensors={sheetSensors} collisionDetection={closestCenter} onDragEnd={handleSheetDragEnd}>
+            <SortableContext items={routineOrder.map(r => r.id)} strategy={verticalListSortingStrategy}>
+              <div className="space-y-2 mb-3">
+                {routineOrder.map(r => (
+                  <SortableItem key={r.id} id={r.id}>
+                    <RoutineRow r={r} />
+                  </SortableItem>
+                ))}
+              </div>
+            </SortableContext>
+          </DndContext>
         ) : (
           <div className="space-y-2 mb-3">
             {(isEditing || isDeleting ? routines : routineOrder).map(r => (
@@ -800,6 +821,42 @@ function ManageRoutinesSheet({ onClose, t, initialEditId }: {
         )}
       </motion.div>
     </motion.div>
+  )
+}
+
+// Sortable wrapper for a routine section — applies drag handle to section header
+function SortableRoutineSection({
+  routine,
+  habits,
+  onEdit,
+  onDelete,
+  onEditRoutine,
+  onReorder,
+}: {
+  routine: import('../lib/types').Routine
+  habits: import('../lib/types').HabitWithStreak[]
+  onEdit: (h: import('../lib/types').HabitWithStreak) => void
+  onDelete: (id: string) => void
+  onEditRoutine: (r: import('../lib/types').Routine) => void
+  onReorder: (newOrder: import('../lib/types').HabitWithStreak[]) => void
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: routine.id })
+  return (
+    <div
+      ref={setNodeRef}
+      style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1, position: 'relative' }}
+    >
+      <RoutineSection
+        routine={routine}
+        habits={habits}
+        isDefaultSort={true}
+        onEdit={onEdit}
+        onDelete={onDelete}
+        onEditRoutine={onEditRoutine}
+        onReorder={onReorder}
+        dragHandleProps={{ ...attributes, ...listeners }}
+      />
+    </div>
   )
 }
 
@@ -841,6 +898,13 @@ export default function Habits() {
       }).filter(Boolean) as Promise<void>[]
     )
   }
+
+  const habitSensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { delay: 1500, tolerance: 5 } })
+  )
+  const routineSectionSensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { delay: 800, tolerance: 5 } })
+  )
 
   const [showAdd, setShowAdd] = useState(false)
   const [editHabit, setEditHabit] = useState<HabitWithStreak | null>(null)
@@ -1159,33 +1223,31 @@ export default function Habits() {
 
                 return (
                   <div>
-                    <Reorder.Group
-                      axis="y"
-                      values={visibleRoutines}
-                      onReorder={newOrder => setRoutineDisplayOrder(newOrder)}
-                      style={{ listStyle: 'none', padding: 0, margin: 0 }}
+                    <DndContext
+                      sensors={routineSectionSensors}
+                      collisionDetection={closestCenter}
+                      onDragEnd={({ active, over }) => {
+                        if (!over || active.id === over.id) return
+                        const oldIdx = visibleRoutines.findIndex(r => r.id === active.id)
+                        const newIdx = visibleRoutines.findIndex(r => r.id === over.id)
+                        if (oldIdx !== -1 && newIdx !== -1)
+                          handleRoutineReorder(arrayMove(visibleRoutines, oldIdx, newIdx))
+                      }}
                     >
-                    {visibleRoutines.map(routine => (
-                      <LongPressReorderItem
-                        key={routine.id}
-                        value={routine}
-                        initial={false}
-                        layout
-                        onDragEnd={() => handleRoutineReorder(visibleRoutines)}
-                        style={{ listStyle: 'none' }}
-                      >
-                        <RoutineSection
-                          routine={routine}
-                          habits={routineHabits(routine.id)}
-                          isDefaultSort={true}
-                          onEdit={h => setEditHabit(h)}
-                          onDelete={id => setDeleteConfirm(id)}
-                          onEditRoutine={r => openManageRoutines(r.id)}
-                          onReorder={handleSectionReorder}
-                        />
-                      </LongPressReorderItem>
-                    ))}
-                    </Reorder.Group>
+                      <SortableContext items={visibleRoutines.map(r => r.id)} strategy={verticalListSortingStrategy}>
+                        {visibleRoutines.map(routine => (
+                          <SortableRoutineSection
+                            key={routine.id}
+                            routine={routine}
+                            habits={routineHabits(routine.id)}
+                            onEdit={h => setEditHabit(h)}
+                            onDelete={id => setDeleteConfirm(id)}
+                            onEditRoutine={r => openManageRoutines(r.id)}
+                            onReorder={handleSectionReorder}
+                          />
+                        ))}
+                      </SortableContext>
+                    </DndContext>
                     {uncategorized.length > 0 && (
                       <div>
                         {visibleRoutines.length > 0 && (
@@ -1194,29 +1256,31 @@ export default function Habits() {
                             Other
                           </p>
                         )}
-                        <Reorder.Group
-                          axis="y"
-                          values={uncategorized}
-                          onReorder={handleSectionReorder}
-                          className="space-y-3"
-                          style={{ listStyle: 'none', padding: 0, margin: 0 }}
+                        <DndContext
+                          sensors={habitSensors}
+                          collisionDetection={closestCenter}
+                          onDragEnd={({ active, over }) => {
+                            if (!over || active.id === over.id) return
+                            const oldIdx = uncategorized.findIndex(h => h.id === active.id)
+                            const newIdx = uncategorized.findIndex(h => h.id === over.id)
+                            if (oldIdx !== -1 && newIdx !== -1)
+                              handleSectionReorder(arrayMove(uncategorized, oldIdx, newIdx))
+                          }}
                         >
-                          {uncategorized.map(habit => (
-                            <LongPressReorderItem
-                              key={habit.id}
-                              value={habit}
-                              initial={false}
-                              layout
-                              style={{ listStyle: 'none' }}
-                            >
-                              <HabitCard
-                                habit={habit}
-                                onEdit={h => setEditHabit(h)}
-                                onDelete={id => setDeleteConfirm(id)}
-                              />
-                            </LongPressReorderItem>
-                          ))}
-                        </Reorder.Group>
+                          <SortableContext items={uncategorized.map(h => h.id)} strategy={verticalListSortingStrategy}>
+                            <div className="space-y-3">
+                              {uncategorized.map(habit => (
+                                <SortableItem key={habit.id} id={habit.id}>
+                                  <HabitCard
+                                    habit={habit}
+                                    onEdit={h => setEditHabit(h)}
+                                    onDelete={id => setDeleteConfirm(id)}
+                                  />
+                                </SortableItem>
+                              ))}
+                            </div>
+                          </SortableContext>
+                        </DndContext>
                       </div>
                     )}
                   </div>
@@ -1225,29 +1289,31 @@ export default function Habits() {
 
               // Flat view (no routines, or non-default sort)
               return sortBy === 'default' ? (
-                <Reorder.Group
-                  axis="y"
-                  values={displayHabits}
-                  onReorder={handleReorder}
-                  className="space-y-3"
-                  style={{ listStyle: 'none', padding: 0, margin: 0 }}
+                <DndContext
+                  sensors={habitSensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={({ active, over }) => {
+                    if (!over || active.id === over.id) return
+                    const oldIdx = displayHabits.findIndex(h => h.id === active.id)
+                    const newIdx = displayHabits.findIndex(h => h.id === over.id)
+                    if (oldIdx !== -1 && newIdx !== -1)
+                      handleReorder(arrayMove(displayHabits, oldIdx, newIdx))
+                  }}
                 >
-                  {displayHabits.map((habit) => (
-                    <LongPressReorderItem
-                      key={habit.id}
-                      value={habit}
-                      initial={false}
-                      layout
-                      style={{ listStyle: 'none' }}
-                    >
-                      <HabitCard
-                        habit={habit}
-                        onEdit={(h) => setEditHabit(h)}
-                        onDelete={(id) => setDeleteConfirm(id)}
-                      />
-                    </LongPressReorderItem>
-                  ))}
-                </Reorder.Group>
+                  <SortableContext items={displayHabits.map(h => h.id)} strategy={verticalListSortingStrategy}>
+                    <div className="space-y-3">
+                      {displayHabits.map((habit) => (
+                        <SortableItem key={habit.id} id={habit.id}>
+                          <HabitCard
+                            habit={habit}
+                            onEdit={(h) => setEditHabit(h)}
+                            onDelete={(id) => setDeleteConfirm(id)}
+                          />
+                        </SortableItem>
+                      ))}
+                    </div>
+                  </SortableContext>
+                </DndContext>
               ) : (
                 <div className="space-y-3">
                   {displayHabits.map((habit) => (
