@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
+import { DndContext, closestCenter, MouseSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core'
 import type { DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy, arrayMove, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
@@ -624,7 +624,8 @@ function ManageRoutinesSheet({ onClose, t, initialEditId }: {
   }
 
   const sheetSensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { delay: 1500, tolerance: 5 } })
+    useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 1500, tolerance: 5 } })
   )
 
   async function persistRoutineOrder(order: typeof routineOrder) {
@@ -900,10 +901,12 @@ export default function Habits() {
   }
 
   const habitSensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { delay: 1500, tolerance: 5 } })
+    useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 1500, tolerance: 5 } })
   )
   const routineSectionSensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { delay: 800, tolerance: 5 } })
+    useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 800, tolerance: 5 } })
   )
 
   const [showAdd, setShowAdd] = useState(false)
