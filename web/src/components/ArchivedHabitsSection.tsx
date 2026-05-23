@@ -1,7 +1,10 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useArchivedHabits, useRestoreHabit, usePermanentlyDeleteHabit } from '../hooks/useHabits'
+import { useUIStore } from '../store/uiStore'
+
 export function ArchivedHabitsSection() {
+  const { darkMode } = useUIStore()
   const { data: archived = [] } = useArchivedHabits()
   const restoreMutation = useRestoreHabit()
   const deleteMutation = usePermanentlyDeleteHabit()
