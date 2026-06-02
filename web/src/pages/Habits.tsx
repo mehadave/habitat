@@ -625,7 +625,7 @@ function ManageRoutinesSheet({ onClose, t, initialEditId }: {
 
   const sheetSensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 1500, tolerance: 5 } })
+    useSensor(TouchSensor, { activationConstraint: { delay: 300, tolerance: 5 } })
   )
 
   async function persistRoutineOrder(order: typeof routineOrder) {
@@ -902,11 +902,11 @@ export default function Habits() {
 
   const habitSensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 1500, tolerance: 5 } })
+    useSensor(TouchSensor, { activationConstraint: { delay: 300, tolerance: 5 } })
   )
   const routineSectionSensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 800, tolerance: 5 } })
+    useSensor(TouchSensor, { activationConstraint: { delay: 300, tolerance: 5 } })
   )
 
   const [showAdd, setShowAdd] = useState(false)

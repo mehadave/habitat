@@ -130,7 +130,6 @@ export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
           borderRadius: 16,
           zIndex: 1,
           position: 'relative',
-          touchAction: 'pan-y',
           userSelect: 'none',
           WebkitUserSelect: 'none',
           cursor: 'grab',
