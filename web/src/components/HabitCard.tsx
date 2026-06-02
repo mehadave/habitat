@@ -44,7 +44,7 @@ export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
 
   // Sync programmatic snap when showActions or hinting changes
   useEffect(() => {
-    snapTo(showActions ? -160 : hinting ? -44 : 0)
+    snapTo(showActions ? -168 : hinting ? -44 : 0)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showActions, hinting])
 
@@ -120,7 +120,7 @@ export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
       {/* Card — drag left to reveal actions (works on mouse + touch) */}
       <motion.div
         drag="x"
-        dragConstraints={{ left: -160, right: 0 }}
+        dragConstraints={{ left: -168, right: 0 }}
         dragElastic={0.05}
         style={{
           x,
@@ -137,7 +137,7 @@ export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
         }}
         className="p-4"
         onDragEnd={(_, info) => {
-          const shouldReveal = info.offset.x < -60 || info.velocity.x < -250
+          const shouldReveal = info.offset.x < -68 || info.velocity.x < -250
           setShowActions(shouldReveal)
           if (!shouldReveal) snapTo(0)
         }}
