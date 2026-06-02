@@ -605,32 +605,56 @@ export default function Journal() {
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             style={{ position: 'relative' }}
           >
-            <span
-              style={{
-                position: 'absolute',
-                left: 12,
-                top: '50%',
-                transform: 'translateY(-50%)',
-                fontSize: 13,
-                pointerEvents: 'none',
-                color: t.textSub,
-              }}
-            >
-              🔍
-            </span>
+            {/* Centered icon+label overlay shown when idle */}
+            {!searchFocused && !search && (
+              <span
+                onClick={() => searchRef.current?.focus()}
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 6,
+                  fontSize: 12,
+                  pointerEvents: 'none',
+                  color: t.textSub,
+                  cursor: 'text',
+                }}
+              >
+                🔍 <span>Search entries…</span>
+              </span>
+            )}
+            {/* Icon pinned left when focused or has value */}
+            {(searchFocused || !!search) && (
+              <span
+                style={{
+                  position: 'absolute',
+                  left: 12,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  fontSize: 13,
+                  pointerEvents: 'none',
+                  color: t.textSub,
+                }}
+              >
+                🔍
+              </span>
+            )}
             <input
               ref={searchRef}
-              placeholder="Search entries…"
+              placeholder={searchFocused ? 'Search entries…' : ''}
               value={search}
               onChange={e => setSearch(e.target.value)}
               onFocus={() => setSearchFocused(true)}
               onBlur={() => setSearchFocused(false)}
-              className="w-full pl-8 pr-4 py-2 rounded-full text-xs outline-none text-center transition-all"
+              className="w-full pr-4 py-2 rounded-full text-xs outline-none transition-all"
               style={{
+                paddingLeft: searchFocused || search ? 32 : 16,
                 background: t.inputBg,
                 border: searchFocused ? `1px solid rgba(96,165,250,0.4)` : `1px solid transparent`,
                 color: t.inputColor,
-                textAlign: searchFocused || search ? 'left' : 'center',
+                textAlign: 'left',
               }}
             />
             {search && (
