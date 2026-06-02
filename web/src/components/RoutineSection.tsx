@@ -41,7 +41,7 @@ export function RoutineSection({
 
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 1500, tolerance: 5 } })
+    useSensor(TouchSensor, { activationConstraint: { delay: 300, tolerance: 5 } })
   )
 
   function handleDragEnd({ active, over }: DragEndEvent) {
@@ -60,6 +60,7 @@ export function RoutineSection({
         className="flex items-center gap-2 px-1 py-1.5 mb-1 cursor-pointer select-none rounded-xl"
         onClick={() => setOpen(v => !v)}
         {...(dragHandleProps as React.HTMLAttributes<HTMLDivElement>)}
+        style={dragHandleProps ? { touchAction: 'none' } : undefined}
       >
         <span className="text-base leading-none flex-shrink-0">{routine.emoji}</span>
         <span className="text-sm font-semibold flex-1 truncate" style={{ color: 'var(--text-1)' }}>
