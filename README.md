@@ -8,12 +8,13 @@ A habit tracker built around consistency, not guilt. Track your habits, journal 
 
 ## Features
 
-- **Habit tracking** — Add up to 15 habits with emoji, priority, and private notes. Swipe to edit or delete, view monthly calendar grids per habit
+- **Habit tracking** — Add up to 15 habits with emoji, priority, and private notes. Swipe left to reveal Edit/Delete actions. View monthly calendar grids per habit
+- **Routines** — Group habits into named routines (e.g. "Morning coffee ritual", "Evening wind-down"). Drag to reorder routines and habits within them. Tracker columns stay in sync with the grouped list
 - **Dashboard** — Streak hero, quick-complete chips, winning/losing habit podium, needs-attention list, and animated dolphins
-- **Analytics** — Today's progress ring, 7/30/90-day trend charts, per-habit performance rings (green = done today, yellow = streak active, red = no streak), day-of-week heatmap
-- **Journal** — Brain dump without filter. Categories (Dump, Journal, Vent, Ideas, Frog, To-do), mood tracking, voice dictation (tap-to-toggle, works on all major browsers), timeline view with draft auto-save
+- **Analytics** — Today's progress ring, 7/30/90-day trend charts, per-habit performance rings (green = done today, yellow = streak active, red = no streak), all-time completion count, day-of-week heatmap
+- **Journal** — Brain dump without filter. Categories (Dump, Journal, Vent, Ideas, Frog, To-do), mood tracking, voice dictation (tap-to-toggle), timeline view with draft auto-save
 - **Calendar** — Monthly view with per-day completion dots and streak visualization
-- **Statistics** — Accessible from the Me page and profile dropdown
+- **Archive** — Retire habits without losing history. Restore anytime from the collapsible Archived section
 - **Auth** — Email/password, Google OAuth, Apple OAuth, phone OTP
 - **Dark/light mode** — Persisted per user, toggle from the profile menu
 - **PWA** — Installable on mobile, works offline for cached content
@@ -81,10 +82,10 @@ supabase/migrations/002_add_category.sql
 habitat/
 ├── web/
 │   ├── src/
-│   │   ├── components/    # NavBar, HabitCard, DolphinLogo, Footer, etc.
+│   │   ├── components/    # NavBar, HabitCard, RoutineSection, ArchivedHabitsSection, etc.
 │   │   ├── pages/         # Dashboard, Habits, Calendar, Journal, Analytics, Profile
 │   │   ├── pages/auth/    # Login, Signup, ForgotPassword
-│   │   ├── hooks/         # useHabits, useJournal, useStreaks
+│   │   ├── hooks/         # useHabits, useJournal, useRoutines, useStreaks
 │   │   ├── store/         # Zustand stores (auth, ui)
 │   │   └── lib/           # supabase client, types, utils, quotes
 │   └── public/            # PWA icons, manifest
