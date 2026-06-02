@@ -591,7 +591,7 @@ export default function Journal() {
                     opacity: saving ? 0.6 : 1,
                   }}
                 >
-                  {saving ? 'Saving…' : '+ Save entry'}
+                  {saving ? 'Saving…' : 'Save'}
                 </button>
               </div>
             </div>
