@@ -28,6 +28,7 @@ import Journal from './pages/Journal'
 import Profile from './pages/Profile'
 import PrivacyPolicy from './pages/PrivacyPolicy'
 import TermsOfUse from './pages/TermsOfUse'
+import Landing from './pages/Landing'
 
 function AppShell() {
   const { data: habits = [] } = useHabits()
@@ -132,6 +133,7 @@ export default function App() {
 
   return (
     <Routes>
+      <Route path="/" element={session ? <Navigate to="/dashboard" replace /> : <Landing />} />
       <Route path="/login" element={session ? <Navigate to="/dashboard" replace /> : <Login />} />
       <Route path="/signup" element={session ? <Navigate to="/dashboard" replace /> : <Signup />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
