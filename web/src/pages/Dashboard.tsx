@@ -723,7 +723,7 @@ export default function Dashboard() {
         {habits.length > 0 && (
           <button
             onClick={() => setShowStreaks(true)}
-            className="mt-1 text-xs font-semibold px-4 py-1.5 rounded-full transition-all relative"
+            className="mt-1 mb-3 text-xs font-semibold px-4 py-1.5 rounded-full transition-all relative"
             style={{
               background: darkMode ? 'rgba(56,189,248,0.12)' : 'rgba(2,132,199,0.08)',
               border: darkMode ? '1px solid rgba(56,189,248,0.25)' : '1px solid rgba(2,132,199,0.28)',
