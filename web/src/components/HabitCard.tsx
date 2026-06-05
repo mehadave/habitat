@@ -88,13 +88,13 @@ export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
     <div className="relative rounded-2xl" style={{ isolation: 'isolate' }}>
       {/* Swipe actions behind the card */}
       <div
-        className="absolute inset-y-0 right-0 flex items-center gap-2 px-4 rounded-2xl"
+        className="absolute inset-y-0 right-0 flex flex-col items-stretch justify-center gap-2 px-4 rounded-2xl"
         style={{
           background: swipeActionsBg,
           backdropFilter: 'blur(16px)',
           WebkitBackdropFilter: 'blur(16px)',
           border: '1px solid var(--border)',
-          width: 160,
+          width: 120,
           zIndex: 0,
           pointerEvents: showActions ? 'auto' : 'none',
           opacity: showActions ? 1 : 0,
@@ -103,14 +103,14 @@ export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
       >
         <button
           onClick={() => { setShowActions(false); snapTo(0); onEdit(habit) }}
-          className="flex-1 py-1.5 rounded-lg text-xs font-semibold text-center"
+          className="py-1.5 rounded-lg text-xs font-semibold text-center"
           style={{ background: 'var(--glass-sel-bg)', color: 'var(--accent-text)', border: '1px solid var(--glass-sel-border)' }}
         >
           Edit
         </button>
         <button
           onClick={() => { setShowActions(false); snapTo(0); onDelete(habit.id) }}
-          className="flex-1 py-1.5 rounded-lg text-xs font-semibold text-center"
+          className="py-1.5 rounded-lg text-xs font-semibold text-center"
           style={{ background: 'rgba(248,113,113,0.2)', color: '#F87171' }}
         >
           Delete
