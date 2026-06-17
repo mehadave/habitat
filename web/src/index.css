@@ -551,6 +551,17 @@ body.light-mode ::-webkit-scrollbar-thumb { background: rgba(11,20,55,0.15); }
 /* ── Water ring inner flow (SVG animateTransform used directly in JSX) ── */
 /* No CSS needed — SVG SMIL handles it */
 
+/* ── Auth loading spinner ────────────────────────────── */
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinner {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.12);
+  border-top-color: var(--accent-text, #93C5FD);
+  animation: spin 0.7s linear infinite;
+}
+
 /* ── Hide scrollbar (keep scroll behaviour) ─────────── */
 .hide-scrollbar { scrollbar-width: none; }
 .hide-scrollbar::-webkit-scrollbar { display: none; }
