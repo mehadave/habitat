@@ -110,7 +110,7 @@ function AppShell() {
 
 export default function App() {
   useAuthInit()
-  const { session } = useAuthStore()
+  const { session, isLoading } = useAuthStore()
   const { darkMode, setDarkMode, isManualOverrideActive } = useUIStore()
 
   // Apply dark/light mode class
@@ -130,6 +130,14 @@ export default function App() {
     mq.addEventListener('change', handleChange)
     return () => mq.removeEventListener('change', handleChange)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  if (isLoading) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100dvh' }}>
+        <div className="spinner" />
+      </div>
+    )
+  }
 
   return (
     <Routes>
