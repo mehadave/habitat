@@ -88,7 +88,7 @@ export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
     <div className="relative rounded-2xl" style={{ isolation: 'isolate' }}>
       {/* Swipe actions behind the card */}
       <div
-        className="absolute inset-y-0 right-0 flex flex-col items-stretch justify-center gap-2 px-4 rounded-2xl"
+        className="absolute inset-y-0 right-0 flex flex-col items-stretch justify-center gap-2 px-2 rounded-2xl"
         style={{
           background: swipeActionsBg,
           backdropFilter: 'blur(16px)',
