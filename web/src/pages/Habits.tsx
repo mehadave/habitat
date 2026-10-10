@@ -925,6 +925,7 @@ export default function Habits() {
     useSensor(TouchSensor, { activationConstraint: { delay: 300, tolerance: 5 } })
   )
 
+  const [habitDragging, setHabitDragging] = useState(false)
   const [showAdd, setShowAdd] = useState(false)
   const [editHabit, setEditHabit] = useState<HabitWithStreak | null>(null)
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
@@ -1278,13 +1279,16 @@ export default function Habits() {
                         <DndContext
                           sensors={habitSensors}
                           collisionDetection={closestCenter}
+                          onDragStart={() => setHabitDragging(true)}
                           onDragEnd={({ active, over }) => {
+                            setHabitDragging(false)
                             if (!over || active.id === over.id) return
                             const oldIdx = uncategorized.findIndex(h => h.id === active.id)
                             const newIdx = uncategorized.findIndex(h => h.id === over.id)
                             if (oldIdx !== -1 && newIdx !== -1)
                               handleSectionReorder(arrayMove(uncategorized, oldIdx, newIdx))
                           }}
+                          onDragCancel={() => setHabitDragging(false)}
                         >
                           <SortableContext items={uncategorized.map(h => h.id)} strategy={verticalListSortingStrategy}>
                             <div className="space-y-3">
@@ -1294,6 +1298,7 @@ export default function Habits() {
                                     habit={habit}
                                     onEdit={h => setEditHabit(h)}
                                     onDelete={id => setDeleteConfirm(id)}
+                                    resetSwipe={habitDragging}
                                   />
                                 </SortableItem>
                               ))}
@@ -1311,13 +1316,16 @@ export default function Habits() {
                 <DndContext
                   sensors={habitSensors}
                   collisionDetection={closestCenter}
+                  onDragStart={() => setHabitDragging(true)}
                   onDragEnd={({ active, over }) => {
+                    setHabitDragging(false)
                     if (!over || active.id === over.id) return
                     const oldIdx = displayHabits.findIndex(h => h.id === active.id)
                     const newIdx = displayHabits.findIndex(h => h.id === over.id)
                     if (oldIdx !== -1 && newIdx !== -1)
                       handleReorder(arrayMove(displayHabits, oldIdx, newIdx))
                   }}
+                  onDragCancel={() => setHabitDragging(false)}
                 >
                   <SortableContext items={displayHabits.map(h => h.id)} strategy={verticalListSortingStrategy}>
                     <div className="space-y-3">
@@ -1327,6 +1335,7 @@ export default function Habits() {
                             habit={habit}
                             onEdit={(h) => setEditHabit(h)}
                             onDelete={(id) => setDeleteConfirm(id)}
+                            resetSwipe={habitDragging}
                           />
                         </SortableItem>
                       ))}
