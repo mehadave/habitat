@@ -248,6 +248,7 @@ function AddEditSheet({
   t,
   isSaving,
   routines = [],
+  onAddRoutine,
 }: {
   habitId?: string
   initial?: Partial<FormWithNotif>
@@ -256,6 +257,7 @@ function AddEditSheet({
   t: ReturnType<typeof buildTokens>
   isSaving?: boolean
   routines?: Routine[]
+  onAddRoutine?: () => void
 }) {
   const existingPref = habitId ? getHabitPref(habitId) : { enabled: false, time: '09:00', days: [] }
 
@@ -424,39 +426,51 @@ function AddEditSheet({
           </div>
         </div>
 
-        {/* Routine picker — only shown when routines exist */}
-        {routines.length > 0 && (
-          <div className="flex items-center gap-2 mb-4 flex-wrap">
-            <span className="text-xs flex-shrink-0" style={{ color: t.textMuted }}>Routine:</span>
-            <div className="flex gap-1.5 flex-wrap">
+        {/* Routine picker */}
+        <div className="flex items-center gap-2 mb-4 flex-wrap">
+          <span className="text-xs flex-shrink-0" style={{ color: t.textMuted }}>Routine:</span>
+          <div className="flex gap-1.5 flex-wrap">
+            <button
+              onClick={() => setForm(f => ({ ...f, routine_id: null }))}
+              className="px-3 py-1 rounded-full text-xs font-medium transition-all"
+              style={{
+                background: form.routine_id === null ? 'rgba(37,99,235,0.18)' : t.inputBg,
+                border: `1px solid ${form.routine_id === null ? 'rgba(37,99,235,0.45)' : 'transparent'}`,
+                color: form.routine_id === null ? 'var(--accent-text)' : t.textSub,
+              }}
+            >
+              None
+            </button>
+            {routines.map(r => (
               <button
-                onClick={() => setForm(f => ({ ...f, routine_id: null }))}
+                key={r.id}
+                onClick={() => setForm(f => ({ ...f, routine_id: r.id }))}
                 className="px-3 py-1 rounded-full text-xs font-medium transition-all"
                 style={{
-                  background: form.routine_id === null ? 'rgba(37,99,235,0.18)' : t.inputBg,
-                  border: `1px solid ${form.routine_id === null ? 'rgba(37,99,235,0.45)' : 'transparent'}`,
-                  color: form.routine_id === null ? 'var(--accent-text)' : t.textSub,
+                  background: form.routine_id === r.id ? 'rgba(37,99,235,0.18)' : t.inputBg,
+                  border: `1px solid ${form.routine_id === r.id ? 'rgba(37,99,235,0.45)' : 'transparent'}`,
+                  color: form.routine_id === r.id ? 'var(--accent-text)' : t.textSub,
                 }}
               >
-                None
+                {r.emoji} {r.name}
               </button>
-              {routines.map(r => (
-                <button
-                  key={r.id}
-                  onClick={() => setForm(f => ({ ...f, routine_id: r.id }))}
-                  className="px-3 py-1 rounded-full text-xs font-medium transition-all"
-                  style={{
-                    background: form.routine_id === r.id ? 'rgba(37,99,235,0.18)' : t.inputBg,
-                    border: `1px solid ${form.routine_id === r.id ? 'rgba(37,99,235,0.45)' : 'transparent'}`,
-                    color: form.routine_id === r.id ? 'var(--accent-text)' : t.textSub,
-                  }}
-                >
-                  {r.emoji} {r.name}
-                </button>
-              ))}
-            </div>
+            ))}
+            {onAddRoutine && (
+              <button
+                onClick={onAddRoutine}
+                className="w-6 h-6 rounded-full text-sm font-semibold flex items-center justify-center transition-all"
+                style={{
+                  background: t.inputBg,
+                  border: `1px solid var(--border)`,
+                  color: t.textSub,
+                }}
+                title="New routine"
+              >
+                +
+              </button>
+            )}
           </div>
-        )}
+        </div>
 
         {/* Privacy toggle */}
         <div className="flex items-center justify-between mb-4 py-3 rounded-xl px-3"
@@ -1346,6 +1360,7 @@ export default function Habits() {
             t={t}
             isSaving={addMutation.isPending}
             routines={routines}
+            onAddRoutine={() => openManageRoutines()}
           />
         )}
       </AnimatePresence>
@@ -1360,6 +1375,7 @@ export default function Habits() {
             onClose={() => setEditHabit(null)}
             t={t}
             routines={routines}
+            onAddRoutine={() => openManageRoutines()}
           />
         )}
       </AnimatePresence>
