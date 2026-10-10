@@ -430,17 +430,19 @@ function AddEditSheet({
         <div className="flex items-center gap-2 mb-4 flex-wrap">
           <span className="text-xs flex-shrink-0" style={{ color: t.textMuted }}>Routine:</span>
           <div className="flex gap-1.5 flex-wrap">
-            <button
-              onClick={() => setForm(f => ({ ...f, routine_id: null }))}
-              className="px-3 py-1 rounded-full text-xs font-medium transition-all"
-              style={{
-                background: form.routine_id === null ? 'rgba(37,99,235,0.18)' : t.inputBg,
-                border: `1px solid ${form.routine_id === null ? 'rgba(37,99,235,0.45)' : 'transparent'}`,
-                color: form.routine_id === null ? 'var(--accent-text)' : t.textSub,
-              }}
-            >
-              None
-            </button>
+            {routines.length > 0 && (
+              <button
+                onClick={() => setForm(f => ({ ...f, routine_id: null }))}
+                className="px-3 py-1 rounded-full text-xs font-medium transition-all"
+                style={{
+                  background: form.routine_id === null ? 'rgba(37,99,235,0.18)' : t.inputBg,
+                  border: `1px solid ${form.routine_id === null ? 'rgba(37,99,235,0.45)' : 'transparent'}`,
+                  color: form.routine_id === null ? 'var(--accent-text)' : t.textSub,
+                }}
+              >
+                None
+              </button>
+            )}
             {routines.map(r => (
               <button
                 key={r.id}
