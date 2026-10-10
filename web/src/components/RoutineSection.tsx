@@ -34,6 +34,7 @@ export function RoutineSection({
   dragHandleProps,
 }: RoutineSectionProps) {
   const [open, setOpen] = useState(false)
+  const [dragging, setDragging] = useState(false)
   const today = localToday()
   const doneCount = habits.filter(h => h.completions?.includes(today)).length
   const total = habits.length
@@ -45,6 +46,7 @@ export function RoutineSection({
   )
 
   function handleDragEnd({ active, over }: DragEndEvent) {
+    setDragging(false)
     if (!over || active.id === over.id) return
     const oldIdx = habits.findIndex(h => h.id === active.id)
     const newIdx = habits.findIndex(h => h.id === over.id)
@@ -149,7 +151,9 @@ export function RoutineSection({
                 <DndContext
                   sensors={sensors}
                   collisionDetection={closestCenter}
+                  onDragStart={() => setDragging(true)}
                   onDragEnd={handleDragEnd}
+                  onDragCancel={() => setDragging(false)}
                 >
                   <SortableContext
                     items={habits.map(h => h.id)}
@@ -158,7 +162,7 @@ export function RoutineSection({
                     <div className="space-y-3">
                       {habits.map(habit => (
                         <SortableItem key={habit.id} id={habit.id}>
-                          <HabitCard habit={habit} onEdit={onEdit} onDelete={onDelete} />
+                          <HabitCard habit={habit} onEdit={onEdit} onDelete={onDelete} resetSwipe={dragging} />
                         </SortableItem>
                       ))}
                     </div>

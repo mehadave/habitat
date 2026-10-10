@@ -7,6 +7,7 @@ interface HabitCardProps {
   habit: HabitWithStreak
   onEdit: (habit: HabitWithStreak) => void
   onDelete: (habitId: string) => void
+  resetSwipe?: boolean
 }
 
 function PriorityBadge({ rating }: { rating: number }) {
@@ -30,7 +31,7 @@ function PriorityBadge({ rating }: { rating: number }) {
   )
 }
 
-export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
+export function HabitCard({ habit, onEdit, onDelete, resetSwipe }: HabitCardProps) {
   const { darkMode } = useUIStore()
   const [revealed, setRevealed] = useState(false)
   const [showActions, setShowActions] = useState(false)
@@ -44,9 +45,17 @@ export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
 
   // Sync programmatic snap when showActions or hinting changes
   useEffect(() => {
-    snapTo(showActions ? -120 : hinting ? -44 : 0)
+    snapTo(showActions ? -130 : hinting ? -44 : 0)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showActions, hinting])
+
+  // Close swipe actions when parent DnD drag starts
+  useEffect(() => {
+    if (resetSwipe && showActions) {
+      setShowActions(false)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resetSwipe])
 
   useEffect(() => {
     if (hintRan.current) return
@@ -120,7 +129,7 @@ export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
       {/* Card — drag left to reveal actions (works on mouse + touch) */}
       <motion.div
         drag="x"
-        dragConstraints={{ left: -120, right: 0 }}
+        dragConstraints={{ left: -130, right: 0 }}
         dragElastic={0.05}
         style={{
           x,
