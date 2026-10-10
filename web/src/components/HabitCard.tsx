@@ -44,7 +44,7 @@ export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
 
   // Sync programmatic snap when showActions or hinting changes
   useEffect(() => {
-    snapTo(showActions ? -168 : hinting ? -44 : 0)
+    snapTo(showActions ? -120 : hinting ? -44 : 0)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showActions, hinting])
 
@@ -85,7 +85,7 @@ export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
   const editBtnColor = darkMode ? 'rgba(255,255,255,0.4)' : 'rgba(11,20,55,0.78)'
 
   return (
-    <div className="relative rounded-2xl" style={{ isolation: 'isolate' }}>
+    <div className="relative rounded-2xl" style={{ isolation: 'isolate', zIndex: showActions ? 10 : 'auto', position: 'relative' }}>
       {/* Swipe actions behind the card */}
       <div
         className="absolute inset-y-0 right-0 flex flex-col items-stretch justify-center gap-2 px-2 rounded-2xl"
@@ -120,7 +120,7 @@ export function HabitCard({ habit, onEdit, onDelete }: HabitCardProps) {
       {/* Card — drag left to reveal actions (works on mouse + touch) */}
       <motion.div
         drag="x"
-        dragConstraints={{ left: -168, right: 0 }}
+        dragConstraints={{ left: -120, right: 0 }}
         dragElastic={0.05}
         style={{
           x,
